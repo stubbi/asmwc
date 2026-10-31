@@ -1,8 +1,15 @@
-/* Dynamic check for the AAPCS64/Darwin callee-saved GPR and SIMD subset. */
+/* Dynamic check for the AAPCS64 callee-saved GPR and SIMD subset. */
+#if defined(__APPLE__)
+#define ABI_PROBE _kernel_abi_probe
+#define COUNT_BUFFER _ripwc_count_buffer
+#else
+#define ABI_PROBE kernel_abi_probe
+#define COUNT_BUFFER ripwc_count_buffer
+#endif
 .text
 .p2align 4
-.globl _kernel_abi_probe
-_kernel_abi_probe:
+.globl ABI_PROBE
+ABI_PROBE:
     sub sp, sp, #160
     stp x19, x20, [sp]
     stp x21, x22, [sp, #16]
@@ -41,7 +48,7 @@ _kernel_abi_probe:
     fmov d14, x16
     mov x16, #215
     fmov d15, x16
-    bl _ripwc_count_buffer
+    bl COUNT_BUFFER
     cmp x19, #119
     b.ne Labi_failed
     cmp x20, #120
@@ -105,3 +112,6 @@ Labi_restore:
     ldp d14, d15, [sp, #144]
     add sp, sp, #160
     ret
+#if !defined(__APPLE__)
+.section .note.GNU-stack,"",%progbits
+#endif

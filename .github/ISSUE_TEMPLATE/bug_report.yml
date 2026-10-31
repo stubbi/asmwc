@@ -9,8 +9,8 @@ body:
     id: environment
     attributes:
       label: Environment
-      description: Source commit, macOS version, chip, and compiler versions.
-      placeholder: "git rev-parse HEAD; sw_vers; uname -m; clang --version; rustc --version"
+      description: Source commit, operating system/distribution, architecture, libc (on Linux), and compiler versions.
+      placeholder: "Include git rev-parse HEAD, uname -sm, compiler --version, and rustc --version. On macOS add sw_vers; on Linux add /etc/os-release and getconf GNU_LIBC_VERSION."
     validations:
       required: true
   - type: textarea

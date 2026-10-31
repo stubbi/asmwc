@@ -2,7 +2,7 @@
 
 The reference is [LuminousToaster/ripwc](https://github.com/LuminousToaster/ripwc) at commit [`de1a12e8e2d7c031404370773e5099b23ef01e95`](https://github.com/LuminousToaster/ripwc/tree/de1a12e8e2d7c031404370773e5099b23ef01e95) (19 May 2025). The unchanged Rust source is retained in [`upstream/`](../upstream/). The goal is observable agreement with that revision on the target platform.
 
-This is an experimental Apple Silicon macOS implementation, validated on Apple M3 with macOS 15.6.1. It uses Darwin arm64 APIs and structure layouts. There is no claim of GNU/POSIX `wc` compatibility, Unicode-aware counting, or support on Linux and Intel Macs.
+The implemented native targets are Apple Silicon macOS and Linux glibc AArch64/x86-64. Each target is compared with pinned Rust built on the same operating system. The [portability matrix](PORTABILITY.md) describes build requirements and native CI. There is no claim of GNU/POSIX `wc` compatibility or Unicode-aware counting. musl/Alpine, Intel macOS, Windows, and BSD are outside the supported matrix.
 
 ## Counting rules
 
@@ -50,12 +50,14 @@ Zero fields are omitted, including for empty files. If every selected count is z
 
 When more than one file succeeds, output includes a blank line and a final `total` row. Counts are summed except maximum line length, which is the maximum across files. Failed files do not contribute a row or totals. If all files are skipped, the program normally exits successfully with no count output.
 
-Count-output write failures produce a nonzero exit status and upstream-style I/O diagnostics. The implementation ignores SIGPIPE so it can report a broken output pipe in the same way as Rust. Exact failure text depends on Darwin's error messages.
+Count-output write failures produce a nonzero exit status and upstream-style I/O diagnostics. The implementation ignores SIGPIPE so it can report a broken output pipe in the same way as Rust. Exact failure text depends on the host libc and Rust reference. Error strings are not expected to be identical between macOS and Linux.
 
 ## Evidence and known limits
 
-The recorded suite passed 235 general, 86 I/O, and 124 large-file/pipeline end-to-end cases: **445 total**. It also passed **576 CLI differential cases**, **128 parser-state combinations**, independent kernel/guard-page/register tests, pipeline setup-failure checks, and benchmark-contract tests. See the [recorded evidence](../benchmarks/results/apple-m3-2026-10-31/) and [benchmark report](BENCHMARKS.md).
+The immutable **M3/macOS benchmark snapshot** passed 235 general, 86 I/O, and 124 large-file/pipeline end-to-end cases: **445 total**. It also passed **576 CLI differential cases**, **128 parser-state combinations**, independent kernel/guard-page/register tests, pipeline setup-failure checks, and benchmark-contract tests. See the [recorded evidence](../benchmarks/results/apple-m3-2026-10-31/) and [benchmark report](BENCHMARKS.md).
 
 Differential comparisons require exact stdout bytes, stderr bytes, and exit status. Only verbose stderr ordering in explicitly marked parallel cases is normalized, preserving each line and its multiplicity.
 
-The validation filesystem rejects invalid UTF-8 filenames, so that specific filename fixture could not run. Malformed UTF-8 file contents and command-line arguments are covered. Directory sizes, error strings, scheduling, and filesystem edge cases can vary with the host. Passing finite tests does not prove equivalence for every input, resource exhaustion, or operating-system failure.
+Native CI runs the common counting, CLI, I/O, large-file, guard-page, and ABI tests on all three targets. Linux additionally exercises invalid UTF-8 filenames where the filesystem permits them, `/dev/full` when available, permission errors when running as an unprivileged user, and injected pthread creation failures. Case counts depend on host capabilities; inspect the job reports for explicit unavailable fixtures. Darwin dispatch setup-failure tests apply only to the macOS pipeline.
+
+The historical validation filesystem was APFS and rejected invalid UTF-8 filenames, so that filename fixture could not run in the M3 snapshot. Malformed UTF-8 contents and arguments were covered. Directory sizes, error strings, scheduling, and filesystem edge cases vary with the host. Differential agreement means agreement with Rust on that host, not byte-identical OS-dependent values across platforms. Passing finite tests does not prove equivalence for every input, resource exhaustion, or operating-system failure.

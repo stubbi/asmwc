@@ -1,12 +1,45 @@
+SYSTEM := $(shell uname -s)
+ARCH := $(shell uname -m)
+
+# Select native sources and baseline ISA flags. Command-line/environment compiler
+# overrides remain available; do not inherit make's built-in CC=cc on macOS.
+ifeq ($(origin CC),default)
+ifeq ($(SYSTEM),Darwin)
 CC = clang
+else
+CC = cc
+endif
+endif
+
+ifeq ($(SYSTEM),Darwin)
 CPU ?= apple-m3
-ASFLAGS = -arch arm64 -mcpu=$(CPU) -O3 -g
+ASFLAGS ?= -arch arm64 -mcpu=$(CPU) -O3 -g
+SOURCES = src/main.S src/cli.S src/count.S src/pipeline.S
+BASELINES = bin/ripwc-rust bin/ripwc-before
+BENCH_BASELINE_ARGS = --before bin/ripwc-before
+else ifeq ($(SYSTEM),Linux)
+ifneq ($(filter $(ARCH),aarch64 x86_64),)
+ifeq ($(ARCH),aarch64)
+CPU ?= generic
+ASFLAGS ?= -mcpu=$(CPU) -O3 -g
+else
+CPU ?= x86-64
+ASFLAGS ?= -march=$(CPU) -O3 -g
+endif
+SOURCES = src/linux/$(ARCH)/main.S src/linux/$(ARCH)/cli.S src/linux/$(ARCH)/count.S
+TARGET_CPPFLAGS = -I.build/linux
+TARGET_ASFLAGS = -fPIE -pthread
+TARGET_LDFLAGS = -pie -pthread -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs
+ABI_HEADER = .build/linux/abi.h
+BASELINES = bin/ripwc-rust
+endif
+endif
+
 PYTHON ?= python3
 PREFIX ?= /usr/local
 DESTDIR ?=
 INSTALL ?= install
 BENCH_ARGS ?= --extended --runs 24
-SOURCES = src/main.S src/cli.S src/count.S src/pipeline.S
 ORIGINAL_SOURCES = history/original-src/main.S history/original-src/cli.S history/original-src/count.S
 RUST_SOURCES = upstream/Cargo.toml upstream/Cargo.lock $(wildcard upstream/src/*.rs)
 
@@ -19,19 +52,32 @@ check-platform:
 # Keep ordinary make incremental while honoring CPU/compiler/flag overrides.
 .build/assembly-config: FORCE | check-platform
 	@mkdir -p .build
-	@printf '%s\n' "$(CC) $(CPPFLAGS) $(ASFLAGS) $(LDFLAGS)" > "$@.tmp"
+	@printf '%s\n' "$(SYSTEM) $(ARCH) $(CC) $(TARGET_CPPFLAGS) $(CPPFLAGS) $(CFLAGS) $(TARGET_ASFLAGS) $(ASFLAGS) $(TARGET_LDFLAGS) $(LDFLAGS)" > "$@.tmp"
 	@if cmp -s "$@.tmp" "$@"; then rm "$@.tmp"; else mv "$@.tmp" "$@"; fi
 
 FORCE:
 
-bin/ripwc: $(SOURCES) Makefile .build/assembly-config FORCE | check-platform
+# Query the native libc's layouts/constants rather than guessing architecture-
+# specific offsets. The probe is a build tool, never an application input.
+.build/linux/abi.h: tools/linux_abi.c Makefile .build/assembly-config FORCE | check-platform
+	@mkdir -p .build/linux
+	@if [ ! -f "$@" ] || [ -n "$(filter-out FORCE .build/assembly-config,$?)" ] || ! cmp -s .build/assembly-config .build/linux/abi-config; then \
+		echo "Probing native Linux glibc ABI with $(CC)"; \
+		$(CC) $(CPPFLAGS) $(CFLAGS) -std=c11 -O2 -Wall -Wextra tools/linux_abi.c -o .build/linux/abi-probe && \
+		.build/linux/abi-probe > "$@.tmp" && \
+		mv "$@.tmp" "$@" && \
+		cp .build/assembly-config .build/linux/abi-config; \
+	fi
+
+bin/ripwc: $(SOURCES) $(ABI_HEADER) Makefile .build/assembly-config FORCE | check-platform
 	@mkdir -p bin
 	@if [ ! -f "$@" ] || [ -n "$(filter-out FORCE .build/assembly-config,$?)" ] || ! cmp -s .build/assembly-config .build/ripwc-config; then \
 		echo "Building $@ with $(CC) ($(CPU))"; \
-		$(CC) $(CPPFLAGS) $(ASFLAGS) $(LDFLAGS) $(SOURCES) -o "$@" && \
+		$(CC) $(TARGET_CPPFLAGS) $(CPPFLAGS) $(TARGET_ASFLAGS) $(ASFLAGS) $(SOURCES) $(LDFLAGS) $(TARGET_LDFLAGS) -o "$@" && \
 		cp .build/assembly-config .build/ripwc-config; \
 	fi
 
+ifeq ($(SYSTEM),Darwin)
 bin/ripwc-before: $(ORIGINAL_SOURCES) Makefile .build/assembly-config FORCE | check-platform
 	@mkdir -p bin
 	@if [ ! -f "$@" ] || [ -n "$(filter-out FORCE .build/assembly-config,$?)" ] || ! cmp -s .build/assembly-config .build/ripwc-before-config; then \
@@ -39,13 +85,19 @@ bin/ripwc-before: $(ORIGINAL_SOURCES) Makefile .build/assembly-config FORCE | ch
 		$(CC) $(CPPFLAGS) $(ASFLAGS) $(LDFLAGS) $(ORIGINAL_SOURCES) -o "$@" && \
 		cp .build/assembly-config .build/ripwc-before-config; \
 	fi
+else
+.PHONY: bin/ripwc-before
+bin/ripwc-before: | check-platform
+	@echo 'error: the preserved assembly baseline is available only on macOS arm64; use make baselines for the native Rust comparison.' >&2
+	@exit 1
+endif
 
 bin/ripwc-rust: $(RUST_SOURCES) build-rust.sh rust-toolchain.toml | check-platform
 	./build-rust.sh
 
 rust: bin/ripwc-rust
 
-baselines: bin/ripwc-rust bin/ripwc-before
+baselines: $(BASELINES) | check-platform
 
 check:
 	$(PYTHON) scripts/check.py
@@ -62,7 +114,7 @@ test: all baselines check
 	./tests/pipeline_resources.sh
 
 bench: all baselines
-	$(PYTHON) bench.py --before bin/ripwc-before $(BENCH_ARGS)
+	$(PYTHON) bench.py $(BENCH_BASELINE_ARGS) $(BENCH_ARGS)
 
 install: all
 	$(INSTALL) -d "$(DESTDIR)$(PREFIX)/bin"

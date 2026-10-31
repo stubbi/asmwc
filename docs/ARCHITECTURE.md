@@ -1,36 +1,38 @@
 # Architecture
 
-`ripwc-asm` is a native Mach-O arm64 executable. All application logic is in assembly. It calls macOS libc for allocation, filesystem operations, I/O, and formatting, and libdispatch for scheduling. Those services are supplied by libSystem; no C or Rust application wrapper is linked.
+`ripwc-asm` has three native implementations: Mach-O arm64 on macOS, and ELF AArch64/x86-64 on Linux glibc. Parsing, traversal policy, counting, aggregation, and formatting are handwritten assembly. System libraries provide allocation and I/O; scheduling uses libdispatch on macOS and pthreads on Linux. No C or Rust application wrapper is linked.
 
-The implementation targets the behavior of upstream ripwc commit `de1a12e8e2d7c031404370773e5099b23ef01e95`. Read the [compatibility contract](COMPATIBILITY.md) for observable semantics and the [benchmark report](BENCHMARKS.md) for performance evidence.
+All targets implement upstream ripwc commit `de1a12e8e2d7c031404370773e5099b23ef01e95`. See the [compatibility contract](COMPATIBILITY.md), [portability matrix](PORTABILITY.md), and [macOS benchmark evidence](BENCHMARKS.md).
 
 ## Source map
 
-| File | Responsibility |
+| Location | Responsibility |
 |---|---|
-| [`src/cli.S`](../src/cli.S) | Parse arguments; match pinned clap help, diagnostics, duplicate-option handling, and exit behavior. |
-| [`src/main.S`](../src/main.S) | Collect paths, save metadata, schedule tasks, read files, finalize counts, aggregate results, and write output. |
-| [`src/count.S`](../src/count.S) | Incrementally count a bounded input buffer using NEON and scalar tails. |
-| [`src/pipeline.S`](../src/pipeline.S) | Overlap sequential reads with one ordered scanning worker for eligible single-file jobs. |
+| [`src/*.S`](../src/) | Darwin arm64 parser, orchestration, NEON scanner, and dispatch pipeline. |
+| [`src/linux/aarch64/`](../src/linux/aarch64/) | Linux AArch64 `main.S`, `cli.S`, and ported NEON `count.S`. |
+| [`src/linux/x86_64/`](../src/linux/x86_64/) | Linux System V AMD64 `main.S`, `cli.S`, and SSE2 `count.S`. |
+| [`tools/linux_abi.c`](../tools/linux_abi.c) | Native build-time glibc layout/constant probe; never linked into the application. |
 | [`upstream/`](../upstream/) | Unchanged pinned Rust source, original manifest/license, and comparison lockfile. |
-| [`history/original-src/`](../history/original-src/) | Preserved first assembly implementation for before/after comparisons. |
-| [`tests/`](../tests/) | Differential and independent tests; C harnesses are not part of the application. |
+| [`history/original-src/`](../history/original-src/) | Preserved first Darwin assembly implementation for before/after comparisons. |
+| [`tests/`](../tests/) | Differential tests and independent C/assembly harnesses, separate from the application. |
 
-## Execution flow
+The Makefile selects native sources and flags from the host OS and architecture. On Linux it compiles and runs the ABI probe, producing `.build/linux/abi.h` from target libc headers. That header supplies `stat`/`FTSENT` sizes and offsets, traversal constants, errno values, and the online-CPU query constant. This avoids copying Darwin layouts or guessing glibc offsets. The build is native, not a cross-compilation interface.
+
+## Shared execution flow
 
 1. Parse flags and paths. If no counting flag is selected, enable lines, words, and bytes.
 2. Collect tasks in argument order and sorted traversal order, retaining each path and any available metadata size.
-3. Process one task directly, or schedule independent tasks with `dispatch_apply_f` when there are multiple entries.
+3. Process one task directly, or schedule independent tasks through the target's multiple-file scheduler.
 4. For each successful task, finalize any pending word and unterminated line once at EOF.
 5. Emit successful results in collected order, then aggregate totals if more than one result succeeded.
 
 Each task owns its count state. Workers do not update shared totals; aggregation happens after processing completes. This preserves ordered stdout while allowing verbose stderr messages to appear in worker order.
 
-Traversal uses Darwin `fts` with physical traversal, no directory changes, and command-line symlink following. The assembly relies on native Darwin arm64 structure layouts, which is one reason this is not a portable Unix assembly implementation.
+Both platforms use `fts` with physical traversal, no directory changes, and command-line symlink following. Linux reconstructs displayed descendant paths relative to the original root spelling because glibc `fts` can trim trailing root separators. The compatibility target is upstream WalkDir behavior on the same host.
 
 ## Incremental counting contract
 
-`ripwc_count_buffer` receives the input address in `x0`, byte length in `x1`, selected flags in `x2`, and a pointer to zero-initialized 64-byte state in `x3`. It only reads the supplied byte range, preserves callee-saved registers, and carries unfinished words and lines into subsequent calls.
+`ripwc_count_buffer` takes an input address, byte length, count flags, and a pointer to zero-initialized 64-byte state. AArch64 passes these in `x0`–`x3`; System V AMD64 uses `rdi`, `rsi`, `rdx`, and `rcx`. The kernel reads only the supplied range, preserves the target ABI's callee-saved registers, and carries unfinished words and lines across calls.
 
 | Flag bit | Value | Field |
 |---|---:|---|
@@ -40,7 +42,7 @@ Traversal uses Darwin `fts` with physical traversal, no directory changes, and c
 | 3 | 8 | Words (`-w`) |
 | 4 | 16 | Maximum line length (`-L`) |
 
-The default count mask is 13. State consists of eight unsigned 64-bit fields:
+The default count mask is 13. All implementations share eight unsigned 64-bit state fields:
 
 | Offset | Meaning |
 |---:|---|
@@ -53,36 +55,50 @@ The default count mask is 13. State consists of eight unsigned 64-bit fields:
 | 48 | Current line length |
 | 56 | Reserved |
 
-A word is completed when a nonseparator run meets one of space, tab, LF, or CR. A pending final word is added by the caller at EOF. Likewise, the final current line length is folded into the maximum at EOF. The kernel itself does not treat the end of a buffer as the end of a file.
+A word completes when a nonseparator run meets space, tab, LF, or CR. The caller adds a pending final word at EOF and folds the final current line length into the maximum. A buffer boundary is never treated as EOF.
 
-## NEON scanner
+## NEON scanner: macOS arm64 and Linux AArch64
 
-The main loops consume 64 bytes through four 16-byte vectors. A NEON table lookup identifies tab, LF, and CR, and an equality mask identifies space. Transitions from a nonseparator byte to a separator count completed words; the previous vector's final separator state carries into the next vector.
+The Linux AArch64 kernel ports the optimized Darwin NEON kernel to the Linux ABI and assembler conventions. Its main loops consume 64 bytes through four 16-byte vectors. A table lookup identifies tab, LF, and CR; an equality mask identifies space. Nonseparator-to-separator transitions count completed words, carrying the previous vector's final separator state forward.
 
-LF and NUL masks supply line counts and nonzero-byte counts. Byte-lane accumulators are reduced after at most 128 vectors (2 KiB), before they can overflow. Scalar code handles short inputs and remaining bytes without reading beyond the buffer.
+LF and NUL masks supply line and nonzero-byte counts. Byte-lane accumulators are reduced after at most 128 vectors (2 KiB), before they can overflow. Scalar code handles short inputs and remaining bytes without reading beyond the buffer.
 
-Maximum-line scanning locates LF positions using packed masks. Combined modes reuse loaded vectors and LF masks for the other selected counts. A maximum-line-only path can skip whole vectors containing no LF. Current line length and the best completed length survive every chunk boundary.
+Maximum-line scanning locates LF positions with packed masks. Combined modes reuse loaded vectors and LF masks for other selected counts. A maximum-line-only path skips whole vectors without LF. Current line length and the best completed length survive chunk boundaries.
 
-## Reading and scheduling
+## SSE2 scanner: Linux x86-64
 
-Byte-only mode opens the path and uses saved metadata when available, matching upstream. Other modes read sequentially to EOF. File size chooses an I/O strategy; it does not limit the bytes read or partition a file into fixed ranges. No path uses memory mapping.
+The x86-64 kernel uses mandatory baseline SSE2, without AVX, AVX2, or POPCNT. It loads bounded 16-byte vectors, compares bytes for LF/NUL and the four word separators, then extracts masks with `pmovmskb`. A scalar bit-count sequence counts mask bits without a CPU extension. Separator transitions carry the prior word state between vectors.
 
-Ordinary reads use a heap buffer of 256 KiB for files smaller than 8 MiB and 1 MiB for larger files. Metadata that is absent or zero leads to the smaller buffer; reads still continue to EOF.
+Maximum-line handling walks the LF mask with scalar bit operations, updates the longest completed line, and retains the remaining line length. A scalar tail handles fewer than 16 bytes. This is a separate implementation of the same state contract, not an x86 translation of the NEON instruction sequence.
 
-The pipeline is selected only when there is exactly one collected task, word counting is enabled, and saved size is at least 8 MiB:
+## File reads
 
-- The caller owns the file descriptor and issues sequential reads.
-- Four disjoint 1 MiB buffers hold a bounded batch of input.
-- One serial dispatch queue scans buffers in order and owns the shared count state.
-- The caller waits for the batch before reusing any buffer, then continues reading.
-- At EOF or read failure, outstanding scans finish before resources are released.
+Byte-only mode opens the path and uses saved metadata when available, matching upstream. Other modes read sequentially to EOF. Saved size can choose buffer size; it does not limit the bytes read or partition a file into fixed ranges. No implementation uses memory mapping.
 
-Pipeline setup allocates storage and creates dispatch objects before reading any input. If setup fails, it releases acquired resources and returns a fallback status; the caller can safely use the ordinary reader from the original file position. A read failure discards the file's result, as upstream does.
+Ordinary reads on macOS and Linux AArch64 use a heap buffer of 256 KiB below 8 MiB and 1 MiB for larger saved sizes; absent metadata selects the smaller buffer. Linux x86-64 uses a 1 MiB heap buffer. Linux retries interrupted opens and reads. Other read failures discard the file's partial result.
 
-This pipeline overlaps I/O and counting without parallelizing count state within one file. Multiple-file jobs instead use independent per-file tasks. These choices matter when interpreting comparisons with upstream's single-file reader/scanner and Rayon startup cost.
+### macOS scheduling and pipeline
+
+Multiple tasks use `dispatch_apply_f`; a single task bypasses that scheduler. The macOS pipeline is selected only for exactly one collected task with word counting enabled and saved size of at least 8 MiB:
+
+- The caller owns the file descriptor and performs sequential reads.
+- Four disjoint 1 MiB buffers hold a bounded batch.
+- One serial dispatch queue scans in order and owns shared count state.
+- The caller waits for the batch before reusing buffers.
+- EOF or read failure drains outstanding scans before releasing resources.
+
+Pipeline storage and dispatch objects are acquired before any read. Setup failure releases acquired resources and returns a fallback status, so ordinary buffered reading can start at the original file position. A read failure discards the result.
+
+### Linux scheduling
+
+Linux has no reader/scanner pipeline. A task's worker reads and scans each buffer sequentially. For multiple tasks, a bounded pthread pool uses at most `min(online CPUs, task count, 32)` workers including the calling thread, with at least one worker when work exists. Workers atomically reserve distinct tasks and write only their task's state.
+
+The calling thread participates rather than waiting idle. Failed thread creation leaves work available to the other workers; only successfully created threads are joined. Results are emitted after processing and joins, preserving collected order.
+
+These I/O and scheduling differences matter for performance. The recorded M3/macOS speedups do not characterize either Linux port.
 
 ## Verification boundaries
 
-The counting kernel has an independent scalar oracle covering flag masks, byte values, alignments, randomized chunk carry, guard pages, and preserved registers. End-to-end tests compare the executable with pinned upstream Rust, including I/O failures and CLI output. Pipeline tests inject setup failures and exercise large-file boundaries. The benchmark also checks outputs before and after timed invocations.
+Each native counting kernel has an independent scalar oracle covering flag masks, byte values, alignments, randomized chunk carry, guard pages, and preserved registers. End-to-end tests compare with pinned upstream Rust built on the same host, including CLI and I/O failures. Large-file boundary tests run on every target. Resource tests inject dispatch setup failures on macOS and pthread creation failures on Linux.
 
-These layers protect different contracts. Kernel throughput is useful for diagnostics, but the published speed comparisons measure the whole executable. See [contributing](../CONTRIBUTING.md) for expectations when changing either layer.
+Native CI runs the platform suites; portable checks verify repository syntax, tooling, and immutable benchmark evidence. The benchmark separately checks outputs before and after timed invocations. Kernel throughput is diagnostic; published speed comparisons measure the whole executable. See [contributing](../CONTRIBUTING.md) for changes to these contracts.

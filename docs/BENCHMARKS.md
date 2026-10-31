@@ -4,9 +4,9 @@ The captured experiment was run on **31 October 2026** on an Apple M3 with 8 cor
 
 1. Unmodified Rust reference at `de1a12e8e2d7c031404370773e5099b23ef01e95`.
 2. The first assembly implementation, preserved in `history/original-src/`.
-3. The optimized assembly implementation in `src/`.
+3. The optimized macOS assembly implementation in `src/*.S`.
 
-The measurements describe this generated corpus, these builds and this machine. They do not establish a performance ranking between programming languages or a general replacement for GNU `wc`.
+The measurements describe this generated corpus, these builds and this machine. **They are macOS-only; no Linux performance measurements are published.** The Linux ports use different scheduling and I/O paths, and x86-64 uses a different scanner. These figures do not establish Linux speed, a performance ranking between programming languages, or a general replacement for GNU `wc`.
 
 ## Reproduce the comparison
 
@@ -20,15 +20,35 @@ python3 bench.py --before bin/ripwc-before --extended --size-mib 128 --runs 24 \
   --corpus .build/benchmark-corpus --output-dir results/your-run
 ```
 
-`make bench` runs the same three-way, 24-sample comparison with the default 128 MiB corpus. Close other intensive programs before measuring. Do not run builds, tests or several benchmarks concurrently. Report all samples and the exact environment when sharing a result; the fastest observation alone is not a useful comparison.
+On macOS, `make bench` runs the same three-way, 24-sample comparison with the default 128 MiB corpus. Close other intensive programs before measuring. Do not run builds, tests or several benchmarks concurrently. Report all samples and the exact environment when sharing a result; the fastest observation alone is not a useful comparison.
 
 The corpus and generated reports stay in ignored directories. New measurements must not overwrite the committed reference evidence. [Contribution guidance](../CONTRIBUTING.md) explains how to propose a new result.
 
-## Builds
+## Run a new native Linux comparison
+
+On a [supported Linux glibc target](PORTABILITY.md), install the native build tools, Python 3.11+, and Rust through rustup, then run:
+
+```sh
+make test
+make bench
+```
+
+Linux `make bench` compares **two executables**: native assembly and the pinned native Rust build, with a 128 MiB corpus and 24 samples per executable. The preserved first assembly implementation is macOS-only and is not supplied as `--before` on Linux. For an explicitly named local report directory:
+
+```sh
+python3 bench.py --extended --size-mib 128 --runs 24 \
+  --corpus .build/benchmark-corpus --output-dir results/linux-your-run
+```
+
+The two execution orders are balanced on Linux, rather than the six used in the captured three-way run. Before/after assembly bootstrap intervals require an actual `--before` executable and are absent from a two-way run. Keep a new Linux dataset separate from the immutable M3 snapshot; do not reuse its speedups, executable hashes, or performance chart as Linux evidence.
+
+Native CI tests correctness and packages executables. CI durations, emulation timings, and artifact builds are not published performance measurements.
+
+## Captured macOS builds
 
 The reference Rust source is unchanged. Cargo dependencies are fixed by `upstream/Cargo.lock`. The captured build used Rust 1.97.1 / LLVM 22.1.6, `-C target-cpu=native`, optimization level 3, fat LTO, one codegen unit, aborting panics and incremental compilation disabled.
 
-The assembly was built with Apple clang 17.0.0, `-arch arm64 -mcpu=apple-m3 -O3 -g`. All application logic is assembly; libc and libdispatch supply OS and scheduling services. The C sources under `tests/` are test harnesses and are not linked into the application.
+The captured macOS assembly was built with Apple clang 17.0.0, `-arch arm64 -mcpu=apple-m3 -O3 -g`. All application logic is assembly; libc and libdispatch supply OS and scheduling services. The C sources under `tests/` are test harnesses and are not linked into the application.
 
 CI uses an explicit Apple M1 CPU setting to check the baseline ARM64/NEON code on a hosted Apple Silicon runner. CI verifies correctness, not performance. Neither its results nor its machine are presented as an M3 benchmark.
 
@@ -84,7 +104,7 @@ The earlier [original-run evidence](../benchmarks/results/apple-m3-2026-10-31/or
 
 ## Correctness evidence
 
-Recorded validation covers 445 end-to-end cases: 235 general differential cases, 86 I/O-boundary cases and 124 large-file/pipeline cases. It also covers 576 CLI differential cases, 128 parser-state combinations, all kernel flag masks and byte values, randomized carry, guard pages, preserved registers and setup-failure fallback.
+The captured M3/macOS validation covers 445 end-to-end cases: 235 general differential cases, 86 I/O-boundary cases and 124 large-file/pipeline cases. It also covers 576 CLI differential cases, 128 parser-state combinations, all kernel flag masks and byte values, randomized carry, guard pages, preserved registers and setup-failure fallback.
 
 Stdout, stderr and exit status are compared exactly. Only explicitly parallel verbose stderr ordering is normalized, because upstream scheduling makes it nondeterministic. APFS rejects invalid UTF-8 filenames, so that filename fixture is explicitly recorded as unavailable; malformed contents and arguments are still tested. This is strong regression evidence for the covered cases, not a proof for every input or OS failure.
 

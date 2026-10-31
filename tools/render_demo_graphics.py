@@ -151,15 +151,15 @@ def terminal_svg(captured: dict) -> str:
 
 def pipeline_svg() -> str:
     parts = start_svg(
-        344, "The eligible single-file read and scan pipeline",
-        "This path is selected for exactly one collected task, with word counting enabled "
+        344, "The macOS single-file read and scan pipeline",
+        "On macOS only, this path is selected for exactly one collected task, with word counting enabled "
         "and saved size at least 8 MiB. The reader issues sequential reads into four reusable "
         "1 MiB buffers. One serial NEON scanning worker processes the buffers in order, "
         "preserving word and line state across chunks. Reads overlap queued scans. All "
         "scans in the batch finish before buffers are reused. Counts are finalized once at EOF.",
     )
     parts += [
-        text(30, 43, "One file, overlapped reading and counting", 27, WHITE, weight=600),
+        text(30, 43, "macOS: overlapped reading and counting", 27, WHITE, weight=600),
         text(30, 75, "Eligible path: exactly one task · word counting enabled · saved size ≥ 8 MiB", 18, MUTED),
         rect(30, 103, 209, 114),
         text(134, 138, "Sequential reader", 22, WHITE, weight=600, anchor="middle"),

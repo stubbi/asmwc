@@ -12,7 +12,12 @@ if [ -z "$rust_toolchain" ]; then
     echo 'error: could not read the pinned Rust channel from rust-toolchain.toml.' >&2
     exit 1
 fi
-export RUSTFLAGS='-C target-cpu=native'
+# Both supported operating systems use a native build of the unchanged source.
+# Preserve an explicit baseline override while keeping the measured default.
+if [ "${RUSTFLAGS+x}" != x ]; then
+    RUSTFLAGS='-C target-cpu=native'
+fi
+export RUSTFLAGS
 export CARGO_INCREMENTAL=0
 export CARGO_TARGET_DIR="$PWD/.build/rust-target"
 rustup run --install "$rust_toolchain" cargo build --release --locked --manifest-path upstream/Cargo.toml

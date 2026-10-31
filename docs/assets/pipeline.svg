@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="344" viewBox="0 0 1200 344" role="img" aria-labelledby="title desc">
-  <title id="title">The eligible single-file read and scan pipeline</title>
-  <desc id="desc">This path is selected for exactly one collected task, with word counting enabled and saved size at least 8 MiB. The reader issues sequential reads into four reusable 1 MiB buffers. One serial NEON scanning worker processes the buffers in order, preserving word and line state across chunks. Reads overlap queued scans. All scans in the batch finish before buffers are reused. Counts are finalized once at EOF.</desc>
+  <title id="title">The macOS single-file read and scan pipeline</title>
+  <desc id="desc">On macOS only, this path is selected for exactly one collected task, with word counting enabled and saved size at least 8 MiB. The reader issues sequential reads into four reusable 1 MiB buffers. One serial NEON scanning worker processes the buffers in order, preserving word and line state across chunks. Reads overlap queued scans. All scans in the batch finish before buffers are reused. Counts are finalized once at EOF.</desc>
   <rect width="1200" height="344" rx="20" fill="#0b1220"/>
-  <text x="30" y="43" font-family="-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, sans-serif" font-size="27" font-weight="600" fill="#f8fafc" text-anchor="start" xml:space="preserve">One file, overlapped reading and counting</text>
+  <text x="30" y="43" font-family="-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, sans-serif" font-size="27" font-weight="600" fill="#f8fafc" text-anchor="start" xml:space="preserve">macOS: overlapped reading and counting</text>
   <text x="30" y="75" font-family="-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, sans-serif" font-size="18" font-weight="400" fill="#94a3b8" text-anchor="start" xml:space="preserve">Eligible path: exactly one task · word counting enabled · saved size ≥ 8 MiB</text>
   <rect x="30" y="103" width="209" height="114" rx="12" fill="#111c2f" stroke="#26364c"/>
   <text x="134" y="138" font-family="-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, sans-serif" font-size="22" font-weight="600" fill="#f8fafc" text-anchor="middle" xml:space="preserve">Sequential reader</text>

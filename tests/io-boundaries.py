@@ -7,7 +7,6 @@ independently obtained from the pinned Rust executable. Every named FIFO has a
 fresh real writer and a nonempty final write before EOF.
 """
 import argparse
-import itertools
 import json
 import os
 from pathlib import Path
@@ -16,7 +15,7 @@ import tempfile
 import threading
 import time
 
-PROJECT = Path(__file__).resolve().parents[1]
+from support import BIN_DIR, RESULTS_DIR
 
 
 def run(binary, flags, path):
@@ -47,9 +46,9 @@ def fifo_run(binary, flags, path, chunks):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('binaries', nargs='*', type=Path, default=[PROJECT/'bin/ripwc'])
-    parser.add_argument('--oracle', type=Path, default=PROJECT / 'bin/ripwc-rust')
-    parser.add_argument('--report', type=Path, default=PROJECT/'results/io-boundaries.json')
+    parser.add_argument('binaries', nargs='*', type=Path, default=[BIN_DIR/'ripwc'])
+    parser.add_argument('--oracle', type=Path, default=BIN_DIR / 'ripwc-rust')
+    parser.add_argument('--report', type=Path, default=RESULTS_DIR/'io-boundaries.json')
     args = parser.parse_args()
     records = []
     with tempfile.TemporaryDirectory(prefix='ripwc-io-boundaries-') as tmp:
@@ -89,6 +88,7 @@ def main():
                 actual = fifo_run(binary, flags, fifo, chunks)
                 assert actual == expected, ('fifo', flags, str(binary), expected, actual)
                 records.append({'case': f'fifo/{flags[0]}', 'binary': str(binary), 'passed': True})
+    args.report.parent.mkdir(parents=True, exist_ok=True)
     args.report.write_text(json.dumps({'status':'passed','cases':len(records),'results':records}, indent=2)+'\n')
     print(f'I/O boundaries: {len(records)} comparisons passed; {args.report}')
 

@@ -16,6 +16,7 @@ import itertools
 import json
 import os
 from pathlib import Path
+import platform
 import random
 import subprocess
 import sys
@@ -24,6 +25,9 @@ import time
 from dataclasses import dataclass
 
 ROOT = Path(__file__).resolve().parents[1]
+# bench.py also imports this module directly by filename, outside tests' path.
+BIN_DIR = Path(os.environ.get("RIPWC_BIN_DIR", ROOT / "bin")).expanduser().resolve()
+RESULTS_DIR = Path(os.environ.get("RIPWC_RESULTS_DIR", ROOT / "results")).expanduser().resolve()
 UPSTREAM_COMMIT = "de1a12e8e2d7c031404370773e5099b23ef01e95"
 MIB = 1024 * 1024
 COUNT_FLAGS = ("l", "w", "m", "c", "L")
@@ -36,15 +40,16 @@ class Case:
     unordered_stderr: bool = False
     stdout_closed: bool = False
     stderr_closed: bool = False
+    stdout_full: bool = False
 
 
 def run(binary: Path, args: tuple[str, ...], cwd: Path, timeout: float = 30,
-        stdout_closed=False, stderr_closed=False):
+        stdout_closed=False, stderr_closed=False, stdout_full=False):
     env = os.environ.copy()
     env.update(LC_ALL="C", LANG="C", NO_COLOR="1", CLICOLOR="0", TERM="dumb")
     # clap derives its usage/error program name from argv[0]. Both programs
     # represent the same CLI even though their executable paths differ.
-    if stdout_closed or stderr_closed:
+    if stdout_closed or stderr_closed or stdout_full:
         write_fds = []
 
         def closed_pipe():
@@ -54,6 +59,9 @@ def run(binary: Path, args: tuple[str, ...], cwd: Path, timeout: float = 30,
             return write_fd
 
         output = closed_pipe() if stdout_closed else subprocess.PIPE
+        if stdout_full:
+            output = os.open("/dev/full", os.O_WRONLY)
+            write_fds.append(output)
         errors = closed_pipe() if stderr_closed else subprocess.PIPE
         try:
             process = subprocess.Popen(
@@ -210,6 +218,15 @@ def make_cases(root: Path, quick: bool):
     else:
         fixtures["tree/<ff>-raw-name"] = {"bytes": 13, "sha256": hashlib.sha256(b"raw filename\n").hexdigest(),
                                            "relative_path_base64": base64.b64encode(b"tree/\xff-raw-name").decode("ascii")}
+        # Invalid bytes in a directory and its children must retain their raw
+        # spelling for traversal and opening, including repeated replacements.
+        raw_directory = os.fsencode(root / "tree") + b"/\xfe-invalid-dir"
+        os.mkdir(raw_directory)
+        for name in (b"\xc0-child", b"\xff\xfe-child", b"valid-child"):
+            with open(raw_directory + b"/" + name, "wb") as stream:
+                stream.write(b"raw descendant\x00 word\n")
+        fixtures["tree/<fe>-invalid-dir"] = {"children": 3,
+            "relative_path_base64": base64.b64encode(b"tree/\xfe-invalid-dir").decode("ascii")}
     (root / "empty-dir").mkdir()
     (root / "tree/file-link").symlink_to("a-first")
     (root / "tree/dir-link").symlink_to("m-dir", target_is_directory=True)
@@ -274,6 +291,30 @@ def make_cases(root: Path, quick: bool):
         cases.append(Case(f"stdout/closed-{flag}", (flag,), stdout_closed=True))
     cases += [Case("stderr/closed-verbose-large", ("-v", all_flags, "large-a"), stderr_closed=True),
               Case("stderr/closed-verbose-mixed", ("-v", all_flags, "large-b", "ascii", "large-a"), stderr_closed=True)]
+    if platform.system() == "Linux":
+        if Path("/dev/full").exists():
+            cases += [Case("stdout/full-single", (all_flags, "ascii"), stdout_full=True),
+                      Case("stdout/full-totals", (all_flags, "ascii", "mixed"), stdout_full=True)]
+            for flag in ("-h", "--help", "-V", "--version"):
+                cases.append(Case(f"stdout/full-{flag}", (flag,), stdout_full=True))
+        else:
+            fixtures["/dev/full"] = {"status": "unsupported", "reason": "device is unavailable"}
+        if os.geteuid() != 0:
+            put("unreadable-file", b"private content\n")
+            (root / "unreadable-file").chmod(0)
+            put("unreadable-directory/inside", b"private descendant\n")
+            (root / "unreadable-directory").chmod(0)
+            for name, args in (
+                ("unreadable-file", (all_flags, "unreadable-file")),
+                ("unreadable-file-metadata", ("-c", "unreadable-file")),
+                ("unreadable-file-between", (all_flags, "ascii", "unreadable-file", "mixed")),
+                ("unreadable-directory", ("-r", all_flags, "unreadable-directory")),
+                ("unreadable-directory-no-recursion", (all_flags, "unreadable-directory")),
+                ("unreadable-directory-metadata", ("-c", "unreadable-directory")),
+            ):
+                cases.append(Case(f"permissions/{name}", args))
+        else:
+            fixtures["permissions"] = {"status": "unsupported", "reason": "requires an unprivileged user"}
     return cases, fixtures
 
 
@@ -288,14 +329,14 @@ def write_report(path, report):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--rust", type=Path, default=ROOT / "bin/ripwc-rust")
-    parser.add_argument("--asm", type=Path, default=ROOT / "bin/ripwc")
+    parser.add_argument("--rust", type=Path, default=BIN_DIR / "ripwc-rust")
+    parser.add_argument("--asm", type=Path, default=BIN_DIR / "ripwc")
     parser.add_argument("--quick", action="store_true", help="retain all subsets, shorten edge/random matrix")
     parser.add_argument("--case", action="append", default=[], help="run names containing this substring (repeatable)")
     parser.add_argument("--list", action="store_true", help="list selected case names without running executables")
     parser.add_argument("--fail-fast", action="store_true")
     parser.add_argument("--timeout", type=float, default=30)
-    parser.add_argument("--report", type=Path, default=ROOT / "results/parity.json")
+    parser.add_argument("--report", type=Path, default=RESULTS_DIR / "parity.json")
     args = parser.parse_args()
     args.rust, args.asm = args.rust.resolve(), args.asm.resolve()
     report = {"upstream_commit": UPSTREAM_COMMIT, "quick": args.quick,
@@ -329,10 +370,10 @@ def main():
         for index, case in enumerate(cases, 1):
             record = {"name": case.name, "argv": list(case.args),
                       "unordered_stderr": case.unordered_stderr, "stdout_closed": case.stdout_closed,
-                      "stderr_closed": case.stderr_closed}
+                      "stderr_closed": case.stderr_closed, "stdout_full": case.stdout_full}
             try:
-                rust = run(args.rust, case.args, root, args.timeout, case.stdout_closed, case.stderr_closed)
-                asm = run(args.asm, case.args, root, args.timeout, case.stdout_closed, case.stderr_closed)
+                rust = run(args.rust, case.args, root, args.timeout, case.stdout_closed, case.stderr_closed, case.stdout_full)
+                asm = run(args.asm, case.args, root, args.timeout, case.stdout_closed, case.stderr_closed, case.stdout_full)
                 passed = equivalent(rust, asm, case.unordered_stderr)
                 record["passed"] = passed
                 if not passed:
