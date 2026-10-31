@@ -19,7 +19,7 @@ from support import BIN_DIR, RESULTS_DIR
 
 
 def run(binary, flags, path):
-    result = subprocess.run(['ripwc', *flags, str(path)], executable=str(binary),
+    result = subprocess.run(['asmwc', *flags, str(path)], executable=str(binary),
                             stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                             stdin=subprocess.DEVNULL, timeout=30)
     return result.returncode, result.stdout, result.stderr
@@ -46,12 +46,12 @@ def fifo_run(binary, flags, path, chunks):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('binaries', nargs='*', type=Path, default=[BIN_DIR/'ripwc'])
-    parser.add_argument('--oracle', type=Path, default=BIN_DIR / 'ripwc-rust')
+    parser.add_argument('binaries', nargs='*', type=Path, default=[BIN_DIR/'asmwc'])
+    parser.add_argument('--oracle', type=Path, default=BIN_DIR / 'asmwc-rust')
     parser.add_argument('--report', type=Path, default=RESULTS_DIR/'io-boundaries.json')
     args = parser.parse_args()
     records = []
-    with tempfile.TemporaryDirectory(prefix='ripwc-io-boundaries-') as tmp:
+    with tempfile.TemporaryDirectory(prefix='asmwc-io-boundaries-') as tmp:
         root = Path(tmp)
         cases = []
         # Breaks are one byte before/on/after every proposed boundary. The

@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased — asmwc rename
+
+- Rename the project and installed executable to `asmwc`; report `asmwc 1.0.0` from `--version`.
+- Rename current assembly entry points to `asmwc_*` and tooling environment variables to `ASMWC_*`.
+- Retain upstream Rust, the first assembly sources, and published benchmark evidence with their original names and checksums.
+
 ## Unreleased — Linux ports
 
 - Add native Linux glibc ports for AArch64 with NEON and x86-64 with baseline SSE2; AVX2 and POPCNT are not required.
@@ -21,4 +27,4 @@
 - Document build requirements, compatibility boundaries, implementation design, and contribution expectations.
 - Add a captured CLI demo, evidence-driven benchmark chart, and pipeline diagram to the README, with local SVG assets and regeneration tools.
 
-The CLI version remains the pinned upstream `ripwc 1.0.0` for compatibility. This entry does not indicate a published release or tag.
+The initial snapshot reported the pinned upstream version, `ripwc 1.0.0`. The current executable reports `asmwc 1.0.0`. These entries do not indicate a published release or tag.

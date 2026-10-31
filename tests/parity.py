@@ -26,8 +26,8 @@ from dataclasses import dataclass
 
 ROOT = Path(__file__).resolve().parents[1]
 # bench.py also imports this module directly by filename, outside tests' path.
-BIN_DIR = Path(os.environ.get("RIPWC_BIN_DIR", ROOT / "bin")).expanduser().resolve()
-RESULTS_DIR = Path(os.environ.get("RIPWC_RESULTS_DIR", ROOT / "results")).expanduser().resolve()
+BIN_DIR = Path(os.environ.get("ASMWC_BIN_DIR", ROOT / "bin")).expanduser().resolve()
+RESULTS_DIR = Path(os.environ.get("ASMWC_RESULTS_DIR", ROOT / "results")).expanduser().resolve()
 UPSTREAM_COMMIT = "de1a12e8e2d7c031404370773e5099b23ef01e95"
 MIB = 1024 * 1024
 COUNT_FLAGS = ("l", "w", "m", "c", "L")
@@ -65,7 +65,7 @@ def run(binary: Path, args: tuple[str, ...], cwd: Path, timeout: float = 30,
         errors = closed_pipe() if stderr_closed else subprocess.PIPE
         try:
             process = subprocess.Popen(
-                ["ripwc", *args], executable=str(binary), cwd=cwd, env=env,
+                ["asmwc", *args], executable=str(binary), cwd=cwd, env=env,
                 stdin=subprocess.DEVNULL, stdout=output, stderr=errors,
             )
         finally:
@@ -77,9 +77,9 @@ def run(binary: Path, args: tuple[str, ...], cwd: Path, timeout: float = 30,
             process.kill()
             process.communicate()
             raise
-        return subprocess.CompletedProcess(["ripwc", *args], process.returncode, stdout or b"", stderr or b"")
+        return subprocess.CompletedProcess(["asmwc", *args], process.returncode, stdout or b"", stderr or b"")
     return subprocess.run(
-        ["ripwc", *args], executable=str(binary), cwd=cwd, env=env,
+        ["asmwc", *args], executable=str(binary), cwd=cwd, env=env,
         stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
         stderr=subprocess.PIPE, timeout=timeout, check=False,
     )
@@ -93,7 +93,11 @@ def result_data(result):
     }
 
 
-def equivalent(left, right, unordered_stderr=False):
+def equivalent(left, right, unordered_stderr=False, *, version_identity=False):
+    if version_identity and (left.returncode, left.stdout, left.stderr) == (0, b"ripwc 1.0.0\n", b""):
+        # The pinned oracle keeps its upstream identity. Require the complete
+        # renamed version response; all other stdout remains byte-for-byte.
+        return (right.returncode, right.stdout, right.stderr) == (0, b"asmwc 1.0.0\n", b"")
     stderr_left, stderr_right = left.stderr, right.stderr
     if unordered_stderr:
         # Only explicitly marked verbose cases may vary by Rayon scheduling.
@@ -329,8 +333,8 @@ def write_report(path, report):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--rust", type=Path, default=BIN_DIR / "ripwc-rust")
-    parser.add_argument("--asm", type=Path, default=BIN_DIR / "ripwc")
+    parser.add_argument("--rust", type=Path, default=BIN_DIR / "asmwc-rust")
+    parser.add_argument("--asm", type=Path, default=BIN_DIR / "asmwc")
     parser.add_argument("--quick", action="store_true", help="retain all subsets, shorten edge/random matrix")
     parser.add_argument("--case", action="append", default=[], help="run names containing this substring (repeatable)")
     parser.add_argument("--list", action="store_true", help="list selected case names without running executables")
@@ -340,7 +344,7 @@ def main():
     args = parser.parse_args()
     args.rust, args.asm = args.rust.resolve(), args.asm.resolve()
     report = {"upstream_commit": UPSTREAM_COMMIT, "quick": args.quick,
-              "comparison": "exact exit status/stdout/stderr; verbose parallel stderr sorted as byte lines",
+              "comparison": "exact exit status/stdout/stderr except exact ripwc/asmwc 1.0.0 version identity; verbose parallel stderr sorted as byte lines",
               "started_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
               "cases": [], "failures": 0}
     if not args.list:
@@ -351,7 +355,7 @@ def main():
             print("Parity unavailable: missing/non-executable binary: " + ", ".join(missing), file=sys.stderr)
             return 2
         report["binaries"] = {"rust": binary_metadata(args.rust), "asm": binary_metadata(args.asm)}
-    with tempfile.TemporaryDirectory(prefix="ripwc-parity-") as temporary:
+    with tempfile.TemporaryDirectory(prefix="asmwc-parity-") as temporary:
         root = Path(temporary)
         cases, fixtures = make_cases(root, args.quick)
         if args.case:
@@ -374,7 +378,7 @@ def main():
             try:
                 rust = run(args.rust, case.args, root, args.timeout, case.stdout_closed, case.stderr_closed, case.stdout_full)
                 asm = run(args.asm, case.args, root, args.timeout, case.stdout_closed, case.stderr_closed, case.stdout_full)
-                passed = equivalent(rust, asm, case.unordered_stderr)
+                passed = equivalent(rust, asm, case.unordered_stderr, version_identity=True)
                 record["passed"] = passed
                 if not passed:
                     record.update(rust=result_data(rust), asm=result_data(asm))

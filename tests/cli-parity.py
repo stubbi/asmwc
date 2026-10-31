@@ -13,38 +13,56 @@ import tempfile
 
 from support import BIN_DIR, compiler, native_source
 
-RUST = BIN_DIR / "ripwc-rust"
+RUST = BIN_DIR / "asmwc-rust"
+FALLBACK_PROGRAM_NAMES = (b"", b".", b"..", b"/", b"//", b"/foo/..", b"\xff", b"foo\xff")
 HARNESS = r"""
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-extern void ripwc_parse(int, char **);
-extern uint64_t ripwc_flags, ripwc_recursive, ripwc_verbose, ripwc_nargs;
-extern char **ripwc_paths;
+extern void asmwc_parse(int, char **);
+extern uint64_t asmwc_flags, asmwc_recursive, asmwc_verbose, asmwc_nargs;
+extern char **asmwc_paths;
 int main(int argc, char **argv) {
-    ripwc_parse(argc, argv);
-    if (getenv("RIPWC_CLI_DUMP")) {
-        printf("%llu %llu %llu %llu\n", (unsigned long long)ripwc_flags,
-               (unsigned long long)ripwc_recursive,
-               (unsigned long long)ripwc_verbose, (unsigned long long)ripwc_nargs);
-        for (uint64_t i = 0; i < ripwc_nargs; ++i) puts(ripwc_paths[i]);
+    asmwc_parse(argc, argv);
+    if (getenv("ASMWC_CLI_DUMP")) {
+        printf("%llu %llu %llu %llu\n", (unsigned long long)asmwc_flags,
+               (unsigned long long)asmwc_recursive,
+               (unsigned long long)asmwc_verbose, (unsigned long long)asmwc_nargs);
+        for (uint64_t i = 0; i < asmwc_nargs; ++i) puts(asmwc_paths[i]);
     }
     return 0;
 }
 """
 
 
-def run(binary, args, name=b"ripwc", dump=False):
+def run(binary, args, name=b"asmwc", dump=False):
     env = dict(os.environ)
-    env.pop("RIPWC_CLI_DUMP", None)
+    env.pop("ASMWC_CLI_DUMP", None)
     if dump:
-        env["RIPWC_CLI_DUMP"] = "1"
+        env["ASMWC_CLI_DUMP"] = "1"
+    # Python's posix_spawn rejects empty argv[0]; use fork/exec for that fixture.
     result = subprocess.run([name, *args], executable=binary, env=env,
+                            start_new_session=(name == b""),
                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     return result.returncode, result.stdout, result.stderr
 
 
-with tempfile.TemporaryDirectory(prefix="ripwc-cli-") as temp:
+def expected_result(args, name=b"asmwc"):
+    expected = run(RUST, args, name)
+    if expected == (0, b"ripwc 1.0.0\n", b""):
+        return 0, b"asmwc 1.0.0\n", b""
+    if name in FALLBACK_PROGRAM_NAMES:
+        # These explicit argv[0] values have no usable basename. Only the
+        # diagnostic usage line differs; option values and other bytes remain
+        # untouched, even if they contain either program's name.
+        old_usage = b"\nUsage: ripwc [OPTIONS] <FILE>...\n"
+        new_usage = b"\nUsage: asmwc [OPTIONS] <FILE>...\n"
+        assert expected[2].count(old_usage) == 1, (args, name, expected)
+        return expected[0], expected[1], expected[2].replace(old_usage, new_usage, 1)
+    return expected
+
+
+with tempfile.TemporaryDirectory(prefix="asmwc-cli-") as temp:
     temp = Path(temp)
     source, harness = temp / "harness.c", temp / "harness"
     source.write_text(HARNESS)
@@ -64,7 +82,9 @@ with tempfile.TemporaryDirectory(prefix="ripwc-cli-") as temp:
              [b"missing", b"--chars", b"--byte"], [b"--Bytes=x"],
              [b"-foo"], [b"--foo=bar"], [b"---"], [b"--max_line_length"],
              [b"--lines", b"--linez"], [b"--recursive", b"--recurse"],
-             [b"--", b""], [b"--", b"--"], [b"--\x1b[31mfoo"]]
+             [b"--", b""], [b"--", b"--"], [b"--\x1b[31mfoo"],
+             # Names in user-supplied options/values must never be rewritten.
+             [b"--ripwc"], [b"--asmwc"], [b"--bytes=ripwc"], [b"--bytes=asmwc"]]
     names = [b"bytes", b"chars", b"lines", b"words", b"max-line-length",
              b"recursive", b"help", b"version"]
     for name in names:
@@ -78,8 +98,8 @@ with tempfile.TemporaryDirectory(prefix="ripwc-cli-") as temp:
         for prefix in [b"", b"-", b"--", b"--bytes="]:
             cases.extend([[prefix + value], [prefix + value, b"--help"],
                           [prefix + value, b"--bad"]])
-    program_names = [b".", b"..", b"/", b"//", b"/foo/.", b"/foo/..",
-                     b"\xff", b"foo\xff", b"--", b"foo//././/", b"\xff/foo"]
+    program_names = [b"asmwc", *FALLBACK_PROGRAM_NAMES, b"/foo/.",
+                     b"--", b"foo//././/", b"\xff/foo"]
     # clap's plain-text writer strips controls and terminal escape sequences.
     # Keep the upstream process as the oracle, including state that carries
     # from an incomplete escape into the next diagnostic text fragment.
@@ -106,7 +126,7 @@ with tempfile.TemporaryDirectory(prefix="ripwc-cli-") as temp:
                        b"\x1bXhidden"):
         cases.extend([[b"--unknown" + incomplete], [b"-" + incomplete],
                       [b"--bytes=value" + incomplete]])
-        program_names.append(b"ripwc" + incomplete)
+        program_names.append(b"asmwc" + incomplete)
     # A valid unknown short scalar is reported alone even when later bytes are
     # malformed. A malformed first scalar retains clap's lossy remainder.
     for tail in (b"\xff", b"\xc0", b"\xc2", b"\xe0\x80", b"\xed\xa0",
@@ -124,27 +144,27 @@ with tempfile.TemporaryDirectory(prefix="ripwc-cli-") as temp:
                  for _ in range(200))
     failures = []
     for args in cases:
-        actual, expected = run(harness, args), run(RUST, args)
+        actual, expected = run(harness, args), expected_result(args)
         if actual != expected:
-            failures.append((args, b"ripwc", actual, expected))
+            failures.append((args, b"asmwc", actual, expected))
     for name in program_names:
-        actual, expected = run(harness, [b"--wat"], name), run(RUST, [b"--wat"], name)
+        actual, expected = run(harness, [b"--wat"], name), expected_result([b"--wat"], name)
         if actual != expected:
             failures.append(([b"--wat"], name, actual, expected))
     for mask in range(128):
         chosen = [char for i, char in enumerate("cmlwLrv") if mask >> i & 1]
         random.Random(mask).shuffle(chosen)
         args = [b"-" + "".join(chosen).encode()] if chosen else []
-        args.append(b"/nonexistent/ripwc-cli-test")
+        args.append(b"/nonexistent/asmwc-cli-test")
         actual = run(harness, args, dump=True)
         expected = (f"{mask & 31 or 13} {(mask >> 5) & 1} "
-                    f"{(mask >> 6) & 1} 1\n/nonexistent/ripwc-cli-test\n").encode()
+                    f"{(mask >> 6) & 1} 1\n/nonexistent/asmwc-cli-test\n").encode()
         assert actual == (0, expected, b""), (mask, actual, expected)
     if failures:
         # repr keeps terminal escape/control bytes confined to captured output.
         for args, name, actual, expected in failures[:6]:
             print(f"FAIL argv={args!r} argv0={name!r}\n"
-                  f"  assembly={actual!r}\n  Rust={expected!r}", file=sys.stderr)
+                  f"  assembly={actual!r}\n  expected={expected!r}", file=sys.stderr)
         raise AssertionError(f"CLI parity: {len(failures)}/{len(cases) + len(program_names)} "
                              "Rust differential cases failed; 128 flag states passed")
     print(f"CLI parity: {len(cases) + len(program_names)} Rust differential cases; "

@@ -24,15 +24,15 @@ main:
     call signal@PLT
     mov edi, r12d
     mov rsi, r13
-    call ripwc_parse
+    call asmwc_parse
     mov rdi, [rip+stdout@GOTPCREL]
     mov rdi, [rdi]
     xor esi, esi
     mov edx, 1
     xor ecx, ecx
     call setvbuf@PLT
-    mov r12, [rip+ripwc_paths]
-    mov r13, [rip+ripwc_nargs]
+    mov r12, [rip+asmwc_paths]
+    mov r13, [rip+asmwc_nargs]
     xor ebx, ebx
 .Lcollect_args:
     cmp rbx, r13
@@ -205,7 +205,7 @@ main:
     call free@PLT
 .Lfts_continue:
     mov qword ptr [rsp+24], 0
-    cmp qword ptr [rip+ripwc_recursive], 0
+    cmp qword ptr [rip+asmwc_recursive], 0
     jne .Lfts_next
 .Lfts_close:
     mov rdi, r13
@@ -390,17 +390,17 @@ main:
     push r15
     sub rsp, 24
     mov r12, rdi
-    mov r13, [rip+ripwc_flags]
+    mov r13, [rip+asmwc_flags]
     mov r14, [r12+8]
     cmp qword ptr [r12+88], 0
     je .Lmaybe_verbose
     cmp r14, 524288
     jb .Lopen_file
 .Lmaybe_verbose:
-    cmp qword ptr [rip+ripwc_verbose], 0
+    cmp qword ptr [rip+asmwc_verbose], 0
     je .Lopen_file
     mov rdi, [r12]
-    call ripwc_lossy
+    call asmwc_lossy
     mov [rsp], rax
     mov rdx, rax
     mov rdi, [rip+stderr@GOTPCREL]
@@ -450,7 +450,7 @@ main:
     mov rdi, r15
     mov rdx, r13
     lea rcx, [r12+16]
-    call ripwc_count_buffer
+    call asmwc_count_buffer
     jmp .Lread_next
 .Leof:
     mov rdi, r15
@@ -525,14 +525,14 @@ main:
     mov r12, rdi
     mov r13, rsi
     mov r15d, 1
-    mov r14, [rip+ripwc_flags]
+    mov r14, [rip+asmwc_flags]
     EMIT_FIELD 4, 24, .Llines
     EMIT_FIELD 8, 16, .Lwords
     EMIT_FIELD 2, 8, .Lchars
     EMIT_FIELD 1, 0, .Lbytes
     EMIT_FIELD 16, 32, .Lmax
     mov rdi, r13
-    call ripwc_lossy
+    call asmwc_lossy
     mov rbx, rax
     mov rsi, rax
     lea rdi, [rip+.Lpath_format]

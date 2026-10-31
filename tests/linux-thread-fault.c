@@ -25,7 +25,7 @@ int pthread_join(pthread_t thread, void **result) {
 }
 
 __attribute__((destructor)) static void report_attempts(void) {
-    const char *path = getenv("RIPWC_TEST_THREAD_TRACE");
+    const char *path = getenv("ASMWC_TEST_THREAD_TRACE");
     if (!path) return;
     FILE *output = fopen(path, "w");
     if (!output) return;

@@ -61,8 +61,8 @@ Lfused_next\@:
 .endm
 
 // The 8-bit accumulators are reduced after at most 128 vectors (2 KiB),
-// avoiding saturation even for all-LF/all-NUL input. Four vectors per loop
-// amortize branches and let independent comparisons overlap on Apple M3.
+// preventing byte-counter overflow even for all-LF/all-NUL input.
+// Four vectors per loop amortize branches and expose independent comparisons.
 .macro NEON_LOOP name, m, l, w, max=0
 Lneon_\name\():
 Louter\@:
@@ -86,28 +86,28 @@ Linner\@:
     ldp q0, q1, [x0], #32
     ldp q2, q3, [x0], #32
     COUNT_VECTOR v0, \m, \l, \w
- .if \max
+.if \max
 .if \l == 0
     cmeq v18.16b, v0.16b, v24.16b
 .endif
     MAX_VECTOR
 .endif
     COUNT_VECTOR v1, \m, \l, \w
- .if \max
+.if \max
 .if \l == 0
     cmeq v18.16b, v1.16b, v24.16b
 .endif
     MAX_VECTOR
 .endif
     COUNT_VECTOR v2, \m, \l, \w
- .if \max
+.if \max
 .if \l == 0
     cmeq v18.16b, v2.16b, v24.16b
 .endif
     MAX_VECTOR
 .endif
     COUNT_VECTOR v3, \m, \l, \w
- .if \max
+.if \max
 .if \l == 0
     cmeq v18.16b, v3.16b, v24.16b
 .endif
@@ -147,8 +147,8 @@ Linner\@:
 .endm
 
 .p2align 4
-.globl _ripwc_count_buffer
-_ripwc_count_buffer:
+.globl _asmwc_count_buffer
+_asmwc_count_buffer:
     ldp x4, x5, [x3]
     ldp x6, x7, [x3, #16]
     ldp x8, x9, [x3, #32]

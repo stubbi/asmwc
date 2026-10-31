@@ -14,13 +14,13 @@
       "exit_code": 0
     },
     {
-      "command": "./bin/ripwc example.txt",
+      "command": "./bin/asmwc example.txt",
       "stdout": "lines: 1 words: 2 bytes: 15 example.txt\n",
       "stderr": "",
       "exit_code": 0
     },
     {
-      "command": "./bin/ripwc -lwmcL example.txt",
+      "command": "./bin/asmwc -lwmcL example.txt",
       "stdout": "lines: 1 words: 2 chars: 15 bytes: 15 max line length: 14 example.txt\n",
       "stderr": "",
       "exit_code": 0

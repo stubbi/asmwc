@@ -29,7 +29,7 @@ The supported Python minimum for checks and tests is 3.11. Application builds th
 
 ```sh
 make
-./bin/ripwc --help
+./bin/asmwc --help
 ```
 
 `CC`, `CPU`, and normal compiler/linker flag overrides are supported for native builds. Linux uses position-independent executables, a non-executable stack, RELRO, and immediate symbol binding. Executables are dynamically linked; a package built on one glibc host is not a promise of compatibility with older libc versions or another architecture.
@@ -58,9 +58,9 @@ Filesystem-dependent fixtures are reported as unavailable when they cannot run. 
 
 ## Native CI and artifacts
 
-The [CI workflow](https://github.com/stubbi/ripwc-asm/actions/workflows/ci.yml) defines native macOS arm64, Linux x86-64, and Linux AArch64 correctness jobs. Each checks its actual architecture, builds the pinned native Rust reference, runs `make test`, and verifies a staged installation. The workflow page and per-job logs show the status for the revision being reviewed; the matrix above does not itself assert a completed run.
+The [CI workflow](https://github.com/stubbi/asmwc/actions/workflows/ci.yml) defines native macOS arm64, Linux x86-64, and Linux AArch64 correctness jobs. Each checks its actual architecture, builds the pinned native Rust reference, runs `make test`, and verifies a staged installation. The workflow page and per-job logs show the status for the revision being reviewed; the matrix above does not itself assert a completed run.
 
-Each native job uploads its reports and test log. Successful Linux jobs also upload `ripwc-linux-x86_64` or `ripwc-linux-aarch64` artifacts containing a tar archive with the executable, README, license, and notice. These are workflow artifacts with the configured retention period, not published release packages. They require the corresponding architecture and a compatible glibc runtime. A source build is the supported route for a different native host.
+Each native job uploads its reports and test log. Successful Linux jobs also upload `asmwc-linux-x86_64` or `asmwc-linux-aarch64` artifacts containing a tar archive with the executable, README, license, and notice. These are workflow artifacts with the configured retention period, not published release packages. They require the corresponding architecture and a compatible glibc runtime. A source build is the supported route for a different native host.
 
 Hosted CI is a correctness gate, not a performance benchmark. Native execution is required for the platform jobs; emulation is not a substitute for their result.
 
@@ -72,4 +72,4 @@ To install the native executable into a user-owned prefix:
 make install PREFIX="$HOME/.local"
 ```
 
-The installed name is `ripwc`. `PREFIX` defaults to `/usr/local`; `DESTDIR` supports staged packaging without changing the final prefix. Only the current assembly executable is installed. `make clean` removes generated executables and `.build/`, retaining local `results/` and committed evidence.
+The installed name is `asmwc`. `PREFIX` defaults to `/usr/local`; `DESTDIR` supports staged packaging without changing the final prefix. Only the current assembly executable is installed. `make clean` removes generated executables and `.build/`, retaining local `results/` and committed evidence.

@@ -4,7 +4,7 @@ This is an experimental native utility. The assembly implementation is manually 
 
 ## Reporting a vulnerability
 
-Use [GitHub's private vulnerability reporting form](https://github.com/stubbi/ripwc-asm/security/advisories/new) for memory corruption, unexpected code execution, or other security-sensitive findings. Include the source revision, OS/distribution, libc version on Linux, processor architecture, compiler, build command, and the smallest reproducer you can provide. A crash log or exact failing input is useful; remove private information before sharing it.
+Use [GitHub's private vulnerability reporting form](https://github.com/stubbi/asmwc/security/advisories/new) for memory corruption, unexpected code execution, or other security-sensitive findings. Include the source revision, OS/distribution, libc version on Linux, processor architecture, compiler, build command, and the smallest reproducer you can provide. A crash log or exact failing input is useful; remove private information before sharing it.
 
 Do not disclose a suspected vulnerability in a public issue before the maintainer has had an opportunity to assess it. Ordinary counting discrepancies and build problems can use the public bug-report template.
 

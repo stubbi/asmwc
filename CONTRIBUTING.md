@@ -1,6 +1,6 @@
 # Contributing
 
-This project explores handwritten assembly implementations of a specific ripwc behavior contract. Changes should preserve that contract unless they explicitly propose a new one. Start with the [compatibility notes](docs/COMPATIBILITY.md) and [architecture](docs/ARCHITECTURE.md).
+asmwc implements a pinned ripwc behavior contract in handwritten assembly. Changes should preserve that contract unless they explicitly propose a new one. Start with the [compatibility notes](docs/COMPATIBILITY.md) and [architecture](docs/ARCHITECTURE.md).
 
 ## Development setup
 
@@ -31,7 +31,7 @@ For a fix or optimization:
 4. Run `make test` before submitting and include the command and result. Run `make check` separately when native tests are unavailable.
 5. Check all affected native CI jobs before merging. Shared behavior changes need coverage on all three targets; do not treat emulation or portable checks as native validation.
 
-Do not normalize output differences merely to make a comparison pass. The only existing normalization sorts verbose stderr lines in cases explicitly marked as parallel. A skipped filesystem fixture is a limitation to report, not a passing test.
+Do not normalize output differences merely to make a comparison pass. Tests allow the exact `asmwc 1.0.0` version banner in place of upstream's `ripwc 1.0.0`, and a fallback usage name of `asmwc` when `argv[0]` has no usable basename. They sort verbose stderr lines only in cases explicitly marked as parallel. A skipped filesystem fixture is a limitation to report, not a passing test.
 
 ## Performance changes
 

@@ -3,12 +3,12 @@
 All three graphics are stored locally as SVGs, with accessible titles and descriptions. They contain no scripts, external fonts or image dependencies. The README keeps copyable command examples and a text results table alongside the graphics.
 
 - `terminal-demo.svg` renders actual stdout captured from the assembly executable. The input, commands, output and exit codes are preserved in `demo-session.json`; no timing result is invented for the demonstration.
-- `benchmark.svg` is a Matplotlib plot of the committed [measurement evidence](../../benchmarks/results/apple-m3-2026-10-31/benchmark.json). Every bar starts at zero and represents a recorded median. The original assembly baseline and the machine/corpus conditions are shown along with the optimized Rust comparison.
+- `benchmark.svg` is a Matplotlib plot of the committed [measurement evidence](../../benchmarks/results/apple-m3-2026-10-31/benchmark.json), captured before the asmwc rename. Every bar starts at zero and represents a recorded median. It shows the native Rust reference, first assembly baseline, optimized assembly, and measurement conditions.
 - `pipeline.svg` illustrates the macOS bounded reading/scanning pipeline. This path is selected for one task with word counting enabled and saved size of at least 8 MiB. Linux uses sequential buffered reads per file.
 
 ## Regenerate the demo and diagram
 
-Requires Apple Silicon macOS, the built assembly executable, and the standard library only:
+Requires a supported native host, the built `bin/asmwc` executable, and Python's standard library only. The pipeline diagram describes the macOS implementation:
 
 ```sh
 make

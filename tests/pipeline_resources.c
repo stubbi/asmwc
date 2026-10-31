@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <sys/types.h>
-extern int ripwc_pipeline_scan(int, unsigned, uint64_t *);
+extern int asmwc_pipeline_scan(int, unsigned, uint64_t *);
 static int fail_queue, reads, releases;
 void *dispatch_group_create(void) { return fail_queue ? (void *)1 : NULL; }
 void *dispatch_queue_create(const char *name, void *attr) { (void)name;(void)attr;return NULL; }
@@ -16,7 +16,7 @@ int main(void) {
     for (fail_queue=0;fail_queue<2;++fail_queue) {
         uint64_t state[8]={1,2,3,4,5,6,7,8};
         reads=0;releases=0;
-        int result=ripwc_pipeline_scan(-1,13,state);
+        int result=asmwc_pipeline_scan(-1,13,state);
         if(result!=1 || reads || releases!=fail_queue) {
             fprintf(stderr,"FAIL setup=%s result=%d reads=%d releases=%d\n",fail_queue?"queue":"group",result,reads,releases);return 1;
         }

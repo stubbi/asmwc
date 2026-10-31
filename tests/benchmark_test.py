@@ -18,7 +18,7 @@ from unittest.mock import patch
 
 sys.dont_write_bytecode = True
 ROOT = Path(__file__).resolve().parents[1]
-SPEC = importlib.util.spec_from_file_location("ripwc_bench_test_subject", ROOT / "bench.py")
+SPEC = importlib.util.spec_from_file_location("asmwc_bench_test_subject", ROOT / "bench.py")
 BENCH = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(BENCH)
 

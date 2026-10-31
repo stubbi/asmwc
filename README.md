@@ -1,8 +1,10 @@
-# ripwc-asm
+# asmwc
 
-[![CI](https://github.com/stubbi/ripwc-asm/actions/workflows/ci.yml/badge.svg)](https://github.com/stubbi/ripwc-asm/actions/workflows/ci.yml)
+[![CI](https://github.com/stubbi/asmwc/actions/workflows/ci.yml/badge.svg)](https://github.com/stubbi/asmwc/actions/workflows/ci.yml)
 
-An experimental assembly implementation of [ripwc](https://github.com/LuminousToaster/ripwc) for **Apple Silicon macOS**, **Linux AArch64**, and **Linux x86-64**. ARM targets use NEON; x86-64 uses baseline SSE2, with no AVX2 requirement. It reproduces upstream commit [`de1a12e`](https://github.com/LuminousToaster/ripwc/tree/de1a12e8e2d7c031404370773e5099b23ef01e95), including its differences from GNU/POSIX `wc`.
+Handwritten assembly implementation of [ripwc](https://github.com/LuminousToaster/ripwc) for macOS and Linux.
+
+Supports **Apple Silicon macOS**, **Linux AArch64**, and **Linux x86-64**. ARM targets use NEON; x86-64 uses baseline SSE2, with no AVX2 requirement. It follows upstream commit [`de1a12e`](https://github.com/LuminousToaster/ripwc/tree/de1a12e8e2d7c031404370773e5099b23ef01e95), including its differences from GNU/POSIX `wc`, with `asmwc` as its version and fallback program name.
 
 Parsing, traversal policy, counting, aggregation, and formatting are handwritten assembly. System libraries provide allocation, I/O, and scheduling. No C or Rust application wrapper is linked. C is used for test harnesses and a Linux build-time ABI probe that is not linked into the executable.
 
@@ -21,17 +23,17 @@ Parsing, traversal policy, counting, aggregation, and formatting are handwritten
 On Debian/Ubuntu, `sudo apt-get install build-essential python3` supplies the build tools and Python for checks. On earlier Apple Silicon, select a suitable target, for example `make CPU=apple-m1`. Builds are native; musl/Alpine, Intel macOS, Windows, and BSD are outside the supported matrix. See [portability and native CI](docs/PORTABILITY.md) for details.
 
 ```sh
-git clone https://github.com/stubbi/ripwc-asm.git
-cd ripwc-asm
+git clone https://github.com/stubbi/asmwc.git
+cd asmwc
 make
-./bin/ripwc --help
+./bin/asmwc --help
 ```
 
 ```sh
-./bin/ripwc file.txt            # lines, words, and bytes
-./bin/ripwc -lwmcL file.txt     # all five count fields
-./bin/ripwc -r directory       # recursive traversal
-./bin/ripwc -- -dash-file      # a filename beginning with '-'
+./bin/asmwc file.txt            # lines, words, and bytes
+./bin/asmwc -lwmcL file.txt     # all five count fields
+./bin/asmwc -r directory       # recursive traversal
+./bin/asmwc -- -dash-file      # a filename beginning with '-'
 ```
 
 For example, a file containing `hello assembly` followed by LF produces:
@@ -55,7 +57,7 @@ On one **8-core Apple M3, 16 GiB, macOS 15.6.1**, the optimized assembly was **4
 | Text, all five fields | 122.720 ms | 13.307 ms | 9.22× |
 | Binary, all five fields | 123.094 ms | 13.470 ms | 9.14× |
 
-The [benchmark report](docs/BENCHMARKS.md) includes the preserved first assembly implementation, all workloads, confidence intervals, limitations, and reproduction instructions. The [recorded evidence](benchmarks/results/apple-m3-2026-10-31/) includes raw samples, corpus identities, build details, and verification reports.
+The [benchmark report](docs/BENCHMARKS.md) includes the preserved first assembly implementation, all workloads, confidence intervals, limitations, and reproduction instructions. The [recorded evidence](benchmarks/results/apple-m3-2026-10-31/) predates the asmwc rename and retains its original names, raw samples, corpus identities, build details, and verification reports.
 
 These results describe the macOS implementation on this machine. **No Linux performance measurements are published.** The macOS path overlaps reading and scanning for large single-file word-counting jobs; the Linux ports use sequential buffered reading. Small-file measurements also include runtime startup differences. The M3 figures do not predict Linux, other CPUs, or cold-storage performance.
 
@@ -72,7 +74,7 @@ make bench       # 128 MiB, 24 samples: two-way Linux / three-way macOS
 
 The recorded **macOS benchmark snapshot** passed **445 end-to-end cases**, **576 CLI differential cases**, and **128 parser-state combinations**, plus kernel, guard-page, register-preservation, pipeline setup-failure, and benchmark-contract tests. Native CI runs on macOS arm64 and Ubuntu 24.04 on both Linux architectures; its reports cover each target's current tests. Linux also verifies fallback when pthread creation fails; dispatch setup-failure tests apply to macOS.
 
-Differential tests compare stdout, stderr, and exit status against upstream Rust built on the same host; only explicitly parallel verbose message ordering is normalized. Passing tests establishes equivalence for the covered cases, not every input or OS failure.
+Differential tests compare stdout, stderr, and exit status against upstream Rust built on the same host, allowing the documented [program-name differences](docs/COMPATIBILITY.md#arguments-and-diagnostics) and explicitly parallel verbose message ordering. Passing tests establishes equivalence for the covered cases, not every input or OS failure.
 
 Generated executables, local reports, and benchmark corpora are excluded from version control. The committed benchmark snapshot is separate from newly generated `results/` files. Rebuilt executable hashes can differ from the recorded ones; the benchmark report explains the snapshot's provenance.
 

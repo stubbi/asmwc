@@ -6,6 +6,8 @@ The captured experiment was run on **31 October 2026** on an Apple M3 with 8 cor
 2. The first assembly implementation, preserved in `history/original-src/`.
 3. The optimized macOS assembly implementation in `src/*.S`.
 
+This snapshot predates the rename from `ripwc-asm` to `asmwc`. Its recorded executable paths (`bin/ripwc`, `bin/ripwc-rust`, and `bin/ripwc-before`), symbol names, hashes, and reports are preserved. Current builds use `bin/asmwc`, `bin/asmwc-rust`, and `bin/asmwc-before`; the rename does not constitute a new benchmark run.
+
 The measurements describe this generated corpus, these builds and this machine. **They are macOS-only; no Linux performance measurements are published.** The Linux ports use different scheduling and I/O paths, and x86-64 uses a different scanner. These figures do not establish Linux speed, a performance ranking between programming languages, or a general replacement for GNU `wc`.
 
 ## Reproduce the comparison
@@ -16,7 +18,7 @@ On Apple Silicon macOS with the [documented requirements](../README.md#build-and
 make baselines
 make test
 make check
-python3 bench.py --before bin/ripwc-before --extended --size-mib 128 --runs 24 \
+python3 bench.py --before bin/asmwc-before --extended --size-mib 128 --runs 24 \
   --corpus .build/benchmark-corpus --output-dir results/your-run
 ```
 
@@ -106,7 +108,7 @@ The earlier [original-run evidence](../benchmarks/results/apple-m3-2026-10-31/or
 
 The captured M3/macOS validation covers 445 end-to-end cases: 235 general differential cases, 86 I/O-boundary cases and 124 large-file/pipeline cases. It also covers 576 CLI differential cases, 128 parser-state combinations, all kernel flag masks and byte values, randomized carry, guard pages, preserved registers and setup-failure fallback.
 
-Stdout, stderr and exit status are compared exactly. Only explicitly parallel verbose stderr ordering is normalized, because upstream scheduling makes it nondeterministic. APFS rejects invalid UTF-8 filenames, so that filename fixture is explicitly recorded as unavailable; malformed contents and arguments are still tested. This is strong regression evidence for the covered cases, not a proof for every input or OS failure.
+In the captured run, stdout, stderr and exit status were compared exactly. Only explicitly parallel verbose stderr ordering was normalized, because upstream scheduling makes it nondeterministic. APFS rejected invalid UTF-8 filenames, so that filename fixture is explicitly recorded as unavailable; malformed contents and arguments were still tested. The current suite also allows the documented [program-name differences](COMPATIBILITY.md#arguments-and-diagnostics). These checks cover the tested cases, not every input or OS failure.
 
 ## Publication and integrity
 

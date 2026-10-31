@@ -1,4 +1,4 @@
-/* Build-time glibc ABI probe. This program is not linked into ripwc. */
+/* Build-time glibc ABI probe. This program is not linked into asmwc. */
 #define _GNU_SOURCE
 #include <errno.h>
 #include <features.h>

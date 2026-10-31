@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Reproducible end-to-end warm-cache ripwc executable comparison.
+"""Reproducible end-to-end warm-cache asmwc and ripwc comparison.
 
 Default: 128 MiB text/binary files, 64 files totalling 128 MiB, 12 measured
 invocations of each executable per case. --quick uses 64 MiB and five cases,
@@ -34,7 +34,7 @@ SEED = 0x5249505743
 
 # Reuse the exact invocation/environment and comparison contract from parity.
 sys.dont_write_bytecode = True
-SPEC = importlib.util.spec_from_file_location("ripwc_parity", ROOT / "tests/parity.py")
+SPEC = importlib.util.spec_from_file_location("asmwc_parity", ROOT / "tests/parity.py")
 PARITY = importlib.util.module_from_spec(SPEC)
 sys.modules[SPEC.name] = PARITY
 SPEC.loader.exec_module(PARITY)
@@ -244,8 +244,8 @@ def write_results(output, report):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--rust", type=Path, default=ROOT / "bin/ripwc-rust")
-    parser.add_argument("--asm", type=Path, default=ROOT / "bin/ripwc")
+    parser.add_argument("--rust", type=Path, default=ROOT / "bin/asmwc-rust")
+    parser.add_argument("--asm", type=Path, default=ROOT / "bin/asmwc")
     parser.add_argument("--before", type=Path, help="preserved assembly executable to compare against --asm")
     parser.add_argument("--quick", action="store_true", help="five cases, 64 MiB unless overridden; keep 12 repetitions")
     parser.add_argument("--extended", action="store_true", help="also benchmark all five counting flags together")

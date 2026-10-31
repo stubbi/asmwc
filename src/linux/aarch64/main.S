@@ -1,5 +1,5 @@
-// Linux/glibc AArch64 application logic. The application remains handwritten
-// assembly; libc and pthread supply only operating-system services.
+// Linux/glibc AArch64 application logic. libc and pthread provide OS services;
+// parsing, traversal policy, counting, aggregation and formatting are assembly.
 #include "abi.h"
 .text
 .p2align 2
@@ -19,7 +19,7 @@ main:
     bl signal
     mov x0, x19
     mov x1, x20
-    bl ripwc_parse
+    bl asmwc_parse
     adrp x9, :got:stdout
     ldr x9, [x9, :got_lo12:stdout]
     ldr x0, [x9]
@@ -27,10 +27,10 @@ main:
     mov w2, #1 // IOLBF: one flush per newline, like Rust's stdout LineWriter
     mov x3, #0
     bl setvbuf
-    adrp x19, ripwc_paths
-    ldr x19, [x19, :lo12:ripwc_paths]
-    adrp x20, ripwc_nargs
-    ldr x20, [x20, :lo12:ripwc_nargs]
+    adrp x19, asmwc_paths
+    ldr x19, [x19, :lo12:asmwc_paths]
+    adrp x20, asmwc_nargs
+    ldr x20, [x20, :lo12:asmwc_nargs]
     mov x21, #0
 L_collect_args:
     cmp x21, x20
@@ -146,8 +146,8 @@ collect_path:
     bl fts_open
     cbz x0, L_collect_done
     mov x19, x0
-    adrp x21, ripwc_recursive
-    ldr x21, [x21, :lo12:ripwc_recursive]
+    adrp x21, asmwc_recursive
+    ldr x21, [x21, :lo12:asmwc_recursive]
 L_fts_next:
     mov x0, x19
     bl fts_read
@@ -229,8 +229,8 @@ L_collect_done:
     ldp x29, x30, [sp], #112
     ret
 
-// Up to 32 workers independently reserve files. Failed thread creation simply
-// leaves more work to the calling thread; completed output retains input order.
+// Up to 32 workers independently reserve files. If thread creation fails,
+// the calling thread handles the remaining work. Output retains input order.
 .p2align 2
 run_tasks:
     stp x29, x30, [sp, #-320]!
@@ -389,8 +389,8 @@ process_task:
     stp x25, x26, [sp, #80]
     mov x9, #96
     madd x19, x1, x9, x0
-    adrp x20, ripwc_flags
-    ldr x20, [x20, :lo12:ripwc_flags]
+    adrp x20, asmwc_flags
+    ldr x20, [x20, :lo12:asmwc_flags]
     ldr x21, [x19, #8]
     // Upstream only logs >=512 KiB entries, and logs before trying open.
     ldr x9, [x19, #88]
@@ -398,11 +398,11 @@ process_task:
     cmp x21, #128, lsl #12
     b.lo L_open_file
 L_maybe_verbose:
-    adrp x9, ripwc_verbose
-    ldr x9, [x9, :lo12:ripwc_verbose]
+    adrp x9, asmwc_verbose
+    ldr x9, [x9, :lo12:asmwc_verbose]
     cbz x9, L_open_file
     ldr x0, [x19]
-    bl ripwc_path_lossy
+    bl asmwc_path_lossy
     mov x25, x0
     adrp x9, :got:stderr
     ldr x9, [x9, :got_lo12:stderr]
@@ -463,7 +463,7 @@ L_read_result:
     mov x0, x23
     mov x2, x20
     add x3, x19, #16
-    bl ripwc_count_buffer
+    bl asmwc_count_buffer
     b L_read_next
 L_eof:
     mov x0, x23
@@ -534,11 +534,11 @@ emit_counts:
     stp x21, x22, [sp, #32]
     mov x19, x0
     mov x0, x1
-    bl ripwc_path_lossy
+    bl asmwc_path_lossy
     mov x20, x0
     mov x21, #1
-    adrp x22, ripwc_flags
-    ldr x22, [x22, :lo12:ripwc_flags]
+    adrp x22, asmwc_flags
+    ldr x22, [x22, :lo12:asmwc_flags]
     EMIT_FIELD 2, 24, L_lines
     EMIT_FIELD 3, 16, L_words
     EMIT_FIELD 1, 8, L_chars

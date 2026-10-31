@@ -1,11 +1,12 @@
-// Experiment: overlap sequential EOF-based reads with bounded block scanning.
-// fd, flags (all modes), zeroed result state. Return0 success, -1readerror,
-// +1setupfailure before any read (caller may use its normal buffered reader).
-// Four slots own disjoint buffers. A serial scanner owns shared count state; only reader accesses fd.
+// Overlap sequential reads with counting through a four-slot buffer pool.
+// x0=fd, x1=flags, x2=zeroed 64-byte count state.
+// Return 0 on success, -1 on read error, or 1 on setup failure before any read.
+// The caller may fall back to buffered reads after setup failure.
+// Only the calling thread reads fd; the serial queue updates count state.
 .text
 .p2align 2
-.globl _ripwc_pipeline_scan
-_ripwc_pipeline_scan:
+.globl _asmwc_pipeline_scan
+_asmwc_pipeline_scan:
     stp x29, x30, [sp, #-144]!
     mov x29, sp
     stp x19, x20, [sp, #16]
@@ -101,5 +102,5 @@ Lpipeline_count:
     ldp x0, x1, [x9]
     ldr x2, [x9, #16]
     ldr x3, [x9, #24]
-    b _ripwc_count_buffer
+    b _asmwc_count_buffer
 .subsections_via_symbols
