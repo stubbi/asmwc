@@ -73,9 +73,9 @@ Maximum-line handling walks the LF mask with scalar bit operations, updates the 
 
 ## File reads
 
-Byte-only mode opens the path and uses saved metadata when available, matching upstream. Other modes read sequentially to EOF. Saved size chooses buffer size; it does not limit the bytes read or partition a file into fixed ranges. No implementation uses memory mapping.
+Byte-only mode opens the path and uses saved metadata when available, matching upstream. Other modes read sequentially to EOF. Saved size can choose buffer size; it does not limit the bytes read or partition a file into fixed ranges. No implementation uses memory mapping.
 
-Ordinary reads use a heap buffer of 256 KiB below 8 MiB and 1 MiB for larger saved sizes. Absent metadata uses the smaller buffer. Linux retries interrupted opens and reads. Other read failures discard the file's partial result.
+Ordinary reads on macOS and Linux AArch64 use a heap buffer of 256 KiB below 8 MiB and 1 MiB for larger saved sizes; absent metadata selects the smaller buffer. Linux x86-64 uses a 1 MiB heap buffer. Linux retries interrupted opens and reads. Other read failures discard the file's partial result.
 
 ### macOS scheduling and pipeline
 
@@ -99,6 +99,6 @@ These I/O and scheduling differences matter for performance. The recorded M3/mac
 
 ## Verification boundaries
 
-Each native counting kernel has an independent scalar oracle covering flag masks, byte values, alignments, randomized chunk carry, guard pages, and preserved registers. End-to-end tests compare with pinned upstream Rust built on the same host, including CLI and I/O failures. Large-file boundary tests run on every target. Dispatch setup-failure injection is macOS-only.
+Each native counting kernel has an independent scalar oracle covering flag masks, byte values, alignments, randomized chunk carry, guard pages, and preserved registers. End-to-end tests compare with pinned upstream Rust built on the same host, including CLI and I/O failures. Large-file boundary tests run on every target. Resource tests inject dispatch setup failures on macOS and pthread creation failures on Linux.
 
 Native CI runs the platform suites; portable checks verify repository syntax, tooling, and immutable benchmark evidence. The benchmark separately checks outputs before and after timed invocations. Kernel throughput is diagnostic; published speed comparisons measure the whole executable. See [contributing](../CONTRIBUTING.md) for changes to these contracts.

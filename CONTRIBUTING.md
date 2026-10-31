@@ -13,7 +13,7 @@ make test
 make check
 ```
 
-`make test` builds missing baselines and runs repository checks plus the native suite. Linux compares with pinned native Rust; macOS also builds the preserved first assembly implementation. Linux skips the Darwin dispatch resource tests because it has no such pipeline. `make check` needs only make, POSIX sh, and Python's standard library. The first baseline build may fetch the pinned toolchain and locked dependencies. Use a suitable `CPU` target on earlier Apple Silicon, for example `make CPU=apple-m1 test`.
+`make test` builds missing baselines and runs repository checks plus the native suite. Linux compares with pinned native Rust; macOS also builds the preserved first assembly implementation. Resource tests inject pthread creation failures on Linux and dispatch setup failures on macOS. `make check` needs only make, POSIX sh, and Python's standard library. The first baseline build may fetch the pinned toolchain and locked dependencies. Use a suitable `CPU` target on earlier Apple Silicon, for example `make CPU=apple-m1 test`.
 
 Darwin sources live in `src/*.S`; Linux sources live in `src/linux/{aarch64,x86_64}/`. C and assembly in `tests/` are isolated harnesses. `tools/linux_abi.c` is a build-time glibc layout probe and is not linked into the application. Its native execution makes cross-compilation unsupported.
 
