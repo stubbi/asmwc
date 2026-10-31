@@ -32,6 +32,9 @@ ripwc_parse:
     mov qword ptr [rbp+P_NARGS], 0
     mov qword ptr [rbp+P_MODE], 0
     mov qword ptr [rip+.L_order_count], 0
+    mov qword ptr [rip+.L_strip_state], 12
+    mov qword ptr [rip+.L_strip_utf8], 0
+    mov qword ptr [rip+.L_strip_run], 0
     mov rax, [rip+stderr@GOTPCREL]
     mov rax, [rax]
     mov [rip+.L_stream], rax
@@ -135,7 +138,7 @@ ripwc_parse:
     jl .L_short_find
     dec qword ptr [rbp+P_CUR]
     mov rdi, [rbp+P_CUR]
-    call .L_check_utf8
+    call .L_first_scalar_utf8
     mov [rbp+P_TMP], rax
     mov rdi, [rbp+P_CUR]
     call ripwc_lossy
@@ -313,9 +316,277 @@ ripwc_parse:
     lea rdi, [rip+.L_options]
     mov rdi, [rdi+rax*8]
     ret
+// RichFormatter wraps each dynamic argument and usage name in ANSI styles.
+// Their opening style and closing reset also terminate partial user escapes;
+// model those otherwise invisible boundaries without emitting the style bytes.
+.L_emit_styled:
+    sub rsp, 8
+    mov qword ptr [rip+.L_strip_state], 12
+    mov qword ptr [rip+.L_strip_utf8], 0
+    mov qword ptr [rip+.L_strip_run], 0
+    call .L_emit
+    mov qword ptr [rip+.L_strip_state], 12
+    mov qword ptr [rip+.L_strip_utf8], 0
+    mov qword ptr [rip+.L_strip_run], 0
+    add rsp, 8
+    ret
+
+// Clap writes one StyledStr through anstream's StripBytes adapter. Persist
+// both the ANSI state and the printable-run state across our output fragments.
+// This filtering applies to CLI text only, never counted filesystem paths.
 .L_emit:
+    push rbx
+    push r12
+    push r13
+    push r14
+    push r15
+    mov rbx, rdi
+    mov r12, [rip+.L_strip_state]
+    mov r13, [rip+.L_strip_utf8]
+    mov r14, [rip+.L_strip_run]
+.L_strip_next:
+    movzx r15d, byte ptr [rbx]
+    test r15d, r15d
+    je .L_strip_done
+    test r14d, r14d
+    jne .L_strip_printable_run
+    cmp r12d, 15
+    je .L_strip_start_run
+    mov edi, r15d
+    mov esi, r12d
+    call .L_strip_step
+    test eax, eax
+    cmovne r12d, eax
+    test edx, edx
+    je .L_strip_skip
+.L_strip_start_run:
+    mov r14d, 1
+.L_strip_printable_run:
+    cmp r12d, 15
+    je .L_strip_utf8_byte
+    mov edi, r15d
+    mov esi, 12
+    call .L_strip_step
+    test eax, eax
+    cmovne r12d, eax
+    cmp r12d, 15
+    je .L_strip_utf8_byte
+    test edx, edx
+    jne .L_strip_print
+    xor r14d, r14d
+    jmp .L_strip_next
+.L_strip_utf8_byte:
+    test r13d, r13d
+    je .L_strip_utf8_start
+    dec r13d
+    jnz .L_strip_print
+    mov r12d, 12
+    jmp .L_strip_print
+.L_strip_utf8_start:
+    mov r13d, 1
+    cmp r15d, 224
+    jb .L_strip_print
+    mov r13d, 2
+    cmp r15d, 240
+    jb .L_strip_print
+    mov r13d, 3
+.L_strip_print:
+    mov edi, r15d
     mov rsi, [rip+.L_stream]
-    jmp fputs@PLT
+    call fputc@PLT
+.L_strip_skip:
+    inc rbx
+    jmp .L_strip_next
+.L_strip_done:
+    mov [rip+.L_strip_state], r12
+    mov [rip+.L_strip_utf8], r13
+    mov [rip+.L_strip_run], r14
+    xor eax, eax
+    pop r15
+    pop r14
+    pop r13
+    pop r12
+    pop rbx
+    ret
+
+// anstyle-parse 1.0 transition policy. edi=byte, esi=current state;
+// eax=next state (0 means unchanged), edx=printable action. Only volatile
+// registers are used. UTF-8 continuations are handled by L_emit above.
+.L_strip_step:
+    xor eax, eax
+    xor edx, edx
+    cmp edi, 24
+    je .L_strip_ground
+    cmp edi, 26
+    je .L_strip_ground
+    cmp edi, 27
+    jne .L_strip_not_escape
+    mov eax, 10
+    ret
+.L_strip_not_escape:
+    cmp esi, 12
+    je .L_strip_ground_state
+    cmp esi, 13
+    je .L_strip_osc
+    cmp esi, 14
+    je .L_strip_string
+    cmp esi, 5
+    jb .L_strip_execute_state
+    cmp esi, 9
+    jbe .L_strip_dcs_state
+.L_strip_execute_state:
+    cmp edi, 32
+    jb .L_strip_execute
+    cmp edi, 127
+    jae .L_strip_return
+    cmp esi, 10
+    je .L_strip_escape_state
+    cmp esi, 11
+    je .L_strip_escape_intermediate
+    cmp esi, 1
+    je .L_strip_csi_entry
+    cmp esi, 2
+    je .L_strip_csi_ignore
+    cmp esi, 3
+    je .L_strip_csi_intermediate
+    // CsiParam
+    cmp edi, 48
+    jb .L_strip_csi_to_intermediate
+    cmp edi, 60
+    jb .L_strip_return
+    cmp edi, 64
+    jb .L_strip_csi_to_ignore
+    jmp .L_strip_ground
+.L_strip_ground_state:
+    cmp edi, 32
+    jb .L_strip_execute
+    cmp edi, 127
+    jb .L_strip_print_action
+    cmp edi, 194
+    jb .L_strip_return
+    cmp edi, 245
+    jae .L_strip_return
+    mov eax, 15
+.L_strip_print_action:
+    mov edx, 1
+    ret
+.L_strip_execute:
+    cmp edi, 9
+    je .L_strip_print_action
+    cmp edi, 10
+    je .L_strip_print_action
+    cmp edi, 12
+    je .L_strip_print_action
+    cmp edi, 13
+    je .L_strip_print_action
+.L_strip_return:
+    ret
+.L_strip_ground:
+    mov eax, 12
+    ret
+.L_strip_osc:
+    cmp edi, 7
+    je .L_strip_ground
+    ret
+.L_strip_string:
+    cmp edi, 156
+    je .L_strip_ground
+    ret
+.L_strip_escape_state:
+    cmp edi, 48
+    jb .L_strip_escape_to_intermediate
+    cmp edi, 80
+    jb .L_strip_ground
+    je .L_strip_dcs_to_entry
+    cmp edi, 88
+    jb .L_strip_ground
+    je .L_strip_to_string
+    cmp edi, 91
+    jb .L_strip_ground
+    je .L_strip_csi_to_entry
+    cmp edi, 92
+    je .L_strip_ground
+    cmp edi, 93
+    je .L_strip_to_osc
+    cmp edi, 96
+    jb .L_strip_to_string
+    jmp .L_strip_ground
+.L_strip_escape_to_intermediate:
+    mov eax, 11
+    ret
+.L_strip_escape_intermediate:
+    cmp edi, 48
+    jae .L_strip_ground
+    ret
+.L_strip_csi_entry:
+    cmp edi, 48
+    jb .L_strip_csi_to_intermediate
+    cmp edi, 64
+    jb .L_strip_csi_to_param
+    jmp .L_strip_ground
+.L_strip_csi_ignore:
+    cmp edi, 64
+    jae .L_strip_ground
+    ret
+.L_strip_csi_intermediate:
+    cmp edi, 48
+    jb .L_strip_return
+    cmp edi, 64
+    jb .L_strip_csi_to_ignore
+    jmp .L_strip_ground
+.L_strip_csi_to_entry:
+    mov eax, 1
+    ret
+.L_strip_csi_to_ignore:
+    mov eax, 2
+    ret
+.L_strip_csi_to_intermediate:
+    mov eax, 3
+    ret
+.L_strip_csi_to_param:
+    mov eax, 4
+    ret
+.L_strip_dcs_to_entry:
+    mov eax, 5
+    ret
+.L_strip_to_osc:
+    mov eax, 13
+    ret
+.L_strip_to_string:
+    mov eax, 14
+    ret
+.L_strip_dcs_state:
+    cmp esi, 6
+    je .L_strip_string
+    cmp esi, 9
+    je .L_strip_string
+    cmp edi, 32
+    jb .L_strip_return
+    cmp edi, 127
+    jae .L_strip_return
+    cmp edi, 48
+    jb .L_strip_dcs_to_intermediate
+    cmp edi, 64
+    jae .L_strip_dcs_to_passthrough
+    cmp esi, 5
+    je .L_strip_dcs_to_param
+    cmp esi, 7
+    je .L_strip_dcs_to_ignore
+    cmp edi, 60
+    jae .L_strip_dcs_to_ignore
+    ret
+.L_strip_dcs_to_ignore:
+    mov eax, 6
+    ret
+.L_strip_dcs_to_intermediate:
+    mov eax, 7
+    ret
+.L_strip_dcs_to_param:
+    mov eax, 8
+    ret
+.L_strip_dcs_to_passthrough:
+    mov eax, 9
+    ret
 .L_help:
     mov rax, [rip+stdout@GOTPCREL]
     mov rax, [rax]
@@ -323,7 +594,7 @@ ripwc_parse:
     lea rdi, [rip+.L_help_intro]
     call .L_emit
     mov rdi, [rip+.L_name]
-    call .L_emit
+    call .L_emit_styled
     lea rdi, [rip+.L_help_rest]
     call .L_emit
     xor edi, edi
@@ -354,7 +625,7 @@ ripwc_parse:
     lea rdi, [rip+.L_value_intro]
     call .L_emit
     mov rdi, [rbp+P_TMP]
-    call .L_emit
+    call .L_emit_styled
     lea rdi, [rip+.L_value_middle]
     call .L_emit
     call .L_option_ptr
@@ -373,7 +644,7 @@ ripwc_parse:
     lea rdi, [rip+.L_unknown_intro]
     call .L_emit
     mov rdi, [rbp+P_CUR]
-    call .L_emit
+    call .L_emit_styled
     lea rdi, [rip+.L_unknown_rest]
     call .L_emit
     cmp qword ptr [rbp+P_MODE], 0
@@ -403,11 +674,11 @@ ripwc_parse:
     lea rdi, [rip+.L_pass_intro]
     call .L_emit
     mov rdi, [rbp+P_CUR]
-    call .L_emit
+    call .L_emit_styled
     lea rdi, [rip+.L_pass_middle]
     call .L_emit
     mov rdi, [rbp+P_CUR]
-    call .L_emit
+    call .L_emit_styled
     lea rdi, [rip+.L_hint_end]
     call .L_emit
     cmp qword ptr [rbp+P_MODE], 0
@@ -421,7 +692,7 @@ ripwc_parse:
     lea rdi, [rip+.L_usage_intro]
     call .L_emit
     mov rdi, [rip+.L_name]
-    call .L_emit
+    call .L_emit_styled
     cmp qword ptr [rbp+P_MODE], 1
     je .L_usage_generic
     cmp qword ptr [rbp+P_MODE], 2
@@ -489,6 +760,54 @@ ripwc_parse:
     call .L_emit
     mov qword ptr [rbp+P_MODE], 1
     jmp .L_error_usage
+
+// Validate exactly the first UTF-8 scalar, leaving an unrelated tail alone.
+// No read follows a NUL or a malformed continuation byte.
+.L_first_scalar_utf8:
+    movzx eax, byte ptr [rdi]
+    cmp eax, 128
+    jb .L_utf8_ok
+    cmp eax, 194
+    jb .L_utf8_bad
+    cmp eax, 245
+    jae .L_utf8_bad
+    movzx ecx, byte ptr [rdi+1]
+    sub ecx, 128
+    cmp ecx, 64
+    jae .L_utf8_bad
+    cmp eax, 224
+    jb .L_utf8_ok
+    cmp eax, 224
+    jne .L_first_not_e0
+    cmp ecx, 32
+    jb .L_utf8_bad
+.L_first_not_e0:
+    cmp eax, 237
+    jne .L_first_not_ed
+    cmp ecx, 32
+    jae .L_utf8_bad
+.L_first_not_ed:
+    cmp eax, 240
+    jne .L_first_not_f0
+    cmp ecx, 16
+    jb .L_utf8_bad
+.L_first_not_f0:
+    cmp eax, 244
+    jne .L_first_third
+    cmp ecx, 16
+    jae .L_utf8_bad
+.L_first_third:
+    movzx ecx, byte ptr [rdi+2]
+    sub ecx, 128
+    cmp ecx, 64
+    jae .L_utf8_bad
+    cmp eax, 240
+    jb .L_utf8_ok
+    movzx ecx, byte ptr [rdi+3]
+    sub ecx, 128
+    cmp ecx, 64
+    jb .L_utf8_ok
+    jmp .L_utf8_bad
 
 // rdi=zero-terminated string, eax=valid UTF-8. Leaf, volatile registers only.
 .L_check_utf8:
@@ -858,6 +1177,9 @@ ripwc_lossy:
     .space 7
 .p2align 3
 .L_stream: .quad 0
+.L_strip_state: .quad 12
+.L_strip_utf8: .quad 0
+.L_strip_run: .quad 0
 .L_name: .quad 0
 .L_order_count: .quad 0
 .L_order: .space 72

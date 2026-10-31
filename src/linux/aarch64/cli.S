@@ -16,6 +16,10 @@ ripwc_parse:
     mov x23, #0
     mov x25, #0
     mov x28, #0
+    adrp x9, L_strip_state
+    add x9, x9, :lo12:L_strip_state
+    stp xzr, xzr, [x9]
+    str xzr, [x9, #16]
     adrp x9, L_order_count
     str xzr, [x9, :lo12:L_order_count]
     adrp x9, L_stdout
@@ -121,7 +125,7 @@ L_short_find:
     b.lt L_short_find
     // clap reports one Unicode scalar from a short-option cluster.
     sub x22, x22, #1
-    bl L_check_utf8
+    bl L_check_first_utf8
     mov x26, x0
     mov x0, x22
     bl L_lossy
@@ -279,11 +283,260 @@ L_option_ptr:
     ldr x0, [x9, x27, lsl #3]
     ret
 
-// Emit x0 literally, so user-provided paths and flags are never format strings.
+// The formatter styles dynamic arguments and the usage name. Its ANSI style
+// prefix/reset restore Ground around each value, including incomplete escapes.
+L_emit_styled:
+    stp x29, x30, [sp, #-16]!
+    adrp x9, L_strip_state
+    add x9, x9, :lo12:L_strip_state
+    stp xzr, xzr, [x9]
+    str xzr, [x9, #16]
+    bl L_emit
+    adrp x9, L_strip_state
+    add x9, x9, :lo12:L_strip_state
+    stp xzr, xzr, [x9]
+    str xzr, [x9, #16]
+    ldp x29, x30, [sp], #16
+    ret
+
+// Emit the CLI's diagnostic/help stream with the pinned anstream 1.0 byte
+// filtering rules. State and printable-run mode span fragments because clap
+// writes one completed StyledStr. Filesystem paths use the separate main path.
 L_emit:
+    stp x29, x30, [sp, #-96]!
+    stp x19, x20, [sp, #16]
+    stp x21, x22, [sp, #32]
+    stp x23, x24, [sp, #48]
+    mov x19, x0
+    adrp x9, L_strip_state
+    add x9, x9, :lo12:L_strip_state
+    ldp x20, x21, [x9]
+    ldr x22, [x9, #16]
     adrp x9, L_stdout
-    ldr x1, [x9, :lo12:L_stdout]
-    b fputs
+    ldr x23, [x9, :lo12:L_stdout]
+L_emit_next:
+    ldrb w24, [x19]
+    cbz w24, L_emit_done
+    cbz x22, L_emit_mode
+    subs x22, x22, #1
+    csel x20, x20, xzr, ne
+    b L_emit_byte
+L_emit_mode:
+    cbz x21, L_emit_seek
+    cmp x20, #14
+    b.eq L_emit_utf8
+    mov w0, w24
+    mov w1, #0
+    bl L_strip_step
+    cmp w1, #-1
+    csel w20, w20, w1, eq
+    cmp w0, #2
+    b.eq L_emit_utf8
+    cbnz w0, L_emit_byte
+    mov x21, #0
+L_emit_seek:
+    mov w0, w24
+    mov w1, w20
+    bl L_strip_step
+    cmp w1, #-1
+    csel w20, w20, w1, eq
+    cbz w0, L_emit_skip
+    mov x21, #1
+    b L_emit_mode
+L_emit_utf8:
+    // All emitted fragments are valid UTF-8 (user data was checked or lossy).
+    // Continuations must bypass VT's C1 controls and return to Ground at EOF.
+    mov x22, #1
+    cmp w24, #224
+    b.lo L_emit_byte
+    mov x22, #2
+    cmp w24, #240
+    b.lo L_emit_byte
+    mov x22, #3
+L_emit_byte:
+    mov w0, w24
+    mov x1, x23
+    bl fputc
+L_emit_skip:
+    add x19, x19, #1
+    b L_emit_next
+L_emit_done:
+    adrp x9, L_strip_state
+    add x9, x9, :lo12:L_strip_state
+    stp x20, x21, [x9]
+    str x22, [x9, #16]
+    mov w0, #0
+    ldp x23, x24, [sp, #48]
+    ldp x21, x22, [sp, #32]
+    ldp x19, x20, [sp, #16]
+    ldp x29, x30, [sp], #96
+    ret
+
+// VT transition subset used by anstream::adapter::StripBytes. x0=byte,
+// x1=state; returns x0=printable (2 begins UTF-8), x1=next state or -1
+// for Anywhere (retain state). These are control rules, not character widths.
+// States: 0 Ground, 1 Escape, 2 EscapeIntermediate, 3/4/5/6 CSI
+// entry/param/intermediate/ignore, 7/8/9 DCS entry/param/intermediate,
+// 10 DCSIgnore, 11 DCSPassthrough, 12 OSC, 13 SOS/PM/APC, 14 UTF-8.
+L_strip_step:
+    mov w10, w0
+    mov w11, w1
+    mov w0, #0
+    mov w1, #-1
+    cmp w10, #24
+    b.eq L_strip_ground
+    cmp w10, #26
+    b.eq L_strip_ground
+    cmp w10, #27
+    b.eq L_strip_escape
+    cbz w11, L_strip_plain
+    cmp w10, #32
+    b.lo L_strip_control
+    cmp w10, #127
+    b.eq L_strip_return
+    b.hi L_strip_high
+    cmp w11, #1
+    b.eq L_strip_esc
+    cmp w11, #2
+    b.eq L_strip_esc_intermediate
+    cmp w11, #6
+    b.ls L_strip_csi
+    cmp w11, #9
+    b.ls L_strip_dcs
+    ret
+L_strip_plain:
+    cmp w10, #32
+    b.lo L_strip_whitespace
+    cmp w10, #127
+    b.lo L_strip_print
+    cmp w10, #194
+    b.lo L_strip_return
+    cmp w10, #245
+    b.hs L_strip_return
+    mov w0, #2
+    mov w1, #14
+    ret
+L_strip_control:
+    cmp w11, #6
+    b.ls L_strip_whitespace
+    cmp w11, #12
+    b.ne L_strip_return
+    cmp w10, #7
+    b.eq L_strip_ground
+    ret
+L_strip_whitespace:
+    cmp w10, #9
+    b.eq L_strip_print
+    cmp w10, #10
+    b.eq L_strip_print
+    cmp w10, #12
+    b.eq L_strip_print
+    cmp w10, #13
+    b.eq L_strip_print
+    ret
+L_strip_high:
+    cmp w10, #156
+    b.ne L_strip_return
+    cmp w11, #10
+    b.eq L_strip_ground
+    cmp w11, #11
+    b.eq L_strip_ground
+    cmp w11, #13
+    b.eq L_strip_ground
+    ret
+L_strip_esc:
+    cmp w10, #48
+    b.lo L_strip_esc_collect
+    cmp w10, #80
+    b.lo L_strip_ground
+    b.eq L_strip_dcs_entry
+    cmp w10, #88
+    b.lo L_strip_ground
+    b.eq L_strip_sos
+    cmp w10, #91
+    b.lo L_strip_ground
+    b.eq L_strip_csi_entry
+    cmp w10, #92
+    b.eq L_strip_ground
+    cmp w10, #93
+    b.eq L_strip_osc
+    cmp w10, #96
+    b.lo L_strip_sos
+    b L_strip_ground
+L_strip_esc_intermediate:
+    cmp w10, #48
+    b.hs L_strip_ground
+    ret
+L_strip_csi:
+    cmp w10, #64
+    b.hs L_strip_ground
+    cmp w10, #48
+    b.hs L_strip_csi_parameters
+    cmp w11, #6
+    b.eq L_strip_return
+    mov w1, #5
+    ret
+L_strip_csi_parameters:
+    cmp w11, #3
+    b.eq L_strip_csi_param
+    cmp w11, #4
+    b.ne L_strip_csi_ignore
+    cmp w10, #60
+    b.lo L_strip_return
+L_strip_csi_ignore:
+    mov w1, #6
+    ret
+L_strip_csi_param:
+    mov w1, #4
+    ret
+L_strip_dcs:
+    cmp w10, #64
+    b.hs L_strip_dcs_passthrough
+    cmp w10, #48
+    b.hs L_strip_dcs_parameters
+    mov w1, #9
+    ret
+L_strip_dcs_parameters:
+    cmp w11, #7
+    b.eq L_strip_dcs_param
+    cmp w11, #8
+    b.ne L_strip_dcs_ignore
+    cmp w10, #60
+    b.lo L_strip_return
+L_strip_dcs_ignore:
+    mov w1, #10
+    ret
+L_strip_dcs_param:
+    mov w1, #8
+    ret
+L_strip_dcs_passthrough:
+    mov w1, #11
+    ret
+L_strip_csi_entry:
+    mov w1, #3
+    ret
+L_strip_dcs_entry:
+    mov w1, #7
+    ret
+L_strip_esc_collect:
+    mov w1, #2
+    ret
+L_strip_sos:
+    mov w1, #13
+    ret
+L_strip_osc:
+    mov w1, #12
+    ret
+L_strip_ground:
+    mov w1, #0
+    ret
+L_strip_escape:
+    mov w1, #1
+    ret
+L_strip_print:
+    mov w0, #1
+L_strip_return:
+    ret
 
 L_help:
     adrp x9, :got:stdout
@@ -296,7 +549,7 @@ L_help:
     bl L_emit
     adrp x9, L_name
     ldr x0, [x9, :lo12:L_name]
-    bl L_emit
+    bl L_emit_styled
     adrp x0, L_help_rest
     add x0, x0, :lo12:L_help_rest
     bl L_emit
@@ -335,7 +588,7 @@ L_unexpected_value:
     add x0, x0, :lo12:L_value_intro
     bl L_emit
     mov x0, x26
-    bl L_emit
+    bl L_emit_styled
     adrp x0, L_value_middle
     add x0, x0, :lo12:L_value_middle
     bl L_emit
@@ -357,7 +610,7 @@ L_unknown:
     add x0, x0, :lo12:L_unknown_intro
     bl L_emit
     mov x0, x22
-    bl L_emit
+    bl L_emit_styled
     adrp x0, L_unknown_rest
     add x0, x0, :lo12:L_unknown_rest
     bl L_emit
@@ -388,12 +641,12 @@ L_unknown_no_hint:
     add x0, x0, :lo12:L_pass_intro
     bl L_emit
     mov x0, x22
-    bl L_emit
+    bl L_emit_styled
     adrp x0, L_pass_middle
     add x0, x0, :lo12:L_pass_middle
     bl L_emit
     mov x0, x22
-    bl L_emit
+    bl L_emit_styled
     adrp x0, L_hint_end
     add x0, x0, :lo12:L_hint_end
     bl L_emit
@@ -408,7 +661,7 @@ L_error_usage:
     bl L_emit
     adrp x9, L_name
     ldr x0, [x9, :lo12:L_name]
-    bl L_emit
+    bl L_emit_styled
     cmp x28, #1
     b.eq L_usage_generic
     cmp x28, #2
@@ -479,13 +732,18 @@ L_validate_done:
     ret
 
 // Return 1 if the string in x22 is valid UTF-8, otherwise 0.
+L_check_first_utf8:
+    mov w8, #1
+    b L_utf8_start
 L_check_utf8:
+    mov w8, #0
+L_utf8_start:
     mov x9, x22
 L_utf8_next:
     ldrb w10, [x9], #1
     cbz w10, L_utf8_ok
     cmp w10, #128
-    b.lo L_utf8_next
+    b.lo L_utf8_scalar_ok
     cmp w10, #194
     b.lo L_utf8_bad
     cmp w10, #224
@@ -534,7 +792,10 @@ L_utf8_two:
     ldrb w11, [x9], #1
     sub w11, w11, #128
     cmp w11, #64
-    b.lo L_utf8_next
+    b.hs L_utf8_bad
+L_utf8_scalar_ok:
+    cbz w8, L_utf8_next
+    b L_utf8_ok
 L_utf8_bad:
     mov w0, #0
     ret
@@ -826,6 +1087,7 @@ L_short_bad: .byte 45
 .p2align 3
 L_stdout: .quad 0
 L_name: .quad 0
+L_strip_state: .quad 0, 0, 0
 L_order_count: .quad 0
 L_order: .space 72
 .globl ripwc_flags

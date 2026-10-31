@@ -8,6 +8,7 @@ from pathlib import Path
 import os
 import random
 import subprocess
+import sys
 import tempfile
 
 from support import BIN_DIR, compiler, native_source
@@ -63,7 +64,7 @@ with tempfile.TemporaryDirectory(prefix="ripwc-cli-") as temp:
              [b"missing", b"--chars", b"--byte"], [b"--Bytes=x"],
              [b"-foo"], [b"--foo=bar"], [b"---"], [b"--max_line_length"],
              [b"--lines", b"--linez"], [b"--recursive", b"--recurse"],
-             [b"--", b""], [b"--", b"--"]]
+             [b"--", b""], [b"--", b"--"], [b"--\x1b[31mfoo"]]
     names = [b"bytes", b"chars", b"lines", b"words", b"max-line-length",
              b"recursive", b"help", b"version"]
     for name in names:
@@ -77,6 +78,42 @@ with tempfile.TemporaryDirectory(prefix="ripwc-cli-") as temp:
         for prefix in [b"", b"-", b"--", b"--bytes="]:
             cases.extend([[prefix + value], [prefix + value, b"--help"],
                           [prefix + value, b"--bad"]])
+    program_names = [b".", b"..", b"/", b"//", b"/foo/.", b"/foo/..",
+                     b"\xff", b"foo\xff", b"--", b"foo//././/", b"\xff/foo"]
+    # clap's plain-text writer strips controls and terminal escape sequences.
+    # Keep the upstream process as the oracle, including state that carries
+    # from an incomplete escape into the next diagnostic text fragment.
+    for control in (bytes([value]) for value in (*range(1, 32), 127)):
+        cases.extend([[b"--" + control], [b"-" + control],
+                      [b"--bytes=" + control]])
+        program_names.append(b"rip" + control + b"wc")
+    sequences = [
+        b"\x1b[31mred\x1b[0m", b"\x1b[2J", b"\x1b[?25l",
+        b"\x1b]0;title\x07", b"\x1b]0;title\x1b\\",
+        b"\x1b]8;;https://example.test\x1b\\label\x1b]8;;\x1b\\",
+        b"\x1bP1;2|payload\x1b\\", b"\x1b_hidden\x1b\\",
+        b"\x1b^hidden\x1b\\", b"\x1bXhidden\x1b\\",
+        b"\x1b[31\x18mTAIL", b"\x1b]hidden\x1aTAIL",
+        b"\x1bPpayload\xc3\x9cTAIL", b"\x1b\xf0\x9f\x98\x80hello",
+    ]
+    for sequence in sequences:
+        cases.extend([[b"--" + sequence + b"unknown"],
+                      [b"-" + sequence + b"x"],
+                      [b"--bytes=" + sequence + b"value"]])
+        program_names.append(b"rip" + sequence + b"wc")
+    for incomplete in (b"\x1b", b"\x1b[", b"\x1b[31", b"\x1b]0;title",
+                       b"\x1bPpayload", b"\x1b_hidden", b"\x1b^hidden",
+                       b"\x1bXhidden"):
+        cases.extend([[b"--unknown" + incomplete], [b"-" + incomplete],
+                      [b"--bytes=value" + incomplete]])
+        program_names.append(b"ripwc" + incomplete)
+    # A valid unknown short scalar is reported alone even when later bytes are
+    # malformed. A malformed first scalar retains clap's lossy remainder.
+    for tail in (b"\xff", b"\xc0", b"\xc2", b"\xe0\x80", b"\xed\xa0",
+                 b"\xe1\x80", b"\xf0\x90\x80", b"\xf4\x90\x80\x80"):
+        for prefix in (b"-x", "-é".encode(), b"-cX", "-🙂".encode(), "-w€".encode()):
+            cases.append([prefix + tail])
+        cases.extend([[b"-" + tail + b"x"], [b"-c" + tail + b"x"]])
     random.seed(7)
     tokens = [b"-c", b"-m", b"-l", b"-w", b"-L", b"-r", b"-v",
               b"--bytes", b"--chars", b"--lines", b"--words", b"--help",
@@ -85,12 +122,15 @@ with tempfile.TemporaryDirectory(prefix="ripwc-cli-") as temp:
               b"missing", b"", b"-", b"\xff", b"-\xffx", b"--\xff"]
     cases.extend(random.choices(tokens, k=random.randrange(1, 7))
                  for _ in range(200))
+    failures = []
     for args in cases:
         actual, expected = run(harness, args), run(RUST, args)
-        assert actual == expected, (args, actual, expected)
-    for name in [b".", b"..", b"/", b"//", b"/foo/.", b"/foo/..",
-                 b"\xff", b"foo\xff", b"--", b"foo//././/", b"\xff/foo"]:
-        assert run(harness, [b"--wat"], name) == run(RUST, [b"--wat"], name)
+        if actual != expected:
+            failures.append((args, b"ripwc", actual, expected))
+    for name in program_names:
+        actual, expected = run(harness, [b"--wat"], name), run(RUST, [b"--wat"], name)
+        if actual != expected:
+            failures.append(([b"--wat"], name, actual, expected))
     for mask in range(128):
         chosen = [char for i, char in enumerate("cmlwLrv") if mask >> i & 1]
         random.Random(mask).shuffle(chosen)
@@ -100,5 +140,12 @@ with tempfile.TemporaryDirectory(prefix="ripwc-cli-") as temp:
         expected = (f"{mask & 31 or 13} {(mask >> 5) & 1} "
                     f"{(mask >> 6) & 1} 1\n/nonexistent/ripwc-cli-test\n").encode()
         assert actual == (0, expected, b""), (mask, actual, expected)
-    print(f"CLI parity: {len(cases) + 11} Rust differential cases; "
+    if failures:
+        # repr keeps terminal escape/control bytes confined to captured output.
+        for args, name, actual, expected in failures[:6]:
+            print(f"FAIL argv={args!r} argv0={name!r}\n"
+                  f"  assembly={actual!r}\n  Rust={expected!r}", file=sys.stderr)
+        raise AssertionError(f"CLI parity: {len(failures)}/{len(cases) + len(program_names)} "
+                             "Rust differential cases failed; 128 flag states passed")
+    print(f"CLI parity: {len(cases) + len(program_names)} Rust differential cases; "
           "128 assembly flag-state combinations passed.")

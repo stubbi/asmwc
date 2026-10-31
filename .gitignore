@@ -5,6 +5,7 @@
 
 # Regenerated reports; reviewed evidence is kept separately in benchmarks/.
 /results/
+/work/
 
 # Local interpreter and editor state.
 __pycache__/
