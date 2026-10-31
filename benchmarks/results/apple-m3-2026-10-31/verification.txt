@@ -1,0 +1,34 @@
+mkdir -p bin
+clang -arch arm64 -mcpu=apple-m3 -O3 -g src/main.S src/cli.S src/count.S src/pipeline.S -o bin/ripwc
+./tests/kernel.sh
+PASS literal, all 32 flag masks, unaligned vectors, randomized chunk carry, guard pages, and callee-saved ABI
+python3 tests/parity.py
+Fixture unavailable: tree/<ff>-raw-name: filesystem rejects invalid UTF-8 filenames
+Parity: 25/235 cases, 0 failures
+Parity: 50/235 cases, 0 failures
+Parity: 75/235 cases, 0 failures
+Parity: 100/235 cases, 0 failures
+Parity: 125/235 cases, 0 failures
+Parity: 150/235 cases, 0 failures
+Parity: 175/235 cases, 0 failures
+Parity: 200/235 cases, 0 failures
+Parity: 225/235 cases, 0 failures
+Parity passed: 235 cases, 0 failures; $REPO/results/parity.json
+python3 tests/cli-parity.py
+CLI parity: 576 Rust differential cases; 128 assembly flag-state combinations passed.
+python3 tests/io-boundaries.py
+I/O boundaries: 86 comparisons passed; $REPO/results/io-boundaries.json
+python3 tests/pipeline-parity.py
+Pipeline parity: 124 large-file cases passed against Rust and original assembly
+./tests/pipeline_resources.sh
+PASS pipeline group/queue setup failures preserve state and allow buffered fallback
+PASS real executable falls back to buffered reads after injected group allocation failure
+python3 tests/benchmark_test.py
+........
+----------------------------------------------------------------------
+Ran 8 tests in 6.932s
+
+OK
+
+Independent review: group/queue setup-failure issue fixed with unit and real-executable injection regression coverage; no other important findings.
+Final three-way benchmark:18 workloads,24 samples per implementation; all outputs checked during every run.

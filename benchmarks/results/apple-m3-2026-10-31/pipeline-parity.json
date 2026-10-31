@@ -1,0 +1,630 @@
+{
+  "status": "passed",
+  "cases": 124,
+  "binaries": [
+    "$REPO/bin/ripwc",
+    "$REPO/bin/ripwc-before"
+  ],
+  "results": [
+    {
+      "length": 8388607,
+      "flags": "-c",
+      "passed": true
+    },
+    {
+      "length": 8388607,
+      "flags": "-l",
+      "passed": true
+    },
+    {
+      "length": 8388607,
+      "flags": "-w",
+      "passed": true
+    },
+    {
+      "length": 8388607,
+      "flags": "-m",
+      "passed": true
+    },
+    {
+      "length": 8388607,
+      "flags": "-L",
+      "passed": true
+    },
+    {
+      "length": 8388607,
+      "flags": "-cl",
+      "passed": true
+    },
+    {
+      "length": 8388607,
+      "flags": "-cw",
+      "passed": true
+    },
+    {
+      "length": 8388607,
+      "flags": "-cm",
+      "passed": true
+    },
+    {
+      "length": 8388607,
+      "flags": "-cL",
+      "passed": true
+    },
+    {
+      "length": 8388607,
+      "flags": "-lw",
+      "passed": true
+    },
+    {
+      "length": 8388607,
+      "flags": "-lm",
+      "passed": true
+    },
+    {
+      "length": 8388607,
+      "flags": "-lL",
+      "passed": true
+    },
+    {
+      "length": 8388607,
+      "flags": "-wm",
+      "passed": true
+    },
+    {
+      "length": 8388607,
+      "flags": "-wL",
+      "passed": true
+    },
+    {
+      "length": 8388607,
+      "flags": "-mL",
+      "passed": true
+    },
+    {
+      "length": 8388607,
+      "flags": "-clw",
+      "passed": true
+    },
+    {
+      "length": 8388607,
+      "flags": "-clm",
+      "passed": true
+    },
+    {
+      "length": 8388607,
+      "flags": "-clL",
+      "passed": true
+    },
+    {
+      "length": 8388607,
+      "flags": "-cwm",
+      "passed": true
+    },
+    {
+      "length": 8388607,
+      "flags": "-cwL",
+      "passed": true
+    },
+    {
+      "length": 8388607,
+      "flags": "-cmL",
+      "passed": true
+    },
+    {
+      "length": 8388607,
+      "flags": "-lwm",
+      "passed": true
+    },
+    {
+      "length": 8388607,
+      "flags": "-lwL",
+      "passed": true
+    },
+    {
+      "length": 8388607,
+      "flags": "-lmL",
+      "passed": true
+    },
+    {
+      "length": 8388607,
+      "flags": "-wmL",
+      "passed": true
+    },
+    {
+      "length": 8388607,
+      "flags": "-clwm",
+      "passed": true
+    },
+    {
+      "length": 8388607,
+      "flags": "-clwL",
+      "passed": true
+    },
+    {
+      "length": 8388607,
+      "flags": "-clmL",
+      "passed": true
+    },
+    {
+      "length": 8388607,
+      "flags": "-cwmL",
+      "passed": true
+    },
+    {
+      "length": 8388607,
+      "flags": "-lwmL",
+      "passed": true
+    },
+    {
+      "length": 8388607,
+      "flags": "-clwmL",
+      "passed": true
+    },
+    {
+      "length": 8388608,
+      "flags": "-c",
+      "passed": true
+    },
+    {
+      "length": 8388608,
+      "flags": "-l",
+      "passed": true
+    },
+    {
+      "length": 8388608,
+      "flags": "-w",
+      "passed": true
+    },
+    {
+      "length": 8388608,
+      "flags": "-m",
+      "passed": true
+    },
+    {
+      "length": 8388608,
+      "flags": "-L",
+      "passed": true
+    },
+    {
+      "length": 8388608,
+      "flags": "-cl",
+      "passed": true
+    },
+    {
+      "length": 8388608,
+      "flags": "-cw",
+      "passed": true
+    },
+    {
+      "length": 8388608,
+      "flags": "-cm",
+      "passed": true
+    },
+    {
+      "length": 8388608,
+      "flags": "-cL",
+      "passed": true
+    },
+    {
+      "length": 8388608,
+      "flags": "-lw",
+      "passed": true
+    },
+    {
+      "length": 8388608,
+      "flags": "-lm",
+      "passed": true
+    },
+    {
+      "length": 8388608,
+      "flags": "-lL",
+      "passed": true
+    },
+    {
+      "length": 8388608,
+      "flags": "-wm",
+      "passed": true
+    },
+    {
+      "length": 8388608,
+      "flags": "-wL",
+      "passed": true
+    },
+    {
+      "length": 8388608,
+      "flags": "-mL",
+      "passed": true
+    },
+    {
+      "length": 8388608,
+      "flags": "-clw",
+      "passed": true
+    },
+    {
+      "length": 8388608,
+      "flags": "-clm",
+      "passed": true
+    },
+    {
+      "length": 8388608,
+      "flags": "-clL",
+      "passed": true
+    },
+    {
+      "length": 8388608,
+      "flags": "-cwm",
+      "passed": true
+    },
+    {
+      "length": 8388608,
+      "flags": "-cwL",
+      "passed": true
+    },
+    {
+      "length": 8388608,
+      "flags": "-cmL",
+      "passed": true
+    },
+    {
+      "length": 8388608,
+      "flags": "-lwm",
+      "passed": true
+    },
+    {
+      "length": 8388608,
+      "flags": "-lwL",
+      "passed": true
+    },
+    {
+      "length": 8388608,
+      "flags": "-lmL",
+      "passed": true
+    },
+    {
+      "length": 8388608,
+      "flags": "-wmL",
+      "passed": true
+    },
+    {
+      "length": 8388608,
+      "flags": "-clwm",
+      "passed": true
+    },
+    {
+      "length": 8388608,
+      "flags": "-clwL",
+      "passed": true
+    },
+    {
+      "length": 8388608,
+      "flags": "-clmL",
+      "passed": true
+    },
+    {
+      "length": 8388608,
+      "flags": "-cwmL",
+      "passed": true
+    },
+    {
+      "length": 8388608,
+      "flags": "-lwmL",
+      "passed": true
+    },
+    {
+      "length": 8388608,
+      "flags": "-clwmL",
+      "passed": true
+    },
+    {
+      "length": 8388609,
+      "flags": "-c",
+      "passed": true
+    },
+    {
+      "length": 8388609,
+      "flags": "-l",
+      "passed": true
+    },
+    {
+      "length": 8388609,
+      "flags": "-w",
+      "passed": true
+    },
+    {
+      "length": 8388609,
+      "flags": "-m",
+      "passed": true
+    },
+    {
+      "length": 8388609,
+      "flags": "-L",
+      "passed": true
+    },
+    {
+      "length": 8388609,
+      "flags": "-cl",
+      "passed": true
+    },
+    {
+      "length": 8388609,
+      "flags": "-cw",
+      "passed": true
+    },
+    {
+      "length": 8388609,
+      "flags": "-cm",
+      "passed": true
+    },
+    {
+      "length": 8388609,
+      "flags": "-cL",
+      "passed": true
+    },
+    {
+      "length": 8388609,
+      "flags": "-lw",
+      "passed": true
+    },
+    {
+      "length": 8388609,
+      "flags": "-lm",
+      "passed": true
+    },
+    {
+      "length": 8388609,
+      "flags": "-lL",
+      "passed": true
+    },
+    {
+      "length": 8388609,
+      "flags": "-wm",
+      "passed": true
+    },
+    {
+      "length": 8388609,
+      "flags": "-wL",
+      "passed": true
+    },
+    {
+      "length": 8388609,
+      "flags": "-mL",
+      "passed": true
+    },
+    {
+      "length": 8388609,
+      "flags": "-clw",
+      "passed": true
+    },
+    {
+      "length": 8388609,
+      "flags": "-clm",
+      "passed": true
+    },
+    {
+      "length": 8388609,
+      "flags": "-clL",
+      "passed": true
+    },
+    {
+      "length": 8388609,
+      "flags": "-cwm",
+      "passed": true
+    },
+    {
+      "length": 8388609,
+      "flags": "-cwL",
+      "passed": true
+    },
+    {
+      "length": 8388609,
+      "flags": "-cmL",
+      "passed": true
+    },
+    {
+      "length": 8388609,
+      "flags": "-lwm",
+      "passed": true
+    },
+    {
+      "length": 8388609,
+      "flags": "-lwL",
+      "passed": true
+    },
+    {
+      "length": 8388609,
+      "flags": "-lmL",
+      "passed": true
+    },
+    {
+      "length": 8388609,
+      "flags": "-wmL",
+      "passed": true
+    },
+    {
+      "length": 8388609,
+      "flags": "-clwm",
+      "passed": true
+    },
+    {
+      "length": 8388609,
+      "flags": "-clwL",
+      "passed": true
+    },
+    {
+      "length": 8388609,
+      "flags": "-clmL",
+      "passed": true
+    },
+    {
+      "length": 8388609,
+      "flags": "-cwmL",
+      "passed": true
+    },
+    {
+      "length": 8388609,
+      "flags": "-lwmL",
+      "passed": true
+    },
+    {
+      "length": 8388609,
+      "flags": "-clwmL",
+      "passed": true
+    },
+    {
+      "length": 13631505,
+      "flags": "-c",
+      "passed": true
+    },
+    {
+      "length": 13631505,
+      "flags": "-l",
+      "passed": true
+    },
+    {
+      "length": 13631505,
+      "flags": "-w",
+      "passed": true
+    },
+    {
+      "length": 13631505,
+      "flags": "-m",
+      "passed": true
+    },
+    {
+      "length": 13631505,
+      "flags": "-L",
+      "passed": true
+    },
+    {
+      "length": 13631505,
+      "flags": "-cl",
+      "passed": true
+    },
+    {
+      "length": 13631505,
+      "flags": "-cw",
+      "passed": true
+    },
+    {
+      "length": 13631505,
+      "flags": "-cm",
+      "passed": true
+    },
+    {
+      "length": 13631505,
+      "flags": "-cL",
+      "passed": true
+    },
+    {
+      "length": 13631505,
+      "flags": "-lw",
+      "passed": true
+    },
+    {
+      "length": 13631505,
+      "flags": "-lm",
+      "passed": true
+    },
+    {
+      "length": 13631505,
+      "flags": "-lL",
+      "passed": true
+    },
+    {
+      "length": 13631505,
+      "flags": "-wm",
+      "passed": true
+    },
+    {
+      "length": 13631505,
+      "flags": "-wL",
+      "passed": true
+    },
+    {
+      "length": 13631505,
+      "flags": "-mL",
+      "passed": true
+    },
+    {
+      "length": 13631505,
+      "flags": "-clw",
+      "passed": true
+    },
+    {
+      "length": 13631505,
+      "flags": "-clm",
+      "passed": true
+    },
+    {
+      "length": 13631505,
+      "flags": "-clL",
+      "passed": true
+    },
+    {
+      "length": 13631505,
+      "flags": "-cwm",
+      "passed": true
+    },
+    {
+      "length": 13631505,
+      "flags": "-cwL",
+      "passed": true
+    },
+    {
+      "length": 13631505,
+      "flags": "-cmL",
+      "passed": true
+    },
+    {
+      "length": 13631505,
+      "flags": "-lwm",
+      "passed": true
+    },
+    {
+      "length": 13631505,
+      "flags": "-lwL",
+      "passed": true
+    },
+    {
+      "length": 13631505,
+      "flags": "-lmL",
+      "passed": true
+    },
+    {
+      "length": 13631505,
+      "flags": "-wmL",
+      "passed": true
+    },
+    {
+      "length": 13631505,
+      "flags": "-clwm",
+      "passed": true
+    },
+    {
+      "length": 13631505,
+      "flags": "-clwL",
+      "passed": true
+    },
+    {
+      "length": 13631505,
+      "flags": "-clmL",
+      "passed": true
+    },
+    {
+      "length": 13631505,
+      "flags": "-cwmL",
+      "passed": true
+    },
+    {
+      "length": 13631505,
+      "flags": "-lwmL",
+      "passed": true
+    },
+    {
+      "length": 13631505,
+      "flags": "-clwmL",
+      "passed": true
+    }
+  ]
+}

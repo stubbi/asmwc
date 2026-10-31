@@ -1,0 +1,15 @@
+Kernel: PASS literal, all 32 flag masks, every byte value, unaligned vectors, randomized chunk carry, guard pages, and callee-saved ABI.
+CLI parity: 576 Rust differential cases; 128 assembly flag-state combinations passed.
+Fixture unavailable: tree/<ff>-raw-name: filesystem rejects invalid UTF-8 filenames
+Parity: 25/235 cases, 0 failures
+Parity: 50/235 cases, 0 failures
+Parity: 75/235 cases, 0 failures
+Parity: 100/235 cases, 0 failures
+Parity: 125/235 cases, 0 failures
+Parity: 150/235 cases, 0 failures
+Parity: 175/235 cases, 0 failures
+Parity: 200/235 cases, 0 failures
+Parity: 225/235 cases, 0 failures
+Parity passed: 235 cases, 0 failures; $REPO/results/parity.json
+Upstream cargo test --release --locked: passed (0 upstream tests).
+Independent review: no unresolved important findings; reported basename fallback issue already resolved in frozen source and independently rechecked.

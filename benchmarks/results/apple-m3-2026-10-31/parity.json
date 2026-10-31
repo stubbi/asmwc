@@ -1,0 +1,3023 @@
+{
+  "upstream_commit": "de1a12e8e2d7c031404370773e5099b23ef01e95",
+  "quick": false,
+  "comparison": "exact exit status/stdout/stderr; verbose parallel stderr sorted as byte lines",
+  "started_utc": "2026-10-31T11:24:34Z",
+  "cases": [
+    {
+      "name": "subset/l/mixed",
+      "argv": [
+        "-l",
+        "mixed"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/l/empty",
+      "argv": [
+        "-l",
+        "empty"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/l/binary",
+      "argv": [
+        "-l",
+        "binary"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/w/mixed",
+      "argv": [
+        "-w",
+        "mixed"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/w/empty",
+      "argv": [
+        "-w",
+        "empty"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/w/binary",
+      "argv": [
+        "-w",
+        "binary"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/m/mixed",
+      "argv": [
+        "-m",
+        "mixed"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/m/empty",
+      "argv": [
+        "-m",
+        "empty"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/m/binary",
+      "argv": [
+        "-m",
+        "binary"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/c/mixed",
+      "argv": [
+        "-c",
+        "mixed"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/c/empty",
+      "argv": [
+        "-c",
+        "empty"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/c/binary",
+      "argv": [
+        "-c",
+        "binary"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/L/mixed",
+      "argv": [
+        "-L",
+        "mixed"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/L/empty",
+      "argv": [
+        "-L",
+        "empty"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/L/binary",
+      "argv": [
+        "-L",
+        "binary"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/lw/mixed",
+      "argv": [
+        "-lw",
+        "mixed"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/lw/empty",
+      "argv": [
+        "-lw",
+        "empty"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/lw/binary",
+      "argv": [
+        "-lw",
+        "binary"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/lm/mixed",
+      "argv": [
+        "-lm",
+        "mixed"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/lm/empty",
+      "argv": [
+        "-lm",
+        "empty"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/lm/binary",
+      "argv": [
+        "-lm",
+        "binary"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/lc/mixed",
+      "argv": [
+        "-lc",
+        "mixed"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/lc/empty",
+      "argv": [
+        "-lc",
+        "empty"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/lc/binary",
+      "argv": [
+        "-lc",
+        "binary"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/lL/mixed",
+      "argv": [
+        "-lL",
+        "mixed"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/lL/empty",
+      "argv": [
+        "-lL",
+        "empty"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/lL/binary",
+      "argv": [
+        "-lL",
+        "binary"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/wm/mixed",
+      "argv": [
+        "-wm",
+        "mixed"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/wm/empty",
+      "argv": [
+        "-wm",
+        "empty"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/wm/binary",
+      "argv": [
+        "-wm",
+        "binary"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/wc/mixed",
+      "argv": [
+        "-wc",
+        "mixed"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/wc/empty",
+      "argv": [
+        "-wc",
+        "empty"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/wc/binary",
+      "argv": [
+        "-wc",
+        "binary"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/wL/mixed",
+      "argv": [
+        "-wL",
+        "mixed"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/wL/empty",
+      "argv": [
+        "-wL",
+        "empty"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/wL/binary",
+      "argv": [
+        "-wL",
+        "binary"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/mc/mixed",
+      "argv": [
+        "-mc",
+        "mixed"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/mc/empty",
+      "argv": [
+        "-mc",
+        "empty"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/mc/binary",
+      "argv": [
+        "-mc",
+        "binary"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/mL/mixed",
+      "argv": [
+        "-mL",
+        "mixed"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/mL/empty",
+      "argv": [
+        "-mL",
+        "empty"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/mL/binary",
+      "argv": [
+        "-mL",
+        "binary"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/cL/mixed",
+      "argv": [
+        "-cL",
+        "mixed"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/cL/empty",
+      "argv": [
+        "-cL",
+        "empty"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/cL/binary",
+      "argv": [
+        "-cL",
+        "binary"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/lwm/mixed",
+      "argv": [
+        "-lwm",
+        "mixed"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/lwm/empty",
+      "argv": [
+        "-lwm",
+        "empty"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/lwm/binary",
+      "argv": [
+        "-lwm",
+        "binary"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/lwc/mixed",
+      "argv": [
+        "-lwc",
+        "mixed"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/lwc/empty",
+      "argv": [
+        "-lwc",
+        "empty"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/lwc/binary",
+      "argv": [
+        "-lwc",
+        "binary"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/lwL/mixed",
+      "argv": [
+        "-lwL",
+        "mixed"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/lwL/empty",
+      "argv": [
+        "-lwL",
+        "empty"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/lwL/binary",
+      "argv": [
+        "-lwL",
+        "binary"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/lmc/mixed",
+      "argv": [
+        "-lmc",
+        "mixed"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/lmc/empty",
+      "argv": [
+        "-lmc",
+        "empty"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/lmc/binary",
+      "argv": [
+        "-lmc",
+        "binary"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/lmL/mixed",
+      "argv": [
+        "-lmL",
+        "mixed"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/lmL/empty",
+      "argv": [
+        "-lmL",
+        "empty"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/lmL/binary",
+      "argv": [
+        "-lmL",
+        "binary"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/lcL/mixed",
+      "argv": [
+        "-lcL",
+        "mixed"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/lcL/empty",
+      "argv": [
+        "-lcL",
+        "empty"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/lcL/binary",
+      "argv": [
+        "-lcL",
+        "binary"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/wmc/mixed",
+      "argv": [
+        "-wmc",
+        "mixed"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/wmc/empty",
+      "argv": [
+        "-wmc",
+        "empty"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/wmc/binary",
+      "argv": [
+        "-wmc",
+        "binary"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/wmL/mixed",
+      "argv": [
+        "-wmL",
+        "mixed"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/wmL/empty",
+      "argv": [
+        "-wmL",
+        "empty"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/wmL/binary",
+      "argv": [
+        "-wmL",
+        "binary"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/wcL/mixed",
+      "argv": [
+        "-wcL",
+        "mixed"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/wcL/empty",
+      "argv": [
+        "-wcL",
+        "empty"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/wcL/binary",
+      "argv": [
+        "-wcL",
+        "binary"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/mcL/mixed",
+      "argv": [
+        "-mcL",
+        "mixed"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/mcL/empty",
+      "argv": [
+        "-mcL",
+        "empty"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/mcL/binary",
+      "argv": [
+        "-mcL",
+        "binary"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/lwmc/mixed",
+      "argv": [
+        "-lwmc",
+        "mixed"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/lwmc/empty",
+      "argv": [
+        "-lwmc",
+        "empty"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/lwmc/binary",
+      "argv": [
+        "-lwmc",
+        "binary"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/lwmL/mixed",
+      "argv": [
+        "-lwmL",
+        "mixed"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/lwmL/empty",
+      "argv": [
+        "-lwmL",
+        "empty"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/lwmL/binary",
+      "argv": [
+        "-lwmL",
+        "binary"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/lwcL/mixed",
+      "argv": [
+        "-lwcL",
+        "mixed"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/lwcL/empty",
+      "argv": [
+        "-lwcL",
+        "empty"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/lwcL/binary",
+      "argv": [
+        "-lwcL",
+        "binary"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/lmcL/mixed",
+      "argv": [
+        "-lmcL",
+        "mixed"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/lmcL/empty",
+      "argv": [
+        "-lmcL",
+        "empty"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/lmcL/binary",
+      "argv": [
+        "-lmcL",
+        "binary"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/wmcL/mixed",
+      "argv": [
+        "-wmcL",
+        "mixed"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/wmcL/empty",
+      "argv": [
+        "-wmcL",
+        "empty"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/wmcL/binary",
+      "argv": [
+        "-wmcL",
+        "binary"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/lwmcL/mixed",
+      "argv": [
+        "-lwmcL",
+        "mixed"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/lwmcL/empty",
+      "argv": [
+        "-lwmcL",
+        "empty"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "subset/lwmcL/binary",
+      "argv": [
+        "-lwmcL",
+        "binary"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "content/ascii",
+      "argv": [
+        "-lwmcL",
+        "ascii"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "content/no-newline",
+      "argv": [
+        "-lwmcL",
+        "no-newline"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "content/whitespace",
+      "argv": [
+        "-lwmcL",
+        "whitespace"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "content/not-ripwc-whitespace",
+      "argv": [
+        "-lwmcL",
+        "not-ripwc-whitespace"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "content/nul-only",
+      "argv": [
+        "-lwmcL",
+        "nul-only"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "content/utf8",
+      "argv": [
+        "-lwmcL",
+        "utf8"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "content/malformed-utf8",
+      "argv": [
+        "-lwmcL",
+        "malformed-utf8"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "content/long-line",
+      "argv": [
+        "-lwmcL",
+        "long-line"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "content/newline-only",
+      "argv": [
+        "-lwmcL",
+        "newline-only"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "content/trailing-newline",
+      "argv": [
+        "-lwmcL",
+        "trailing-newline"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "content/trailing-space",
+      "argv": [
+        "-lwmcL",
+        "trailing-space"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "content/space name.txt",
+      "argv": [
+        "-lwmcL",
+        "space name.txt"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "content/\u00e9-\u4e16\u754c.txt",
+      "argv": [
+        "-lwmcL",
+        "\u00e9-\u4e16\u754c.txt"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "default/mixed",
+      "argv": [
+        "mixed"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "default/empty",
+      "argv": [
+        "empty"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "long-flags",
+      "argv": [
+        "--lines",
+        "--words",
+        "--chars",
+        "--bytes",
+        "--max-line-length",
+        "mixed"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "option-after-file",
+      "argv": [
+        "ascii",
+        "-L"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "dash-filename",
+      "argv": [
+        "--",
+        "-dash"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "literal-dash-file",
+      "argv": [
+        "-"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "repeated-file",
+      "argv": [
+        "-lwmcL",
+        "ascii",
+        "ascii"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "totals/all",
+      "argv": [
+        "-lwmcL",
+        "ascii",
+        "empty",
+        "mixed"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "totals/default",
+      "argv": [
+        "no-newline",
+        "binary",
+        "empty"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "totals/zero",
+      "argv": [
+        "-l",
+        "empty",
+        "no-newline"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "vector/1",
+      "argv": [
+        "-lwmcL",
+        "edges/n1"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "vector/2",
+      "argv": [
+        "-lwmcL",
+        "edges/n2"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "vector/3",
+      "argv": [
+        "-lwmcL",
+        "edges/n3"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "vector/7",
+      "argv": [
+        "-lwmcL",
+        "edges/n7"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "vector/8",
+      "argv": [
+        "-lwmcL",
+        "edges/n8"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "vector/9",
+      "argv": [
+        "-lwmcL",
+        "edges/n9"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "vector/15",
+      "argv": [
+        "-lwmcL",
+        "edges/n15"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "vector/16",
+      "argv": [
+        "-lwmcL",
+        "edges/n16"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "vector/17",
+      "argv": [
+        "-lwmcL",
+        "edges/n17"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "vector/23",
+      "argv": [
+        "-lwmcL",
+        "edges/n23"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "vector/24",
+      "argv": [
+        "-lwmcL",
+        "edges/n24"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "vector/25",
+      "argv": [
+        "-lwmcL",
+        "edges/n25"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "vector/31",
+      "argv": [
+        "-lwmcL",
+        "edges/n31"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "vector/32",
+      "argv": [
+        "-lwmcL",
+        "edges/n32"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "vector/33",
+      "argv": [
+        "-lwmcL",
+        "edges/n33"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "vector/47",
+      "argv": [
+        "-lwmcL",
+        "edges/n47"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "vector/48",
+      "argv": [
+        "-lwmcL",
+        "edges/n48"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "vector/49",
+      "argv": [
+        "-lwmcL",
+        "edges/n49"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "vector/63",
+      "argv": [
+        "-lwmcL",
+        "edges/n63"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "vector/64",
+      "argv": [
+        "-lwmcL",
+        "edges/n64"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "vector/65",
+      "argv": [
+        "-lwmcL",
+        "edges/n65"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "vector/95",
+      "argv": [
+        "-lwmcL",
+        "edges/n95"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "vector/96",
+      "argv": [
+        "-lwmcL",
+        "edges/n96"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "vector/97",
+      "argv": [
+        "-lwmcL",
+        "edges/n97"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "vector/127",
+      "argv": [
+        "-lwmcL",
+        "edges/n127"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "vector/128",
+      "argv": [
+        "-lwmcL",
+        "edges/n128"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "vector/129",
+      "argv": [
+        "-lwmcL",
+        "edges/n129"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "vector/255",
+      "argv": [
+        "-lwmcL",
+        "edges/n255"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "vector/256",
+      "argv": [
+        "-lwmcL",
+        "edges/n256"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "vector/257",
+      "argv": [
+        "-lwmcL",
+        "edges/n257"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "io/524287",
+      "argv": [
+        "-lwmcL",
+        "edges/io-524287"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "io/524288",
+      "argv": [
+        "-lwmcL",
+        "edges/io-524288"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "io/524289",
+      "argv": [
+        "-lwmcL",
+        "edges/io-524289"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "io/1048575",
+      "argv": [
+        "-lwmcL",
+        "edges/io-1048575"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "io/1048576",
+      "argv": [
+        "-lwmcL",
+        "edges/io-1048576"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "io/1048577",
+      "argv": [
+        "-lwmcL",
+        "edges/io-1048577"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "io/2097151",
+      "argv": [
+        "-lwmcL",
+        "edges/io-2097151"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "io/2097152",
+      "argv": [
+        "-lwmcL",
+        "edges/io-2097152"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "io/2097153",
+      "argv": [
+        "-lwmcL",
+        "edges/io-2097153"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "random/5",
+      "argv": [
+        "-lwmcL",
+        "random/0"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "random/511",
+      "argv": [
+        "-lwmcL",
+        "random/1"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "random/4097",
+      "argv": [
+        "-lwmcL",
+        "random/2"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "random/65537",
+      "argv": [
+        "-lwmcL",
+        "random/3"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "random/1048613",
+      "argv": [
+        "-lwmcL",
+        "random/4"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "random-combo/0/65",
+      "argv": [
+        "-lcL",
+        "random/combo-0"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "random-combo/1/1048576",
+      "argv": [
+        "-L",
+        "random/combo-1"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "random-combo/2/0",
+      "argv": [
+        "-lcL",
+        "random/combo-2"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "random-combo/3/4095",
+      "argv": [
+        "-lcL",
+        "random/combo-3"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "random-combo/4/1048576",
+      "argv": [
+        "-wL",
+        "random/combo-4"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "random-combo/5/1048575",
+      "argv": [
+        "-lcL",
+        "random/combo-5"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "random-combo/6/15",
+      "argv": [
+        "random/combo-6"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "random-combo/7/16",
+      "argv": [
+        "-wL",
+        "random/combo-7"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "random-combo/8/1048576",
+      "argv": [
+        "-L",
+        "random/combo-8"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "random-combo/9/1048577",
+      "argv": [
+        "-L",
+        "random/combo-9"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "random-combo/10/64",
+      "argv": [
+        "random/combo-10"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "random-combo/11/1048577",
+      "argv": [
+        "-lcL",
+        "random/combo-11"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "random-combo/12/63",
+      "argv": [
+        "-lwmcL",
+        "random/combo-12"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "random-combo/13/15",
+      "argv": [
+        "random/combo-13"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "random-combo/14/0",
+      "argv": [
+        "-L",
+        "random/combo-14"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "random-combo/15/16",
+      "argv": [
+        "-L",
+        "random/combo-15"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "random-combo/16/17",
+      "argv": [
+        "-lwmcL",
+        "random/combo-16"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "random-combo/17/1",
+      "argv": [
+        "-lwmcL",
+        "random/combo-17"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "random-combo/18/1",
+      "argv": [
+        "-L",
+        "random/combo-18"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "random-combo/19/1048577",
+      "argv": [
+        "random/combo-19"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "random-combo/20/16",
+      "argv": [
+        "-wL",
+        "random/combo-20"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "random-combo/21/4095",
+      "argv": [
+        "random/combo-21"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "random-combo/22/63",
+      "argv": [
+        "-wL",
+        "random/combo-22"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "random-combo/23/1",
+      "argv": [
+        "-lcL",
+        "random/combo-23"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "random-combo/24/64",
+      "argv": [
+        "-lcL",
+        "random/combo-24"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "paths/sorted-tree",
+      "argv": [
+        "-r",
+        "-lwmcL",
+        "tree"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "paths/default-tree",
+      "argv": [
+        "-r",
+        "tree"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "paths/verbose-tree",
+      "argv": [
+        "-rv",
+        "tree"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "paths/tree-byte-metadata",
+      "argv": [
+        "-rc",
+        "tree"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "paths/trailing-slash",
+      "argv": [
+        "-r",
+        "-lwmcL",
+        "tree/"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "paths/repeated-slash",
+      "argv": [
+        "-r",
+        "-lwmcL",
+        "tree//"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "paths/interior-repeated-slash",
+      "argv": [
+        "-r",
+        "-lwmcL",
+        "tree//m-dir//"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "paths/dot-prefix",
+      "argv": [
+        "-r",
+        "-lwmcL",
+        "./tree"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "paths/dot-suffix",
+      "argv": [
+        "-r",
+        "-lwmcL",
+        "tree/./"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "paths/parent-component",
+      "argv": [
+        "-r",
+        "-lwmcL",
+        "tree/m-dir/../"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "paths/nonrecursive-trailing-slash",
+      "argv": [
+        "-c",
+        "tree//"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "paths/root-directory-link",
+      "argv": [
+        "-r",
+        "-lwmcL",
+        "root-dir-link"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "paths/root-file-link",
+      "argv": [
+        "-lwmcL",
+        "root-file-link"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "paths/root-broken-link",
+      "argv": [
+        "-lwmcL",
+        "root-broken-link"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "paths/root-link-no-recursion",
+      "argv": [
+        "-lwmcL",
+        "root-dir-link"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "paths/directory-no-recursion",
+      "argv": [
+        "tree"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "paths/directory-byte-metadata",
+      "argv": [
+        "-c",
+        "tree"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "paths/directory-all-flags",
+      "argv": [
+        "-lwmcL",
+        "tree"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "paths/empty-directory",
+      "argv": [
+        "-r",
+        "empty-dir"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "paths/missing-only",
+      "argv": [
+        "missing-file"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "paths/missing-recursive",
+      "argv": [
+        "-r",
+        "missing-directory"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "paths/missing-between-files",
+      "argv": [
+        "-lwmcL",
+        "ascii",
+        "missing-file",
+        "mixed"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "paths/file-and-directory",
+      "argv": [
+        "-r",
+        "-lwmcL",
+        "ascii",
+        "tree"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "verbose/small",
+      "argv": [
+        "-v",
+        "ascii"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "verbose/large",
+      "argv": [
+        "-v",
+        "large-a"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "verbose/parallel",
+      "argv": [
+        "-v",
+        "-lwmcL",
+        "large-b",
+        "large-a",
+        "ascii"
+      ],
+      "unordered_stderr": true,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "verbose/threshold-524287",
+      "argv": [
+        "-v",
+        "-c",
+        "verbose-524287"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "verbose/threshold-524288",
+      "argv": [
+        "-v",
+        "-c",
+        "verbose-524288"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "verbose/threshold-524289",
+      "argv": [
+        "-v",
+        "-c",
+        "verbose-524289"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "cli/help-short",
+      "argv": [
+        "-h"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "cli/help-long",
+      "argv": [
+        "--help"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "cli/version-short",
+      "argv": [
+        "-V"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "cli/version-long",
+      "argv": [
+        "--version"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "cli/no-args",
+      "argv": [],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "cli/flags-without-file",
+      "argv": [
+        "-lw"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "cli/unknown-long",
+      "argv": [
+        "--not-an-option"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "cli/unknown-short",
+      "argv": [
+        "-x"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "cli/unknown-after-file",
+      "argv": [
+        "ascii",
+        "--unknown"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "cli/duplicate-flag",
+      "argv": [
+        "-l",
+        "-l",
+        "ascii"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "cli/flag-value",
+      "argv": [
+        "--lines=true",
+        "ascii"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "cli/help-with-path",
+      "argv": [
+        "--help",
+        "ascii"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "cli/version-with-path",
+      "argv": [
+        "--version",
+        "ascii"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "stdout/broken-pipe-single",
+      "argv": [
+        "-lwmcL",
+        "ascii"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": true,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "stdout/broken-pipe-totals",
+      "argv": [
+        "-lwmcL",
+        "ascii",
+        "mixed"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": true,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "stdout/closed--h",
+      "argv": [
+        "-h"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": true,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "stdout/closed---help",
+      "argv": [
+        "--help"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": true,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "stdout/closed--V",
+      "argv": [
+        "-V"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": true,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "stdout/closed---version",
+      "argv": [
+        "--version"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": true,
+      "stderr_closed": false,
+      "passed": true
+    },
+    {
+      "name": "stderr/closed-verbose-large",
+      "argv": [
+        "-v",
+        "-lwmcL",
+        "large-a"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": true,
+      "passed": true
+    },
+    {
+      "name": "stderr/closed-verbose-mixed",
+      "argv": [
+        "-v",
+        "-lwmcL",
+        "large-b",
+        "ascii",
+        "large-a"
+      ],
+      "unordered_stderr": false,
+      "stdout_closed": false,
+      "stderr_closed": true,
+      "passed": true
+    }
+  ],
+  "failures": 0,
+  "binaries": {
+    "rust": {
+      "path": "$REPO/bin/ripwc-rust",
+      "sha256": "a037debe5b358e3cdf38fc4122b4ca91b3e6b8438373e22cbb9ccdf8143d45e7"
+    },
+    "asm": {
+      "path": "$REPO/bin/ripwc",
+      "sha256": "863625b39e7884a88a3a1b9e27bf644811e980622b8e1971dfd7d2978f0d9f3f"
+    }
+  },
+  "fixtures": {
+    "empty": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "mixed": {
+      "bytes": 23,
+      "sha256": "585bf14e86455a475072cce7a2087b1410f4d8ce4340215a631904d43ce17476"
+    },
+    "binary": {
+      "bytes": 1289,
+      "sha256": "7110e739da62cc29c1ffa7ce169b80615c846d362b6ac14c039b2d97d9756949"
+    },
+    "ascii": {
+      "bytes": 23,
+      "sha256": "3442bd9451d32357526d946cfb3f7b6cab76ed5595266e493fa8ac15356b7676"
+    },
+    "no-newline": {
+      "bytes": 19,
+      "sha256": "0e32db5551ab1c998bd9377f3d6de5005136d5d3cf55c8fb748250c033cdaddc"
+    },
+    "whitespace": {
+      "bytes": 68,
+      "sha256": "ed4c35155af0f67c66d9a38c1327a39d90915e05b14b3b8007c5bc6d59c89eda"
+    },
+    "not-ripwc-whitespace": {
+      "bytes": 11,
+      "sha256": "2fd0030c8560fd2a2ae81c9a7c5325ffd9e4b4e273f87b9ec138ff9f3837525d"
+    },
+    "nul-only": {
+      "bytes": 65,
+      "sha256": "98ce42deef51d40269d542f5314bef2c7468d401ad5d85168bfab4c0108f75f7"
+    },
+    "utf8": {
+      "bytes": 32,
+      "sha256": "ffe91f43a774a3337256fd93a2b84ccd3278869a81f3d2ee599b7f266a85905f"
+    },
+    "malformed-utf8": {
+      "bytes": 16,
+      "sha256": "b6c80a5b58e6aac9947b0169f7f16762bd6f6fb4ac4a174df050a6afb47e113a"
+    },
+    "long-line": {
+      "bytes": 2097361,
+      "sha256": "6076034c6ca65aa3f1c335bba2eceb3275f7640c720d23fd76bc239ae0ed1a87"
+    },
+    "newline-only": {
+      "bytes": 131,
+      "sha256": "ab686ec95a3b060ad0cb135ec80a38996ea0b7f82691f743f9e2ae7607589bb3"
+    },
+    "trailing-newline": {
+      "bytes": 2,
+      "sha256": "87428fc522803d31065e7bce3cf03fe475096631e5e07bbd7a0fde60c4cf25c7"
+    },
+    "trailing-space": {
+      "bytes": 2,
+      "sha256": "6583dcd6056fd32aadd0d2d0be920de99f6ff08b80065e4b9142aaa4169391cb"
+    },
+    "space name.txt": {
+      "bytes": 11,
+      "sha256": "446f72dd97ede3ad34e1f6b48da1bc18e84b2f86566c0ef38acf68e62b7386be"
+    },
+    "\u00e9-\u4e16\u754c.txt": {
+      "bytes": 13,
+      "sha256": "6d599d7293e0dd1b021978a8329a6079707eae9efdbf88919097eefe8c3daca3"
+    },
+    "-dash": {
+      "bytes": 5,
+      "sha256": "f8359416cedbf4b44bd1cab71b791b4121e3b33748187c530e70207af87c3f39"
+    },
+    "-": {
+      "bytes": 13,
+      "sha256": "9dd7c1f6bbd2cf7c6d53509e1099ac15aeb65a2c704aeacfa0d182905a3328b9"
+    },
+    "edges/n1": {
+      "bytes": 1,
+      "sha256": "ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb"
+    },
+    "edges/n2": {
+      "bytes": 2,
+      "sha256": "6583dcd6056fd32aadd0d2d0be920de99f6ff08b80065e4b9142aaa4169391cb"
+    },
+    "edges/n3": {
+      "bytes": 3,
+      "sha256": "19ae96e7938ec564866a1bb552e51bc3f1b9aa32c5221f3e8c3a75d0080c7004"
+    },
+    "edges/n7": {
+      "bytes": 7,
+      "sha256": "5c9a617dd2333c8bc150673b58cb4a4673c4ce8d8825829c1a7fd7b7bfbb849a"
+    },
+    "edges/n8": {
+      "bytes": 8,
+      "sha256": "d2061af3868867209b94853e9f54f81a66e182edf1d9e7a916d988a899e7b672"
+    },
+    "edges/n9": {
+      "bytes": 9,
+      "sha256": "0f8f2b082ea0179187b81ad3f69771b8c130cca639345506b756974cbae2fc7e"
+    },
+    "edges/n15": {
+      "bytes": 15,
+      "sha256": "a11271942f4acf409a4bc1f61bdb19a9b77a481577015550c87e43a499bd08f4"
+    },
+    "edges/n16": {
+      "bytes": 16,
+      "sha256": "34f0bc4e100a5141b99572828ccc7d0b35733d2c91712f0c5502b4118cc2d309"
+    },
+    "edges/n17": {
+      "bytes": 17,
+      "sha256": "ab12519ac3e9c440dc950e2fdae15da64e9108d603502633f763b47e134bb862"
+    },
+    "edges/n23": {
+      "bytes": 23,
+      "sha256": "f819893718e2a1067908bc3af040c8e86eb1fc0fc58aaa7b715429ccacafe3f3"
+    },
+    "edges/n24": {
+      "bytes": 24,
+      "sha256": "809e9fe5b7081805563fca79ad5690f8e00b5cc2dee3bf94a79a9b5d65cd11ab"
+    },
+    "edges/n25": {
+      "bytes": 25,
+      "sha256": "6bca076f41458446972d8537cc52dff2dd4c16d61a9822be84daa59c1904e3ef"
+    },
+    "edges/n31": {
+      "bytes": 31,
+      "sha256": "182a167a7b8ffd1dde141556d68030a9a4f6402895d95aa3030f4363eb8f8458"
+    },
+    "edges/n32": {
+      "bytes": 32,
+      "sha256": "3f7bc914be5ff535e32a11edaecd38a51513b221429e460fe66891f99b624acb"
+    },
+    "edges/n33": {
+      "bytes": 33,
+      "sha256": "41121903fa8a223d4f0b5a568c34b66c52f6a77ed60c248909eaea1218481728"
+    },
+    "edges/n47": {
+      "bytes": 47,
+      "sha256": "1181a29264a0308c492953725ba67894918952ac1b91ec39cb4a6c6bfcd871ab"
+    },
+    "edges/n48": {
+      "bytes": 48,
+      "sha256": "804931566eb49a67627b9380abc52c1b723a9c2fa5915fca3858d13c5a36499c"
+    },
+    "edges/n49": {
+      "bytes": 49,
+      "sha256": "c871f3befb27503e9de29faae3f522ce2b1bac350f1dc00a097d8dd0fb8665f4"
+    },
+    "edges/n63": {
+      "bytes": 63,
+      "sha256": "25b3965fb45f6b003d2a35ae60089b2bf95266ac5eef6ea45de826550ff07a83"
+    },
+    "edges/n64": {
+      "bytes": 64,
+      "sha256": "3f3c8dc5f077570af70b333fada557e87a14a77880cbf25d548b51ca2572902f"
+    },
+    "edges/n65": {
+      "bytes": 65,
+      "sha256": "8a1ddeb899806f86e324146b7ea05529d400c2e711f97a9d9ecd826a8846197b"
+    },
+    "edges/n95": {
+      "bytes": 95,
+      "sha256": "c5c408708b8fc5e7d23c87607fc6851cc9f05d0bab9c1652568b181ef561593e"
+    },
+    "edges/n96": {
+      "bytes": 96,
+      "sha256": "8bec65f732550adccc042a75e67ad252ae7b7198083257f6a170655c3d4f84c2"
+    },
+    "edges/n97": {
+      "bytes": 97,
+      "sha256": "e81274cc15991cd472226a5ddf6f1d9a50da6cb9c70a865dd7214e997f51e629"
+    },
+    "edges/n127": {
+      "bytes": 127,
+      "sha256": "c4e1eef36f5f25b9937447052a64ee5899c7b9304ee9161de20ce3c6f8044849"
+    },
+    "edges/n128": {
+      "bytes": 128,
+      "sha256": "52e3301c68fb439898b17eeb73d47955dadb2dcb039fde0b6ba89643c6b6bbab"
+    },
+    "edges/n129": {
+      "bytes": 129,
+      "sha256": "8ac05765702c74c5aa27b8e1f91d0815d18984ec5c8edf9cdb76835d13d715dd"
+    },
+    "edges/n255": {
+      "bytes": 255,
+      "sha256": "1330f033e4cf22e9b5202b9ff3bfd826e807dadf01faf3e78c7c2485e9a667b8"
+    },
+    "edges/n256": {
+      "bytes": 256,
+      "sha256": "7edf8d010316b36bdcdbb277ce680a92037906a78d64209d884c374b76f0da36"
+    },
+    "edges/n257": {
+      "bytes": 257,
+      "sha256": "59d9b46028efe789031bea34581bff2a625f808fa6c7819fbe0e6212ae29f08b"
+    },
+    "edges/io-524287": {
+      "bytes": 524287,
+      "sha256": "6995a8a58b268d05b951c8cd477285d6a996aedf21ce76a544dce6177d26ce2b"
+    },
+    "edges/io-524288": {
+      "bytes": 524288,
+      "sha256": "bf2caebcc717ba8c3caecc6fb58b4ba3e1b4d36aa151312bc2b81ce2e14bc88d"
+    },
+    "edges/io-524289": {
+      "bytes": 524289,
+      "sha256": "681de020e26eb43baaf1a891224a316347a06e54300c142dc5faa6dad7c337a0"
+    },
+    "edges/io-1048575": {
+      "bytes": 1048575,
+      "sha256": "308ea3ab21537dc0e20876f33207cacdb9c199a2942a32279af02edd0d0f94df"
+    },
+    "edges/io-1048576": {
+      "bytes": 1048576,
+      "sha256": "40c7083e6e43de19fbfd5eee4dc2108960fcc75c45d99dba981f5b73c0aea2a9"
+    },
+    "edges/io-1048577": {
+      "bytes": 1048577,
+      "sha256": "742aae6fb12ba2de2be1a82c24bfd5bd2f1ce4270a35c429af5aaecfde4d6be8"
+    },
+    "edges/io-2097151": {
+      "bytes": 2097151,
+      "sha256": "f37889fb1fb2d11a7b5237cc7aa75c8d48fe7d878839a1e2ef1c52dc64e9c33c"
+    },
+    "edges/io-2097152": {
+      "bytes": 2097152,
+      "sha256": "d9a3820e140ccf7675967d7b67bb433eb2c5b156efc0d988d3d4b9cfa33aa6e8"
+    },
+    "edges/io-2097153": {
+      "bytes": 2097153,
+      "sha256": "0d05a21bab9286a2aa8df5934e249d0cc329b2786c6ec7a765611a797d59271b"
+    },
+    "random/0": {
+      "bytes": 5,
+      "sha256": "891d3c65d4a16d2eb83aa523b82d86b34ef7407edda2d7cab3651b67df5e9e75"
+    },
+    "random/1": {
+      "bytes": 511,
+      "sha256": "5efd4c8373cd6ceb0b880e5727def92e2931407467b4e1e702b945eb84b513a8"
+    },
+    "random/2": {
+      "bytes": 4097,
+      "sha256": "0f245dd091e498962e93792beec13741467b57b6d399af92124184ab13e9ea2f"
+    },
+    "random/3": {
+      "bytes": 65537,
+      "sha256": "aaccc6a9829866b5c4eef7a7ab0215ed85f5baade4153f7a41b5cd0aa4b52a42"
+    },
+    "random/4": {
+      "bytes": 1048613,
+      "sha256": "e510fe4b0099c781973441eb4f8954aa75f199e651fbab622ceeae140edc3bc3"
+    },
+    "random/combo-0": {
+      "bytes": 65,
+      "sha256": "21f7be2db7412166debca0379464d061aec956e308513754336310dfb5a04088"
+    },
+    "random/combo-1": {
+      "bytes": 1048576,
+      "sha256": "8f990ba0b577b51cf009ea049368c16bbda1b21e1b93be07a824758bb253c39b"
+    },
+    "random/combo-2": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "random/combo-3": {
+      "bytes": 4095,
+      "sha256": "32c259be16c43c016912bef4d2060fbc90228b29ddc64ebda961cce29e92f801"
+    },
+    "random/combo-4": {
+      "bytes": 1048576,
+      "sha256": "4086a6159741dcf92982ba5f1795746de38d7bfa95464125085dca501f4509f6"
+    },
+    "random/combo-5": {
+      "bytes": 1048575,
+      "sha256": "845dabb56cd61d4f546d1f8c71cd3742541b7133fcdec84b6acd32ac7aa7e757"
+    },
+    "random/combo-6": {
+      "bytes": 15,
+      "sha256": "b670825c8f110a2eabfb68acbebf2497ca3c91d3ba8c532a5c213d46f5eaac21"
+    },
+    "random/combo-7": {
+      "bytes": 16,
+      "sha256": "2113ac06fe7272b8dc79badb8b4dcfb7e4614ef0674e0b1f6e65c20c120c3d31"
+    },
+    "random/combo-8": {
+      "bytes": 1048576,
+      "sha256": "3ebae3eb3f6f3cf50de591381eb167c2f8a54ecc9098a484a352b35054c6b114"
+    },
+    "random/combo-9": {
+      "bytes": 1048577,
+      "sha256": "8b5b48fa71c0675e27a54a426f389017f578c72a5db7329ead49355c834cabf6"
+    },
+    "random/combo-10": {
+      "bytes": 64,
+      "sha256": "8346ac9eb4f0a5bd45653340c0129b06ce17c3ecdd8eb4adb90f25d22b7e4446"
+    },
+    "random/combo-11": {
+      "bytes": 1048577,
+      "sha256": "d039465d74613730292ed5d8d065c284f470988b157194a1002d3a57fdd03a82"
+    },
+    "random/combo-12": {
+      "bytes": 63,
+      "sha256": "4cb62e3ff4624d37d74265f4861cd7897952852165ea820bbdc0d435963033ce"
+    },
+    "random/combo-13": {
+      "bytes": 15,
+      "sha256": "effc5227ab2ce80314080744556c62637b99c52416fa534c80929b50e9f5aab8"
+    },
+    "random/combo-14": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "random/combo-15": {
+      "bytes": 16,
+      "sha256": "53a8e06f2e67c9db8356ed50d3873ac30d252a46195ac036abdce17bed6b4fcb"
+    },
+    "random/combo-16": {
+      "bytes": 17,
+      "sha256": "48d57efd6e6445116540637fbfd400960dd12f960cf2b995464cf676e63ebd14"
+    },
+    "random/combo-17": {
+      "bytes": 1,
+      "sha256": "76be8b528d0075f7aae98d6fa57a6d3c83ae480a8469e668d7b0af968995ac71"
+    },
+    "random/combo-18": {
+      "bytes": 1,
+      "sha256": "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068"
+    },
+    "random/combo-19": {
+      "bytes": 1048577,
+      "sha256": "154b8ed3c2383ce429058768595935faf7851b5c38db2b1732594be1d88bc05a"
+    },
+    "random/combo-20": {
+      "bytes": 16,
+      "sha256": "01ba443daab5b7ed1320c9ca487354feec7ccb6cfe5b87a4eaef80940be3beba"
+    },
+    "random/combo-21": {
+      "bytes": 4095,
+      "sha256": "7a7837ca8336e3d214fad2853144d045777d9b8649eddf3b3dd194eeaf3a36c1"
+    },
+    "random/combo-22": {
+      "bytes": 63,
+      "sha256": "cf8509a904a665997e69c7a76e7aea6fc7d9a9a3dc0bcdb46f357d7cc6bedd51"
+    },
+    "random/combo-23": {
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    "random/combo-24": {
+      "bytes": 64,
+      "sha256": "67bb5e82bba58f4998002505a925a338d3339b25f5bc1f7fe73cb9584c163e2c"
+    },
+    "tree/z-last": {
+      "bytes": 5,
+      "sha256": "2088d0c4b41022d90f663fa8d8156cb525241b55d30ecdf922c38f94f7efda4c"
+    },
+    "tree/a-first": {
+      "bytes": 12,
+      "sha256": "398e46cf2cbf90b489c4a699321be3b124c2637deaf8d5a5ae11aac7459688c4"
+    },
+    "tree/m-dir/z-inner": {
+      "bytes": 11,
+      "sha256": "a42d8516d4a62a18369709574437498a2176bb89348d1e45d40eae9a9232bb5c"
+    },
+    "tree/m-dir/a-inner": {
+      "bytes": 5,
+      "sha256": "a7937b64b8caa58f03721bb6bacf5c78cb235febe0e70b1b84cd99541461a08e"
+    },
+    "tree/b-empty": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "tree/\u00e9-\u4e16\u754c.txt": {
+      "bytes": 19,
+      "sha256": "73fd83151909c55418f20339a55111bd2ef621f90db4199fb2bbe0f069c9c373"
+    },
+    "tree/<ff>-raw-name": {
+      "status": "unsupported",
+      "error": "[Errno 92] Illegal byte sequence: b'$TMP/tree/\\xff-raw-name'",
+      "reason": "filesystem rejects invalid UTF-8 filenames"
+    },
+    "large-a": {
+      "bytes": 1048578,
+      "sha256": "8103c4e2abb67a9b0f42b2af80822b2cb7df0bd62e96fe532b82e0ff185ec811"
+    },
+    "large-b": {
+      "bytes": 1048578,
+      "sha256": "67bbb5b4eaa6e9c211b76324c924b604e4f964d9f1380d1ac58e552a9a2e3e48"
+    },
+    "verbose-524287": {
+      "bytes": 524287,
+      "sha256": "72a85d02cf4531f48c4b2eeac7e38390800ffdb6f4a3b758b1566997528af506"
+    },
+    "verbose-524288": {
+      "bytes": 524288,
+      "sha256": "2e5543bd667cb65c41a2fd0bef9e25cfb098f474feecfae682c8c6b68ac2df43"
+    },
+    "verbose-524289": {
+      "bytes": 524289,
+      "sha256": "ba753b6bf77fa010d6d6e9e0369ad36210cf9a7699261f750009b4fd5a96dc23"
+    }
+  },
+  "fixture_limits": {
+    "tree/<ff>-raw-name": {
+      "status": "unsupported",
+      "error": "[Errno 92] Illegal byte sequence: b'$TMP/tree/\\xff-raw-name'",
+      "reason": "filesystem rejects invalid UTF-8 filenames"
+    }
+  },
+  "status": "passed",
+  "elapsed_seconds": 1.0876952079997864,
+  "selected_cases": 235,
+  "executed_cases": 235
+}

@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "experiment_date": "2026-10-31",
+  "description": "Captured Apple M3 experiment, with local paths and hostname redacted.",
+  "redactions": {
+    "$REPO": "local project directory",
+    "$LOCAL_PATH": "other local path",
+    "$TMP": "temporary directory",
+    "benchmark-host": "local hostname"
+  },
+  "preserved": [
+    "all numeric values",
+    "sample order",
+    "summary statistics",
+    "corpus checksums",
+    "measured executable hashes",
+    "compiler settings"
+  ],
+  "binary_hash_note": "Hashes identify the measured executables. Rebuilds can differ because of compiler versions, debug paths and signing.",
+  "files": {
+    "benchmark.json": "3d301cba737740ef8e6999ce78c36f44a1078c5366379c370f3453d12d0300f4",
+    "benchmark.csv": "6ff44a2926570c06e06652d7b13903729e2feefb9c192227519894dc68081b77",
+    "benchmark-samples.csv": "c750fb259c7cc0eba7e419dca1c167bb000a412f7855e0862c7fc523f348c00d",
+    "build-info.json": "222f6ce7adefb2170681328a35561510c769386af52b3a237813f276faab2aff",
+    "parity.json": "bb853de2a22c31b1791074cf02741730e1da1eb3c3f0421753230de1185c363a",
+    "io-boundaries.json": "d9464847c381c6225367b139edc845e0b2998273ad920b2de6ce825ad88e3647",
+    "pipeline-parity.json": "afee3bc746582b158ba7e0d8e09c1f2363c0eb5ad198bbaad5e4bd8a7a8c3d03",
+    "verification.txt": "91f64ecfc533b9bdb53c64eeb5691e1f96e9ddf65f63811e14e40b85f4af5633",
+    "original-run/benchmark.json": "9b9330dd51a2aba6e0f9bb1f3b1ca22a7219330d3026e448a35b1667ed3b7903",
+    "original-run/benchmark.csv": "115bc1188dca0d5be49d978c5793304c3f9ed79021e8cf37df012e1fa0accc10",
+    "original-run/benchmark-samples.csv": "11c4572475b12efd56d70046dec934338e466083cef2155a40b80c50a817830f",
+    "original-run/build-info.json": "231352e75fa6b29c26bdb5c85aa4d56fcb63bb173bb1a9532ff90dc618a303c2",
+    "original-run/parity.json": "d596413009a1647e380e4a900d7b6f0cd2a14fc31b7e0e6aef883044790c4ec6",
+    "original-run/verification.txt": "f1df486ea09662bca1a8cc56612e9087e306b4ac401b8b50a0466a67fcbb8cdc"
+  }
+}

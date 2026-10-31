@@ -1,0 +1,4778 @@
+{
+  "status": "passed",
+  "upstream_commit": "de1a12e8e2d7c031404370773e5099b23ef01e95",
+  "started_utc": "2026-10-31T11:04:13Z",
+  "machine": {
+    "platform": "macOS-15.6.1-arm64-arm-64bit-Mach-O",
+    "machine": "arm64",
+    "python": "3.14.6",
+    "available_logical_cpus": 8,
+    "affinity": "both inherit the benchmark process CPU availability; no per-executable restriction",
+    "hw.model": "Mac15,3",
+    "hw.memsize": "17179869184",
+    "hw.physicalcpu": "8",
+    "hw.logicalcpu": "8",
+    "machdep.cpu.brand_string": "Apple M3"
+  },
+  "build": {
+    "recipes": {
+      "build-rust.sh": {
+        "sha256": "9b3b95f4794634b6627197350f87cfd1fefe478853be12a3a006db44106a33df",
+        "text": "#!/bin/sh\nset -eu\ncd \"$(dirname \"$0\")\"\nexport RUSTFLAGS='-C target-cpu=native'\nexport CARGO_INCREMENTAL=0\nexport CARGO_TARGET_DIR=\"$PWD/.build/rust-target\"\ncargo build --release --locked --manifest-path upstream/Cargo.toml\nmkdir -p bin\ncp \"$CARGO_TARGET_DIR/release/ripwc\" bin/ripwc-rust\n"
+      },
+      "upstream/Cargo.toml": {
+        "sha256": "715e6b7d5d004741fb09f74186534b737e7e2b59fd391b29752107f026759ea1",
+        "text": "[package]\nname = \"ripwc\"\nversion = \"1.0.0\"\nedition = \"2021\"\nauthors = [\"LuminousToaster\", \"https://github.com/LuminousToaster\"]\n\n# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html\n\n[dependencies]\nclap = { version = \"4.5.38\", features = [\"derive\"] }\n\nrayon = \"1.10.0\"\nwalkdir = \"2.3.3\"\nnum_cpus = \"1.16.0\"\n\n[profile.release]\nlto = 'fat'\ncodegen-units = 1\nopt-level = 3\npanic = 'abort'\nincremental = true\n"
+      },
+      "Makefile": {
+        "sha256": "2d8d4dd5f26ad3c7fbb6d5538a8c6829b1577a5f3272ddb1c34c42015ca093d8",
+        "text": "CC = clang\nASFLAGS = -arch arm64 -mcpu=apple-m3 -O3 -g\nSOURCES = src/main.S src/cli.S src/count.S\n\n.PHONY: all test bench clean\nall: bin/ripwc\n\nbin/ripwc: $(SOURCES)\n\tmkdir -p bin\n\t$(CC) $(ASFLAGS) $(SOURCES) -o $@\n\ntest: bin/ripwc\n\tpython3 tests/parity.py\n\nbench: bin/ripwc\n\tpython3 bench.py\n\nclean:\n\trm -f bin/ripwc\n"
+      }
+    },
+    "toolchains": {
+      "rustc": "rustc 1.97.1 (8bab26f4f 2026-07-14)",
+      "cargo": "cargo 1.97.1 (c980f4866 2026-06-30)",
+      "clang": "Apple clang version 17.0.0 (clang-1700.0.13.5)"
+    }
+  },
+  "runs_per_implementation": 20,
+  "warmup_pairs": 2,
+  "diagnostic_only": false,
+  "order_seed": 353417320259,
+  "methodology": [
+    "End-to-end subprocess wall-clock time, including startup, path traversal, output capture and shutdown.",
+    "Deterministic on-disk files; parity preflight before timing every selected workload.",
+    "Warm filesystem cache after preflight and warmups; no cache flushing or cold-disk claim.",
+    "Same inherited CPU availability for both processes; no affinity restriction.",
+    "One-file cases have one scanner in both implementations; upstream Rust still creates its global thread pool.",
+    "Balanced alternating execution order with a seeded randomized starting implementation per case.",
+    "Metadata-only byte counts are reported separately from scanning throughput.",
+    "Compare these executable implementations/builds on this machine, not language performance in general.",
+    "Run sequentially without concurrent tests/builds or other benchmark processes."
+  ],
+  "binaries": {
+    "rust": {
+      "path": "$REPO/bin/ripwc-rust",
+      "sha256": "a037debe5b358e3cdf38fc4122b4ca91b3e6b8438373e22cbb9ccdf8143d45e7"
+    },
+    "assembly": {
+      "path": "$REPO/bin/ripwc",
+      "sha256": "83895d39fffdc6f0f1ac260a351eebb9db11644f39bd5856ca1fa247a4b342cb"
+    }
+  },
+  "environment": {
+    "RAYON_NUM_THREADS": null,
+    "OMP_NUM_THREADS": null
+  },
+  "cases": [
+    {
+      "name": "text/default",
+      "argv": [
+        "text.dat"
+      ],
+      "input_bytes": 134217728,
+      "files": 1,
+      "kind": "scan",
+      "preflight": {
+        "passed": true,
+        "stdout_sha256": "dda704e1a4bb1568d6ea4bd6d1b7d15c3e4c077a14815ec97ae992dc5155e30b",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "returncode": 0
+      },
+      "samples": [
+        {
+          "repetition": 1,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.01695975
+        },
+        {
+          "repetition": 1,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.065513875
+        },
+        {
+          "repetition": 2,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.06492575
+        },
+        {
+          "repetition": 2,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.016849625
+        },
+        {
+          "repetition": 3,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.018297666
+        },
+        {
+          "repetition": 3,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.065511083
+        },
+        {
+          "repetition": 4,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.062214167
+        },
+        {
+          "repetition": 4,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.016700666
+        },
+        {
+          "repetition": 5,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.016393833
+        },
+        {
+          "repetition": 5,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.064698459
+        },
+        {
+          "repetition": 6,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.065024541
+        },
+        {
+          "repetition": 6,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.017097667
+        },
+        {
+          "repetition": 7,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.017924959
+        },
+        {
+          "repetition": 7,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.065444334
+        },
+        {
+          "repetition": 8,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.062599
+        },
+        {
+          "repetition": 8,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.017157709
+        },
+        {
+          "repetition": 9,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.0172905
+        },
+        {
+          "repetition": 9,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.064967709
+        },
+        {
+          "repetition": 10,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.063797166
+        },
+        {
+          "repetition": 10,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.016438416
+        },
+        {
+          "repetition": 11,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.016909583
+        },
+        {
+          "repetition": 11,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.062126583
+        },
+        {
+          "repetition": 12,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.061101541
+        },
+        {
+          "repetition": 12,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.016123375
+        },
+        {
+          "repetition": 13,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.017233083
+        },
+        {
+          "repetition": 13,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.060763125
+        },
+        {
+          "repetition": 14,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.061030834
+        },
+        {
+          "repetition": 14,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.01658825
+        },
+        {
+          "repetition": 15,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.016324958
+        },
+        {
+          "repetition": 15,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.06072275
+        },
+        {
+          "repetition": 16,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.060299542
+        },
+        {
+          "repetition": 16,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.01751975
+        },
+        {
+          "repetition": 17,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.016996417
+        },
+        {
+          "repetition": 17,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.060136666
+        },
+        {
+          "repetition": 18,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.060336375
+        },
+        {
+          "repetition": 18,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.01623675
+        },
+        {
+          "repetition": 19,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.016401458
+        },
+        {
+          "repetition": 19,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.060723042
+        },
+        {
+          "repetition": 20,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.065570083
+        },
+        {
+          "repetition": 20,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.017124
+        }
+      ],
+      "statistics": {
+        "rust": {
+          "runs": 20,
+          "median_seconds": 0.0624065835,
+          "mean_seconds": 0.06287533125,
+          "min_seconds": 0.060136666,
+          "max_seconds": 0.065570083,
+          "stdev_seconds": 0.0021407914258439915
+        },
+        "assembly": {
+          "runs": 20,
+          "median_seconds": 0.0169346665,
+          "mean_seconds": 0.01692842075,
+          "min_seconds": 0.016123375,
+          "max_seconds": 0.018297666,
+          "stdev_seconds": 0.0005635876745011073
+        }
+      },
+      "rust_over_assembly_median": 3.6851380273712504
+    },
+    {
+      "name": "text/lines",
+      "argv": [
+        "-l",
+        "text.dat"
+      ],
+      "input_bytes": 134217728,
+      "files": 1,
+      "kind": "scan",
+      "preflight": {
+        "passed": true,
+        "stdout_sha256": "a19ee835ec0374280e63d95107798849d13b3b1dc1ac13e7b7e151f7c36506c6",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "returncode": 0
+      },
+      "samples": [
+        {
+          "repetition": 1,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.013083708
+        },
+        {
+          "repetition": 1,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.021050291
+        },
+        {
+          "repetition": 2,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.021647916
+        },
+        {
+          "repetition": 2,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.0121575
+        },
+        {
+          "repetition": 3,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.013093291
+        },
+        {
+          "repetition": 3,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.021444417
+        },
+        {
+          "repetition": 4,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.021702125
+        },
+        {
+          "repetition": 4,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.012804708
+        },
+        {
+          "repetition": 5,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.01283925
+        },
+        {
+          "repetition": 5,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.022025125
+        },
+        {
+          "repetition": 6,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.02154475
+        },
+        {
+          "repetition": 6,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.01329575
+        },
+        {
+          "repetition": 7,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.012753084
+        },
+        {
+          "repetition": 7,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.022640125
+        },
+        {
+          "repetition": 8,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.021951083
+        },
+        {
+          "repetition": 8,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.013173291
+        },
+        {
+          "repetition": 9,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.012668333
+        },
+        {
+          "repetition": 9,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.021977042
+        },
+        {
+          "repetition": 10,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.021181875
+        },
+        {
+          "repetition": 10,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.012341292
+        },
+        {
+          "repetition": 11,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.012430166
+        },
+        {
+          "repetition": 11,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.021127125
+        },
+        {
+          "repetition": 12,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.020992542
+        },
+        {
+          "repetition": 12,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.012490458
+        },
+        {
+          "repetition": 13,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.012246667
+        },
+        {
+          "repetition": 13,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.021357167
+        },
+        {
+          "repetition": 14,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.021074709
+        },
+        {
+          "repetition": 14,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.012525708
+        },
+        {
+          "repetition": 15,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.012149625
+        },
+        {
+          "repetition": 15,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.022076583
+        },
+        {
+          "repetition": 16,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.021534625
+        },
+        {
+          "repetition": 16,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.012856458
+        },
+        {
+          "repetition": 17,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.012307125
+        },
+        {
+          "repetition": 17,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.021530292
+        },
+        {
+          "repetition": 18,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.021369958
+        },
+        {
+          "repetition": 18,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.012359709
+        },
+        {
+          "repetition": 19,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.012352208
+        },
+        {
+          "repetition": 19,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.021636208
+        },
+        {
+          "repetition": 20,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.021463666
+        },
+        {
+          "repetition": 20,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.012370125
+        }
+      ],
+      "statistics": {
+        "rust": {
+          "runs": 20,
+          "median_seconds": 0.0215324585,
+          "mean_seconds": 0.021566381199999998,
+          "min_seconds": 0.020992542,
+          "max_seconds": 0.022640125,
+          "stdev_seconds": 0.0004141570755497942
+        },
+        "assembly": {
+          "runs": 20,
+          "median_seconds": 0.012508083,
+          "mean_seconds": 0.0126149228,
+          "min_seconds": 0.012149625,
+          "max_seconds": 0.01329575,
+          "stdev_seconds": 0.00035341538151669274
+        }
+      },
+      "rust_over_assembly_median": 1.7214834999096185
+    },
+    {
+      "name": "text/words",
+      "argv": [
+        "-w",
+        "text.dat"
+      ],
+      "input_bytes": 134217728,
+      "files": 1,
+      "kind": "scan",
+      "preflight": {
+        "passed": true,
+        "stdout_sha256": "edd8d1bd4c71e96af725139951cc6146b03ba74b51e368b78697751dc2db9e7d",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "returncode": 0
+      },
+      "samples": [
+        {
+          "repetition": 1,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.070041458
+        },
+        {
+          "repetition": 1,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.015392458
+        },
+        {
+          "repetition": 2,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.015523166
+        },
+        {
+          "repetition": 2,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.068891958
+        },
+        {
+          "repetition": 3,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.068970625
+        },
+        {
+          "repetition": 3,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.016394333
+        },
+        {
+          "repetition": 4,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.0154325
+        },
+        {
+          "repetition": 4,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.069674
+        },
+        {
+          "repetition": 5,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.06995
+        },
+        {
+          "repetition": 5,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.016060959
+        },
+        {
+          "repetition": 6,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.017338417
+        },
+        {
+          "repetition": 6,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.069413083
+        },
+        {
+          "repetition": 7,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.068073292
+        },
+        {
+          "repetition": 7,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.016151583
+        },
+        {
+          "repetition": 8,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.015698083
+        },
+        {
+          "repetition": 8,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.06976275
+        },
+        {
+          "repetition": 9,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.069842917
+        },
+        {
+          "repetition": 9,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.015720542
+        },
+        {
+          "repetition": 10,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.015725209
+        },
+        {
+          "repetition": 10,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.068305167
+        },
+        {
+          "repetition": 11,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.07041525
+        },
+        {
+          "repetition": 11,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.01758475
+        },
+        {
+          "repetition": 12,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.0160315
+        },
+        {
+          "repetition": 12,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.069961125
+        },
+        {
+          "repetition": 13,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.071090292
+        },
+        {
+          "repetition": 13,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.016056875
+        },
+        {
+          "repetition": 14,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.017330625
+        },
+        {
+          "repetition": 14,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.070043792
+        },
+        {
+          "repetition": 15,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.070369584
+        },
+        {
+          "repetition": 15,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.016177166
+        },
+        {
+          "repetition": 16,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.015519041
+        },
+        {
+          "repetition": 16,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.069038833
+        },
+        {
+          "repetition": 17,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.115691791
+        },
+        {
+          "repetition": 17,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.019842416
+        },
+        {
+          "repetition": 18,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.016698167
+        },
+        {
+          "repetition": 18,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.06931975
+        },
+        {
+          "repetition": 19,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.0721755
+        },
+        {
+          "repetition": 19,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.017018458
+        },
+        {
+          "repetition": 20,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.016509291
+        },
+        {
+          "repetition": 20,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.070586333
+        }
+      ],
+      "statistics": {
+        "rust": {
+          "runs": 20,
+          "median_seconds": 0.06989645850000001,
+          "mean_seconds": 0.072080875,
+          "min_seconds": 0.068073292,
+          "max_seconds": 0.115691791,
+          "stdev_seconds": 0.010307154567437107
+        },
+        "assembly": {
+          "runs": 20,
+          "median_seconds": 0.016106271,
+          "mean_seconds": 0.01641027695,
+          "min_seconds": 0.015392458,
+          "max_seconds": 0.019842416,
+          "stdev_seconds": 0.0010479922440289776
+        }
+      },
+      "rust_over_assembly_median": 4.339704609465469
+    },
+    {
+      "name": "text/chars",
+      "argv": [
+        "-m",
+        "text.dat"
+      ],
+      "input_bytes": 134217728,
+      "files": 1,
+      "kind": "scan",
+      "preflight": {
+        "passed": true,
+        "stdout_sha256": "8cc25573fb2bbd3fa1378eed7ac6abe4ea9da9a3248bd2dda4c9aa1ac906478a",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "returncode": 0
+      },
+      "samples": [
+        {
+          "repetition": 1,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.025074125
+        },
+        {
+          "repetition": 1,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.013340542
+        },
+        {
+          "repetition": 2,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.013174417
+        },
+        {
+          "repetition": 2,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.023617459
+        },
+        {
+          "repetition": 3,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.023784083
+        },
+        {
+          "repetition": 3,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.013352916
+        },
+        {
+          "repetition": 4,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.01231875
+        },
+        {
+          "repetition": 4,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.02414175
+        },
+        {
+          "repetition": 5,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.024831333
+        },
+        {
+          "repetition": 5,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.013179125
+        },
+        {
+          "repetition": 6,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.013823875
+        },
+        {
+          "repetition": 6,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.023879958
+        },
+        {
+          "repetition": 7,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.024169292
+        },
+        {
+          "repetition": 7,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.013243833
+        },
+        {
+          "repetition": 8,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.013151583
+        },
+        {
+          "repetition": 8,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.02445925
+        },
+        {
+          "repetition": 9,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.025150125
+        },
+        {
+          "repetition": 9,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.013845958
+        },
+        {
+          "repetition": 10,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.014269375
+        },
+        {
+          "repetition": 10,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.025714958
+        },
+        {
+          "repetition": 11,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.026229417
+        },
+        {
+          "repetition": 11,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.014106583
+        },
+        {
+          "repetition": 12,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.0157345
+        },
+        {
+          "repetition": 12,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.0249415
+        },
+        {
+          "repetition": 13,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.031024292
+        },
+        {
+          "repetition": 13,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.013645625
+        },
+        {
+          "repetition": 14,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.013601375
+        },
+        {
+          "repetition": 14,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.035610375
+        },
+        {
+          "repetition": 15,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.027720125
+        },
+        {
+          "repetition": 15,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.0140195
+        },
+        {
+          "repetition": 16,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.014981041
+        },
+        {
+          "repetition": 16,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.027486416
+        },
+        {
+          "repetition": 17,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.026371417
+        },
+        {
+          "repetition": 17,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.013920958
+        },
+        {
+          "repetition": 18,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.012934833
+        },
+        {
+          "repetition": 18,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.032408292
+        },
+        {
+          "repetition": 19,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.025241292
+        },
+        {
+          "repetition": 19,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.012821708
+        },
+        {
+          "repetition": 20,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.013827459
+        },
+        {
+          "repetition": 20,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.026567875
+        }
+      ],
+      "statistics": {
+        "rust": {
+          "runs": 20,
+          "median_seconds": 0.025195708499999997,
+          "mean_seconds": 0.0264211667,
+          "min_seconds": 0.023617459,
+          "max_seconds": 0.035610375,
+          "stdev_seconds": 0.0031604897229137413
+        },
+        "assembly": {
+          "runs": 20,
+          "median_seconds": 0.0136235,
+          "mean_seconds": 0.0136646978,
+          "min_seconds": 0.01231875,
+          "max_seconds": 0.0157345,
+          "stdev_seconds": 0.0007619957822285259
+        }
+      },
+      "rust_over_assembly_median": 1.8494299188901528
+    },
+    {
+      "name": "text/max-line",
+      "argv": [
+        "-L",
+        "text.dat"
+      ],
+      "input_bytes": 134217728,
+      "files": 1,
+      "kind": "scan",
+      "preflight": {
+        "passed": true,
+        "stdout_sha256": "1e776b26a46728088dabaf392a3a7c83aad6f17202e92bb0ae916ea5cc704a7e",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "returncode": 0
+      },
+      "samples": [
+        {
+          "repetition": 1,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.018503542
+        },
+        {
+          "repetition": 1,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.116794292
+        },
+        {
+          "repetition": 2,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.114409166
+        },
+        {
+          "repetition": 2,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.015690792
+        },
+        {
+          "repetition": 3,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.015606042
+        },
+        {
+          "repetition": 3,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.115242583
+        },
+        {
+          "repetition": 4,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.117035708
+        },
+        {
+          "repetition": 4,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.0154375
+        },
+        {
+          "repetition": 5,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.017573459
+        },
+        {
+          "repetition": 5,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.118894834
+        },
+        {
+          "repetition": 6,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.119864084
+        },
+        {
+          "repetition": 6,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.016049042
+        },
+        {
+          "repetition": 7,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.016917667
+        },
+        {
+          "repetition": 7,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.113346208
+        },
+        {
+          "repetition": 8,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.114124125
+        },
+        {
+          "repetition": 8,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.016637583
+        },
+        {
+          "repetition": 9,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.015727166
+        },
+        {
+          "repetition": 9,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.119490417
+        },
+        {
+          "repetition": 10,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.12316525
+        },
+        {
+          "repetition": 10,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.017028667
+        },
+        {
+          "repetition": 11,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.014875542
+        },
+        {
+          "repetition": 11,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.115053
+        },
+        {
+          "repetition": 12,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.114106625
+        },
+        {
+          "repetition": 12,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.01519575
+        },
+        {
+          "repetition": 13,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.015071208
+        },
+        {
+          "repetition": 13,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.113411625
+        },
+        {
+          "repetition": 14,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.114038167
+        },
+        {
+          "repetition": 14,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.015383375
+        },
+        {
+          "repetition": 15,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.01578075
+        },
+        {
+          "repetition": 15,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.106509708
+        },
+        {
+          "repetition": 16,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.103008667
+        },
+        {
+          "repetition": 16,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.014692667
+        },
+        {
+          "repetition": 17,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.014465
+        },
+        {
+          "repetition": 17,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.103140917
+        },
+        {
+          "repetition": 18,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.104884834
+        },
+        {
+          "repetition": 18,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.014575834
+        },
+        {
+          "repetition": 19,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.0145565
+        },
+        {
+          "repetition": 19,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.103808584
+        },
+        {
+          "repetition": 20,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.102710542
+        },
+        {
+          "repetition": 20,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.014426083
+        }
+      ],
+      "statistics": {
+        "rust": {
+          "runs": 20,
+          "median_seconds": 0.114115375,
+          "mean_seconds": 0.1126519668,
+          "min_seconds": 0.102710542,
+          "max_seconds": 0.12316525,
+          "stdev_seconds": 0.006349603470347683
+        },
+        "assembly": {
+          "runs": 20,
+          "median_seconds": 0.015521771,
+          "mean_seconds": 0.01570970845,
+          "min_seconds": 0.014426083,
+          "max_seconds": 0.018503542,
+          "stdev_seconds": 0.0011207523477420956
+        }
+      },
+      "rust_over_assembly_median": 7.351955843183101
+    },
+    {
+      "name": "text/byte-metadata",
+      "argv": [
+        "-c",
+        "text.dat"
+      ],
+      "input_bytes": 134217728,
+      "files": 1,
+      "kind": "metadata",
+      "preflight": {
+        "passed": true,
+        "stdout_sha256": "f1e40f7155a71e8bd4b6ef39df6a7c0fcd0920775276a50e0f274ef96a332e7d",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "returncode": 0
+      },
+      "samples": [
+        {
+          "repetition": 1,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.001833333
+        },
+        {
+          "repetition": 1,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.001580334
+        },
+        {
+          "repetition": 2,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.001544334
+        },
+        {
+          "repetition": 2,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.001879583
+        },
+        {
+          "repetition": 3,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.001911209
+        },
+        {
+          "repetition": 3,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.001553542
+        },
+        {
+          "repetition": 4,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.001466792
+        },
+        {
+          "repetition": 4,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.00201875
+        },
+        {
+          "repetition": 5,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.001848041
+        },
+        {
+          "repetition": 5,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.001515292
+        },
+        {
+          "repetition": 6,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.001379209
+        },
+        {
+          "repetition": 6,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.001873375
+        },
+        {
+          "repetition": 7,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.001935333
+        },
+        {
+          "repetition": 7,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.001569833
+        },
+        {
+          "repetition": 8,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.00155
+        },
+        {
+          "repetition": 8,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.001828833
+        },
+        {
+          "repetition": 9,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.001873584
+        },
+        {
+          "repetition": 9,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.001463875
+        },
+        {
+          "repetition": 10,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.0015405
+        },
+        {
+          "repetition": 10,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.001856458
+        },
+        {
+          "repetition": 11,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.001872167
+        },
+        {
+          "repetition": 11,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.001555584
+        },
+        {
+          "repetition": 12,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.001545209
+        },
+        {
+          "repetition": 12,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.0021295
+        },
+        {
+          "repetition": 13,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.001910292
+        },
+        {
+          "repetition": 13,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.001846708
+        },
+        {
+          "repetition": 14,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.00174325
+        },
+        {
+          "repetition": 14,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.002137834
+        },
+        {
+          "repetition": 15,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.002354166
+        },
+        {
+          "repetition": 15,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.002199625
+        },
+        {
+          "repetition": 16,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.0015975
+        },
+        {
+          "repetition": 16,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.00209975
+        },
+        {
+          "repetition": 17,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.00207525
+        },
+        {
+          "repetition": 17,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.001585917
+        },
+        {
+          "repetition": 18,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.001560542
+        },
+        {
+          "repetition": 18,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.001916584
+        },
+        {
+          "repetition": 19,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.00231525
+        },
+        {
+          "repetition": 19,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.001709
+        },
+        {
+          "repetition": 20,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.001581042
+        },
+        {
+          "repetition": 20,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.0019465
+        }
+      ],
+      "statistics": {
+        "rust": {
+          "runs": 20,
+          "median_seconds": 0.0019138965000000002,
+          "mean_seconds": 0.0019807896,
+          "min_seconds": 0.001828833,
+          "max_seconds": 0.002354166,
+          "stdev_seconds": 0.00015605834676758425
+        },
+        "assembly": {
+          "runs": 20,
+          "median_seconds": 0.0015580630000000002,
+          "mean_seconds": 0.0016044044,
+          "min_seconds": 0.001379209,
+          "max_seconds": 0.002199625,
+          "stdev_seconds": 0.0001723394626517524
+        }
+      },
+      "rust_over_assembly_median": 1.2283819717174467
+    },
+    {
+      "name": "binary/default",
+      "argv": [
+        "binary.dat"
+      ],
+      "input_bytes": 134217728,
+      "files": 1,
+      "kind": "scan",
+      "preflight": {
+        "passed": true,
+        "stdout_sha256": "1460ddf406618e26ed9c00aa6f0c9b8354282343206a869e5ca278da508952d4",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "returncode": 0
+      },
+      "samples": [
+        {
+          "repetition": 1,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.059043291
+        },
+        {
+          "repetition": 1,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.01667725
+        },
+        {
+          "repetition": 2,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.016271208
+        },
+        {
+          "repetition": 2,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.058910541
+        },
+        {
+          "repetition": 3,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.059548084
+        },
+        {
+          "repetition": 3,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.016376833
+        },
+        {
+          "repetition": 4,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.016429166
+        },
+        {
+          "repetition": 4,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.059216667
+        },
+        {
+          "repetition": 5,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.0596395
+        },
+        {
+          "repetition": 5,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.0163695
+        },
+        {
+          "repetition": 6,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.016422125
+        },
+        {
+          "repetition": 6,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.059526
+        },
+        {
+          "repetition": 7,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.059064
+        },
+        {
+          "repetition": 7,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.016653
+        },
+        {
+          "repetition": 8,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.016126666
+        },
+        {
+          "repetition": 8,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.058995792
+        },
+        {
+          "repetition": 9,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.059458583
+        },
+        {
+          "repetition": 9,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.016177
+        },
+        {
+          "repetition": 10,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.016333042
+        },
+        {
+          "repetition": 10,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.0589415
+        },
+        {
+          "repetition": 11,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.05895575
+        },
+        {
+          "repetition": 11,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.016866625
+        },
+        {
+          "repetition": 12,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.015969291
+        },
+        {
+          "repetition": 12,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.058704375
+        },
+        {
+          "repetition": 13,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.061979792
+        },
+        {
+          "repetition": 13,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.01615225
+        },
+        {
+          "repetition": 14,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.016570375
+        },
+        {
+          "repetition": 14,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.061205542
+        },
+        {
+          "repetition": 15,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.059744209
+        },
+        {
+          "repetition": 15,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.017014792
+        },
+        {
+          "repetition": 16,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.0166525
+        },
+        {
+          "repetition": 16,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.0591975
+        },
+        {
+          "repetition": 17,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.059170375
+        },
+        {
+          "repetition": 17,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.016291
+        },
+        {
+          "repetition": 18,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.016238917
+        },
+        {
+          "repetition": 18,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.059145125
+        },
+        {
+          "repetition": 19,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.058870708
+        },
+        {
+          "repetition": 19,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.016077584
+        },
+        {
+          "repetition": 20,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.016360833
+        },
+        {
+          "repetition": 20,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.059423833
+        }
+      ],
+      "statistics": {
+        "rust": {
+          "runs": 20,
+          "median_seconds": 0.0591839375,
+          "mean_seconds": 0.05943705835,
+          "min_seconds": 0.058704375,
+          "max_seconds": 0.061979792,
+          "stdev_seconds": 0.0007984362788931662
+        },
+        "assembly": {
+          "runs": 20,
+          "median_seconds": 0.0163651665,
+          "mean_seconds": 0.01640149785,
+          "min_seconds": 0.015969291,
+          "max_seconds": 0.017014792,
+          "stdev_seconds": 0.000268313171753354
+        }
+      },
+      "rust_over_assembly_median": 3.6164580115943212
+    },
+    {
+      "name": "binary/lines",
+      "argv": [
+        "-l",
+        "binary.dat"
+      ],
+      "input_bytes": 134217728,
+      "files": 1,
+      "kind": "scan",
+      "preflight": {
+        "passed": true,
+        "stdout_sha256": "e1e809e121ac49a06041b5c99f62c661746347cf8ca2e9241089dca7cf61c4a8",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "returncode": 0
+      },
+      "samples": [
+        {
+          "repetition": 1,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.023012834
+        },
+        {
+          "repetition": 1,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.01361125
+        },
+        {
+          "repetition": 2,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.013987875
+        },
+        {
+          "repetition": 2,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.02319775
+        },
+        {
+          "repetition": 3,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.022434375
+        },
+        {
+          "repetition": 3,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.012788083
+        },
+        {
+          "repetition": 4,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.012865
+        },
+        {
+          "repetition": 4,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.021573666
+        },
+        {
+          "repetition": 5,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.021740416
+        },
+        {
+          "repetition": 5,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.012877334
+        },
+        {
+          "repetition": 6,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.012909125
+        },
+        {
+          "repetition": 6,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.021752375
+        },
+        {
+          "repetition": 7,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.021754791
+        },
+        {
+          "repetition": 7,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.012886959
+        },
+        {
+          "repetition": 8,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.012665333
+        },
+        {
+          "repetition": 8,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.022837375
+        },
+        {
+          "repetition": 9,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.022482834
+        },
+        {
+          "repetition": 9,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.012718625
+        },
+        {
+          "repetition": 10,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.01392125
+        },
+        {
+          "repetition": 10,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.022795125
+        },
+        {
+          "repetition": 11,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.024803625
+        },
+        {
+          "repetition": 11,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.013957542
+        },
+        {
+          "repetition": 12,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.013067958
+        },
+        {
+          "repetition": 12,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.021728541
+        },
+        {
+          "repetition": 13,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.0222645
+        },
+        {
+          "repetition": 13,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.012717
+        },
+        {
+          "repetition": 14,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.012983208
+        },
+        {
+          "repetition": 14,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.02171925
+        },
+        {
+          "repetition": 15,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.021576167
+        },
+        {
+          "repetition": 15,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.013066667
+        },
+        {
+          "repetition": 16,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.012657625
+        },
+        {
+          "repetition": 16,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.022223208
+        },
+        {
+          "repetition": 17,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.022220459
+        },
+        {
+          "repetition": 17,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.01318975
+        },
+        {
+          "repetition": 18,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.012727541
+        },
+        {
+          "repetition": 18,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.022714875
+        },
+        {
+          "repetition": 19,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.022209417
+        },
+        {
+          "repetition": 19,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.013255042
+        },
+        {
+          "repetition": 20,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.01283725
+        },
+        {
+          "repetition": 20,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.022270875
+        }
+      ],
+      "statistics": {
+        "rust": {
+          "runs": 20,
+          "median_seconds": 0.022243854,
+          "mean_seconds": 0.0223656229,
+          "min_seconds": 0.021573666,
+          "max_seconds": 0.024803625,
+          "stdev_seconds": 0.000757481079009683
+        },
+        "assembly": {
+          "runs": 20,
+          "median_seconds": 0.012898042,
+          "mean_seconds": 0.01308452085,
+          "min_seconds": 0.012657625,
+          "max_seconds": 0.013987875,
+          "stdev_seconds": 0.0004395604785612285
+        }
+      },
+      "rust_over_assembly_median": 1.7245915310246316
+    },
+    {
+      "name": "binary/words",
+      "argv": [
+        "-w",
+        "binary.dat"
+      ],
+      "input_bytes": 134217728,
+      "files": 1,
+      "kind": "scan",
+      "preflight": {
+        "passed": true,
+        "stdout_sha256": "ce1ad3bca237d0efb72d0bb7dc6596751d9571d1ff2aca04899e74483b3a0bc3",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "returncode": 0
+      },
+      "samples": [
+        {
+          "repetition": 1,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.015405167
+        },
+        {
+          "repetition": 1,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.067717
+        },
+        {
+          "repetition": 2,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.066695917
+        },
+        {
+          "repetition": 2,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.015622125
+        },
+        {
+          "repetition": 3,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.016069875
+        },
+        {
+          "repetition": 3,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.067360167
+        },
+        {
+          "repetition": 4,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.067192709
+        },
+        {
+          "repetition": 4,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.016046459
+        },
+        {
+          "repetition": 5,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.01565075
+        },
+        {
+          "repetition": 5,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.066691209
+        },
+        {
+          "repetition": 6,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.06678825
+        },
+        {
+          "repetition": 6,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.015917166
+        },
+        {
+          "repetition": 7,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.015364917
+        },
+        {
+          "repetition": 7,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.066772292
+        },
+        {
+          "repetition": 8,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.066605042
+        },
+        {
+          "repetition": 8,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.015967708
+        },
+        {
+          "repetition": 9,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.015474
+        },
+        {
+          "repetition": 9,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.066704542
+        },
+        {
+          "repetition": 10,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.066282291
+        },
+        {
+          "repetition": 10,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.0160105
+        },
+        {
+          "repetition": 11,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.015804
+        },
+        {
+          "repetition": 11,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.066317208
+        },
+        {
+          "repetition": 12,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.066920834
+        },
+        {
+          "repetition": 12,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.015576167
+        },
+        {
+          "repetition": 13,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.01546
+        },
+        {
+          "repetition": 13,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.066344292
+        },
+        {
+          "repetition": 14,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.066402167
+        },
+        {
+          "repetition": 14,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.015995375
+        },
+        {
+          "repetition": 15,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.0157925
+        },
+        {
+          "repetition": 15,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.066659625
+        },
+        {
+          "repetition": 16,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.066664375
+        },
+        {
+          "repetition": 16,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.015327834
+        },
+        {
+          "repetition": 17,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.015434416
+        },
+        {
+          "repetition": 17,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.066356
+        },
+        {
+          "repetition": 18,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.066784167
+        },
+        {
+          "repetition": 18,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.015548375
+        },
+        {
+          "repetition": 19,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.016058291
+        },
+        {
+          "repetition": 19,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.066869167
+        },
+        {
+          "repetition": 20,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.06641275
+        },
+        {
+          "repetition": 20,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.01583125
+        }
+      ],
+      "statistics": {
+        "rust": {
+          "runs": 20,
+          "median_seconds": 0.066693563,
+          "mean_seconds": 0.0667270002,
+          "min_seconds": 0.066282291,
+          "max_seconds": 0.067717,
+          "stdev_seconds": 0.00036598083560792315
+        },
+        "assembly": {
+          "runs": 20,
+          "median_seconds": 0.015721625000000003,
+          "mean_seconds": 0.015717843750000002,
+          "min_seconds": 0.015327834,
+          "max_seconds": 0.016069875,
+          "stdev_seconds": 0.0002597235618154272
+        }
+      },
+      "rust_over_assembly_median": 4.242154548273476
+    },
+    {
+      "name": "binary/chars",
+      "argv": [
+        "-m",
+        "binary.dat"
+      ],
+      "input_bytes": 134217728,
+      "files": 1,
+      "kind": "scan",
+      "preflight": {
+        "passed": true,
+        "stdout_sha256": "0d2b033eb97eb8eb3d99c0e182f431ebaaadbc222a08978ffdb0083b8caf54b9",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "returncode": 0
+      },
+      "samples": [
+        {
+          "repetition": 1,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.0239295
+        },
+        {
+          "repetition": 1,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.012875917
+        },
+        {
+          "repetition": 2,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.012406917
+        },
+        {
+          "repetition": 2,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.024129583
+        },
+        {
+          "repetition": 3,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.024655875
+        },
+        {
+          "repetition": 3,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.01277325
+        },
+        {
+          "repetition": 4,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.012848042
+        },
+        {
+          "repetition": 4,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.023927125
+        },
+        {
+          "repetition": 5,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.023900916
+        },
+        {
+          "repetition": 5,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.012394333
+        },
+        {
+          "repetition": 6,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.012563792
+        },
+        {
+          "repetition": 6,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.023869541
+        },
+        {
+          "repetition": 7,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.023610625
+        },
+        {
+          "repetition": 7,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.012198334
+        },
+        {
+          "repetition": 8,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.01269875
+        },
+        {
+          "repetition": 8,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.023434292
+        },
+        {
+          "repetition": 9,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.0233845
+        },
+        {
+          "repetition": 9,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.012939542
+        },
+        {
+          "repetition": 10,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.012260833
+        },
+        {
+          "repetition": 10,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.0234985
+        },
+        {
+          "repetition": 11,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.023679542
+        },
+        {
+          "repetition": 11,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.012857125
+        },
+        {
+          "repetition": 12,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.012266334
+        },
+        {
+          "repetition": 12,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.023628792
+        },
+        {
+          "repetition": 13,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.024056875
+        },
+        {
+          "repetition": 13,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.012841625
+        },
+        {
+          "repetition": 14,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.012533333
+        },
+        {
+          "repetition": 14,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.023777333
+        },
+        {
+          "repetition": 15,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.023565
+        },
+        {
+          "repetition": 15,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.012304584
+        },
+        {
+          "repetition": 16,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.012377334
+        },
+        {
+          "repetition": 16,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.023562459
+        },
+        {
+          "repetition": 17,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.023628625
+        },
+        {
+          "repetition": 17,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.012401791
+        },
+        {
+          "repetition": 18,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.012292958
+        },
+        {
+          "repetition": 18,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.023435708
+        },
+        {
+          "repetition": 19,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.023653791
+        },
+        {
+          "repetition": 19,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.01212725
+        },
+        {
+          "repetition": 20,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.012569
+        },
+        {
+          "repetition": 20,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.023937583
+        }
+      ],
+      "statistics": {
+        "rust": {
+          "runs": 20,
+          "median_seconds": 0.023666666500000003,
+          "mean_seconds": 0.02376330825,
+          "min_seconds": 0.0233845,
+          "max_seconds": 0.024655875,
+          "stdev_seconds": 0.0003008475585378706
+        },
+        "assembly": {
+          "runs": 20,
+          "median_seconds": 0.012470125,
+          "mean_seconds": 0.0125265522,
+          "min_seconds": 0.01212725,
+          "max_seconds": 0.012939542,
+          "stdev_seconds": 0.00025927220573419314
+        }
+      },
+      "rust_over_assembly_median": 1.8978692274536142
+    },
+    {
+      "name": "binary/max-line",
+      "argv": [
+        "-L",
+        "binary.dat"
+      ],
+      "input_bytes": 134217728,
+      "files": 1,
+      "kind": "scan",
+      "preflight": {
+        "passed": true,
+        "stdout_sha256": "61705a4bd40dfc8b230836895d5f25a9f579f1fb221a31e1aea88ec4681677cc",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "returncode": 0
+      },
+      "samples": [
+        {
+          "repetition": 1,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.015800334
+        },
+        {
+          "repetition": 1,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.103385834
+        },
+        {
+          "repetition": 2,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.102644542
+        },
+        {
+          "repetition": 2,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.015528167
+        },
+        {
+          "repetition": 3,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.015559958
+        },
+        {
+          "repetition": 3,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.102586542
+        },
+        {
+          "repetition": 4,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.102749208
+        },
+        {
+          "repetition": 4,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.015434
+        },
+        {
+          "repetition": 5,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.0163425
+        },
+        {
+          "repetition": 5,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.105171083
+        },
+        {
+          "repetition": 6,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.102511959
+        },
+        {
+          "repetition": 6,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.015096208
+        },
+        {
+          "repetition": 7,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.015233583
+        },
+        {
+          "repetition": 7,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.104296083
+        },
+        {
+          "repetition": 8,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.103344917
+        },
+        {
+          "repetition": 8,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.015639042
+        },
+        {
+          "repetition": 9,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.015741125
+        },
+        {
+          "repetition": 9,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.102364792
+        },
+        {
+          "repetition": 10,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.103415417
+        },
+        {
+          "repetition": 10,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.015068084
+        },
+        {
+          "repetition": 11,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.015566584
+        },
+        {
+          "repetition": 11,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.10338025
+        },
+        {
+          "repetition": 12,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.1030905
+        },
+        {
+          "repetition": 12,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.015411125
+        },
+        {
+          "repetition": 13,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.015626666
+        },
+        {
+          "repetition": 13,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.102868417
+        },
+        {
+          "repetition": 14,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.102987833
+        },
+        {
+          "repetition": 14,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.015602291
+        },
+        {
+          "repetition": 15,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.015310041
+        },
+        {
+          "repetition": 15,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.102927708
+        },
+        {
+          "repetition": 16,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.102866042
+        },
+        {
+          "repetition": 16,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.015486
+        },
+        {
+          "repetition": 17,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.015347041
+        },
+        {
+          "repetition": 17,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.107192834
+        },
+        {
+          "repetition": 18,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.116974916
+        },
+        {
+          "repetition": 18,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.016565666
+        },
+        {
+          "repetition": 19,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.017315666
+        },
+        {
+          "repetition": 19,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.114543417
+        },
+        {
+          "repetition": 20,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.114009333
+        },
+        {
+          "repetition": 20,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.017068666
+        }
+      ],
+      "statistics": {
+        "rust": {
+          "runs": 20,
+          "median_seconds": 0.1032177085,
+          "mean_seconds": 0.10516558135,
+          "min_seconds": 0.102364792,
+          "max_seconds": 0.116974916,
+          "stdev_seconds": 0.0044813548945732
+        },
+        "assembly": {
+          "runs": 20,
+          "median_seconds": 0.015563271,
+          "mean_seconds": 0.01573713735,
+          "min_seconds": 0.015068084,
+          "max_seconds": 0.017315666,
+          "stdev_seconds": 0.0006144589782228431
+        }
+      },
+      "rust_over_assembly_median": 6.632134626454811
+    },
+    {
+      "name": "binary/byte-metadata",
+      "argv": [
+        "-c",
+        "binary.dat"
+      ],
+      "input_bytes": 134217728,
+      "files": 1,
+      "kind": "metadata",
+      "preflight": {
+        "passed": true,
+        "stdout_sha256": "b4e87d3ba46c14841824f6dfe76a453fc1714d707d8ebe6bddcadd360e90774e",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "returncode": 0
+      },
+      "samples": [
+        {
+          "repetition": 1,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.001891459
+        },
+        {
+          "repetition": 1,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.002242416
+        },
+        {
+          "repetition": 2,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.00216725
+        },
+        {
+          "repetition": 2,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.001673542
+        },
+        {
+          "repetition": 3,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.001679
+        },
+        {
+          "repetition": 3,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.002069875
+        },
+        {
+          "repetition": 4,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.0020145
+        },
+        {
+          "repetition": 4,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.001635292
+        },
+        {
+          "repetition": 5,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.001661125
+        },
+        {
+          "repetition": 5,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.002239791
+        },
+        {
+          "repetition": 6,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.0019585
+        },
+        {
+          "repetition": 6,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.003293042
+        },
+        {
+          "repetition": 7,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.002168292
+        },
+        {
+          "repetition": 7,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.002232875
+        },
+        {
+          "repetition": 8,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.002075167
+        },
+        {
+          "repetition": 8,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.001704625
+        },
+        {
+          "repetition": 9,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.002716042
+        },
+        {
+          "repetition": 9,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.002241916
+        },
+        {
+          "repetition": 10,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.002183125
+        },
+        {
+          "repetition": 10,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.001739875
+        },
+        {
+          "repetition": 11,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.001911792
+        },
+        {
+          "repetition": 11,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.00255
+        },
+        {
+          "repetition": 12,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.002280917
+        },
+        {
+          "repetition": 12,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.001737458
+        },
+        {
+          "repetition": 13,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.001775292
+        },
+        {
+          "repetition": 13,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.002054708
+        },
+        {
+          "repetition": 14,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.002367667
+        },
+        {
+          "repetition": 14,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.002588292
+        },
+        {
+          "repetition": 15,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.001993917
+        },
+        {
+          "repetition": 15,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.002179667
+        },
+        {
+          "repetition": 16,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.002086875
+        },
+        {
+          "repetition": 16,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.001881209
+        },
+        {
+          "repetition": 17,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.002073375
+        },
+        {
+          "repetition": 17,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.004396917
+        },
+        {
+          "repetition": 18,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.0025135
+        },
+        {
+          "repetition": 18,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.001813333
+        },
+        {
+          "repetition": 19,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.001902042
+        },
+        {
+          "repetition": 19,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.002093209
+        },
+        {
+          "repetition": 20,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.00216475
+        },
+        {
+          "repetition": 20,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.00179025
+        }
+      ],
+      "statistics": {
+        "rust": {
+          "runs": 20,
+          "median_seconds": 0.0021813960000000004,
+          "mean_seconds": 0.0023056812500000003,
+          "min_seconds": 0.0019585,
+          "max_seconds": 0.004396917,
+          "stdev_seconds": 0.0005149506326697096
+        },
+        "assembly": {
+          "runs": 20,
+          "median_seconds": 0.0018472710000000002,
+          "mean_seconds": 0.0019814627,
+          "min_seconds": 0.001635292,
+          "max_seconds": 0.003293042,
+          "stdev_seconds": 0.0004237388477311666
+        }
+      },
+      "rust_over_assembly_median": 1.180874923062182
+    },
+    {
+      "name": "many/default",
+      "argv": [
+        "-r",
+        "many"
+      ],
+      "input_bytes": 134217728,
+      "files": 64,
+      "kind": "scan",
+      "preflight": {
+        "passed": true,
+        "stdout_sha256": "ba7ac726356731d0f67ca0f6c79ae1961963eedb292519cf68713ee4bcd28dd7",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "returncode": 0
+      },
+      "samples": [
+        {
+          "repetition": 1,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.018998667
+        },
+        {
+          "repetition": 1,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.007551417
+        },
+        {
+          "repetition": 2,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.007344084
+        },
+        {
+          "repetition": 2,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.016726959
+        },
+        {
+          "repetition": 3,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.017285458
+        },
+        {
+          "repetition": 3,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.008323084
+        },
+        {
+          "repetition": 4,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.013801917
+        },
+        {
+          "repetition": 4,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.016850625
+        },
+        {
+          "repetition": 5,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.023768834
+        },
+        {
+          "repetition": 5,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.008167083
+        },
+        {
+          "repetition": 6,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.008231709
+        },
+        {
+          "repetition": 6,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.018494708
+        },
+        {
+          "repetition": 7,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.019049334
+        },
+        {
+          "repetition": 7,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.008557583
+        },
+        {
+          "repetition": 8,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.008236667
+        },
+        {
+          "repetition": 8,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.020072666
+        },
+        {
+          "repetition": 9,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.017553833
+        },
+        {
+          "repetition": 9,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.007903458
+        },
+        {
+          "repetition": 10,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.008109
+        },
+        {
+          "repetition": 10,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.017263792
+        },
+        {
+          "repetition": 11,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.01858825
+        },
+        {
+          "repetition": 11,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.007931291
+        },
+        {
+          "repetition": 12,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.008089208
+        },
+        {
+          "repetition": 12,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.020120458
+        },
+        {
+          "repetition": 13,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.018649209
+        },
+        {
+          "repetition": 13,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.008221
+        },
+        {
+          "repetition": 14,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.007875375
+        },
+        {
+          "repetition": 14,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.019945916
+        },
+        {
+          "repetition": 15,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.018534292
+        },
+        {
+          "repetition": 15,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.00843875
+        },
+        {
+          "repetition": 16,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.007633
+        },
+        {
+          "repetition": 16,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.017701083
+        },
+        {
+          "repetition": 17,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.018132917
+        },
+        {
+          "repetition": 17,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.007556625
+        },
+        {
+          "repetition": 18,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.007389834
+        },
+        {
+          "repetition": 18,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.018438083
+        },
+        {
+          "repetition": 19,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.017311458
+        },
+        {
+          "repetition": 19,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.008369791
+        },
+        {
+          "repetition": 20,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.008062375
+        },
+        {
+          "repetition": 20,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.019919125
+        }
+      ],
+      "statistics": {
+        "rust": {
+          "runs": 20,
+          "median_seconds": 0.0185145,
+          "mean_seconds": 0.01867028335,
+          "min_seconds": 0.016726959,
+          "max_seconds": 0.023768834,
+          "stdev_seconds": 0.001604570404429018
+        },
+        "assembly": {
+          "runs": 20,
+          "median_seconds": 0.008099104,
+          "mean_seconds": 0.00828966255,
+          "min_seconds": 0.007344084,
+          "max_seconds": 0.013801917,
+          "stdev_seconds": 0.0013436687389991736
+        }
+      },
+      "rust_over_assembly_median": 2.2859936111451344
+    },
+    {
+      "name": "many/chars",
+      "argv": [
+        "-r",
+        "-m",
+        "many"
+      ],
+      "input_bytes": 134217728,
+      "files": 64,
+      "kind": "scan",
+      "preflight": {
+        "passed": true,
+        "stdout_sha256": "41ffcb522fdcdd59e92a8ae17aecade119ce5113c00d2f110c751134a2a3b121",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "returncode": 0
+      },
+      "samples": [
+        {
+          "repetition": 1,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.009409625
+        },
+        {
+          "repetition": 1,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.007407959
+        },
+        {
+          "repetition": 2,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.006991625
+        },
+        {
+          "repetition": 2,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.00937825
+        },
+        {
+          "repetition": 3,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.009750459
+        },
+        {
+          "repetition": 3,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.007415
+        },
+        {
+          "repetition": 4,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.007615458
+        },
+        {
+          "repetition": 4,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.011538625
+        },
+        {
+          "repetition": 5,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.009800042
+        },
+        {
+          "repetition": 5,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.00723125
+        },
+        {
+          "repetition": 6,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.008664291
+        },
+        {
+          "repetition": 6,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.011277917
+        },
+        {
+          "repetition": 7,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.009990625
+        },
+        {
+          "repetition": 7,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.00896925
+        },
+        {
+          "repetition": 8,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.007437875
+        },
+        {
+          "repetition": 8,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.014588416
+        },
+        {
+          "repetition": 9,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.010965917
+        },
+        {
+          "repetition": 9,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.007215167
+        },
+        {
+          "repetition": 10,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.007485667
+        },
+        {
+          "repetition": 10,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.011125375
+        },
+        {
+          "repetition": 11,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.010115209
+        },
+        {
+          "repetition": 11,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.007809334
+        },
+        {
+          "repetition": 12,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.023080417
+        },
+        {
+          "repetition": 12,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.013880417
+        },
+        {
+          "repetition": 13,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.01309875
+        },
+        {
+          "repetition": 13,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.007579959
+        },
+        {
+          "repetition": 14,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.007696667
+        },
+        {
+          "repetition": 14,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.010051833
+        },
+        {
+          "repetition": 15,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.010869542
+        },
+        {
+          "repetition": 15,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.00765875
+        },
+        {
+          "repetition": 16,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.007877292
+        },
+        {
+          "repetition": 16,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.009417875
+        },
+        {
+          "repetition": 17,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.03125725
+        },
+        {
+          "repetition": 17,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.016791333
+        },
+        {
+          "repetition": 18,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.013514375
+        },
+        {
+          "repetition": 18,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.009667583
+        },
+        {
+          "repetition": 19,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.009305542
+        },
+        {
+          "repetition": 19,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.007671542
+        },
+        {
+          "repetition": 20,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.007684208
+        },
+        {
+          "repetition": 20,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.011410917
+        }
+      ],
+      "statistics": {
+        "rust": {
+          "runs": 20,
+          "median_seconds": 0.0104923755,
+          "mean_seconds": 0.01184500845,
+          "min_seconds": 0.009305542,
+          "max_seconds": 0.03125725,
+          "stdev_seconds": 0.004813548620570029
+        },
+        "assembly": {
+          "runs": 20,
+          "median_seconds": 0.007665145999999999,
+          "mean_seconds": 0.00918987095,
+          "min_seconds": 0.006991625,
+          "max_seconds": 0.023080417,
+          "stdev_seconds": 0.004055331283212241
+        }
+      },
+      "rust_over_assembly_median": 1.3688422242707445
+    },
+    {
+      "name": "startup/default",
+      "argv": [
+        "small.txt"
+      ],
+      "input_bytes": 4096,
+      "files": 1,
+      "kind": "startup",
+      "preflight": {
+        "passed": true,
+        "stdout_sha256": "0687af29e98cbceead2ac560a0ab464974f8be3efd35aa037a5374dc186e9267",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "returncode": 0
+      },
+      "samples": [
+        {
+          "repetition": 1,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.002295208
+        },
+        {
+          "repetition": 1,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.001736542
+        },
+        {
+          "repetition": 2,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.001639083
+        },
+        {
+          "repetition": 2,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.002325667
+        },
+        {
+          "repetition": 3,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.002120291
+        },
+        {
+          "repetition": 3,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.001712584
+        },
+        {
+          "repetition": 4,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.001606459
+        },
+        {
+          "repetition": 4,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.002243125
+        },
+        {
+          "repetition": 5,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.002141333
+        },
+        {
+          "repetition": 5,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.001655875
+        },
+        {
+          "repetition": 6,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.001661458
+        },
+        {
+          "repetition": 6,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.002104833
+        },
+        {
+          "repetition": 7,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.002158542
+        },
+        {
+          "repetition": 7,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.001695292
+        },
+        {
+          "repetition": 8,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.001616291
+        },
+        {
+          "repetition": 8,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.002248583
+        },
+        {
+          "repetition": 9,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.004179042
+        },
+        {
+          "repetition": 9,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.002943125
+        },
+        {
+          "repetition": 10,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.003171541
+        },
+        {
+          "repetition": 10,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.003685083
+        },
+        {
+          "repetition": 11,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.004543458
+        },
+        {
+          "repetition": 11,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.002529958
+        },
+        {
+          "repetition": 12,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.00337825
+        },
+        {
+          "repetition": 12,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.002555667
+        },
+        {
+          "repetition": 13,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.002220958
+        },
+        {
+          "repetition": 13,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.001783375
+        },
+        {
+          "repetition": 14,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.001658875
+        },
+        {
+          "repetition": 14,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.002500333
+        },
+        {
+          "repetition": 15,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.002365375
+        },
+        {
+          "repetition": 15,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.001707459
+        },
+        {
+          "repetition": 16,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.001767167
+        },
+        {
+          "repetition": 16,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.002195042
+        },
+        {
+          "repetition": 17,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.0021585
+        },
+        {
+          "repetition": 17,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.0015855
+        },
+        {
+          "repetition": 18,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.001647208
+        },
+        {
+          "repetition": 18,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.002050375
+        },
+        {
+          "repetition": 19,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.002124583
+        },
+        {
+          "repetition": 19,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.001620916
+        },
+        {
+          "repetition": 20,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.001644166
+        },
+        {
+          "repetition": 20,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.00208825
+        }
+      ],
+      "statistics": {
+        "rust": {
+          "runs": 20,
+          "median_seconds": 0.0022320415,
+          "mean_seconds": 0.0025152124,
+          "min_seconds": 0.002050375,
+          "max_seconds": 0.004543458,
+          "stdev_seconds": 0.0007241380364186462
+        },
+        "assembly": {
+          "runs": 20,
+          "median_seconds": 0.001678375,
+          "mean_seconds": 0.0019380562,
+          "min_seconds": 0.0015855,
+          "max_seconds": 0.00337825,
+          "stdev_seconds": 0.0005687301614271088
+        }
+      },
+      "rust_over_assembly_median": 1.3298824756088479
+    },
+    {
+      "name": "startup/byte-metadata",
+      "argv": [
+        "-c",
+        "small.txt"
+      ],
+      "input_bytes": 4096,
+      "files": 1,
+      "kind": "startup",
+      "preflight": {
+        "passed": true,
+        "stdout_sha256": "89cc61fb62bdbdb5f39d9dadaa08cfa05016cc1ae1c1a65445586218e0ac8a93",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "returncode": 0
+      },
+      "samples": [
+        {
+          "repetition": 1,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.002238083
+        },
+        {
+          "repetition": 1,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.003581208
+        },
+        {
+          "repetition": 2,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.002174875
+        },
+        {
+          "repetition": 2,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.001680875
+        },
+        {
+          "repetition": 3,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.001639292
+        },
+        {
+          "repetition": 3,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.002074958
+        },
+        {
+          "repetition": 4,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.002071375
+        },
+        {
+          "repetition": 4,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.00164625
+        },
+        {
+          "repetition": 5,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.00158025
+        },
+        {
+          "repetition": 5,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.002072583
+        },
+        {
+          "repetition": 6,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.00202225
+        },
+        {
+          "repetition": 6,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.001631917
+        },
+        {
+          "repetition": 7,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.00158375
+        },
+        {
+          "repetition": 7,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.001949958
+        },
+        {
+          "repetition": 8,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.00197225
+        },
+        {
+          "repetition": 8,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.0016445
+        },
+        {
+          "repetition": 9,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.001696042
+        },
+        {
+          "repetition": 9,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.001947875
+        },
+        {
+          "repetition": 10,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.001920083
+        },
+        {
+          "repetition": 10,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.00170875
+        },
+        {
+          "repetition": 11,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.001594542
+        },
+        {
+          "repetition": 11,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.002044959
+        },
+        {
+          "repetition": 12,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.001917458
+        },
+        {
+          "repetition": 12,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.001704416
+        },
+        {
+          "repetition": 13,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.001694792
+        },
+        {
+          "repetition": 13,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.00201875
+        },
+        {
+          "repetition": 14,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.002931334
+        },
+        {
+          "repetition": 14,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.003932834
+        },
+        {
+          "repetition": 15,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.00198425
+        },
+        {
+          "repetition": 15,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.00215
+        },
+        {
+          "repetition": 16,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.002232
+        },
+        {
+          "repetition": 16,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.002132459
+        },
+        {
+          "repetition": 17,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.001830791
+        },
+        {
+          "repetition": 17,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.00208425
+        },
+        {
+          "repetition": 18,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.002040375
+        },
+        {
+          "repetition": 18,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.001713209
+        },
+        {
+          "repetition": 19,
+          "position": 1,
+          "implementation": "assembly",
+          "seconds": 0.001581583
+        },
+        {
+          "repetition": 19,
+          "position": 2,
+          "implementation": "rust",
+          "seconds": 0.002050291
+        },
+        {
+          "repetition": 20,
+          "position": 1,
+          "implementation": "rust",
+          "seconds": 0.002039
+        },
+        {
+          "repetition": 20,
+          "position": 2,
+          "implementation": "assembly",
+          "seconds": 0.001705458
+        }
+      ],
+      "statistics": {
+        "rust": {
+          "runs": 20,
+          "median_seconds": 0.002047625,
+          "mean_seconds": 0.0021647916,
+          "min_seconds": 0.001917458,
+          "max_seconds": 0.003581208,
+          "stdev_seconds": 0.0003961791522677853
+        },
+        "assembly": {
+          "runs": 20,
+          "median_seconds": 0.001695417,
+          "mean_seconds": 0.00184620215,
+          "min_seconds": 0.00158025,
+          "max_seconds": 0.003932834,
+          "stdev_seconds": 0.0005231736052298384
+        }
+      },
+      "rust_over_assembly_median": 1.207741222365943
+    }
+  ],
+  "corpus": {
+    "path": "$LOCAL_PATH",
+    "config": {
+      "version": 1,
+      "seed": 353417320259,
+      "size_mib": 128,
+      "many_count": 64
+    },
+    "files": {
+      "binary.dat": {
+        "bytes": 134217728,
+        "sha256": "6054c3f05ce6110aea9dcc3afc3f8c3ca8231b5909fc2778edde2d254a679f0b"
+      },
+      "many/file-000.dat": {
+        "bytes": 2097152,
+        "sha256": "4f37f94e66cab8e8a2aa921dfec8d3c5b2c0bd1b16656c369fa03bdf6ceb7cde"
+      },
+      "many/file-001.dat": {
+        "bytes": 2097152,
+        "sha256": "02dff025e11bb1ec5f6267b99d26793a650c5c308b8732003dc893dc9114967f"
+      },
+      "many/file-002.dat": {
+        "bytes": 2097152,
+        "sha256": "4f37f94e66cab8e8a2aa921dfec8d3c5b2c0bd1b16656c369fa03bdf6ceb7cde"
+      },
+      "many/file-003.dat": {
+        "bytes": 2097152,
+        "sha256": "02dff025e11bb1ec5f6267b99d26793a650c5c308b8732003dc893dc9114967f"
+      },
+      "many/file-004.dat": {
+        "bytes": 2097152,
+        "sha256": "4f37f94e66cab8e8a2aa921dfec8d3c5b2c0bd1b16656c369fa03bdf6ceb7cde"
+      },
+      "many/file-005.dat": {
+        "bytes": 2097152,
+        "sha256": "02dff025e11bb1ec5f6267b99d26793a650c5c308b8732003dc893dc9114967f"
+      },
+      "many/file-006.dat": {
+        "bytes": 2097152,
+        "sha256": "4f37f94e66cab8e8a2aa921dfec8d3c5b2c0bd1b16656c369fa03bdf6ceb7cde"
+      },
+      "many/file-007.dat": {
+        "bytes": 2097152,
+        "sha256": "02dff025e11bb1ec5f6267b99d26793a650c5c308b8732003dc893dc9114967f"
+      },
+      "many/file-008.dat": {
+        "bytes": 2097152,
+        "sha256": "4f37f94e66cab8e8a2aa921dfec8d3c5b2c0bd1b16656c369fa03bdf6ceb7cde"
+      },
+      "many/file-009.dat": {
+        "bytes": 2097152,
+        "sha256": "02dff025e11bb1ec5f6267b99d26793a650c5c308b8732003dc893dc9114967f"
+      },
+      "many/file-010.dat": {
+        "bytes": 2097152,
+        "sha256": "4f37f94e66cab8e8a2aa921dfec8d3c5b2c0bd1b16656c369fa03bdf6ceb7cde"
+      },
+      "many/file-011.dat": {
+        "bytes": 2097152,
+        "sha256": "02dff025e11bb1ec5f6267b99d26793a650c5c308b8732003dc893dc9114967f"
+      },
+      "many/file-012.dat": {
+        "bytes": 2097152,
+        "sha256": "4f37f94e66cab8e8a2aa921dfec8d3c5b2c0bd1b16656c369fa03bdf6ceb7cde"
+      },
+      "many/file-013.dat": {
+        "bytes": 2097152,
+        "sha256": "02dff025e11bb1ec5f6267b99d26793a650c5c308b8732003dc893dc9114967f"
+      },
+      "many/file-014.dat": {
+        "bytes": 2097152,
+        "sha256": "4f37f94e66cab8e8a2aa921dfec8d3c5b2c0bd1b16656c369fa03bdf6ceb7cde"
+      },
+      "many/file-015.dat": {
+        "bytes": 2097152,
+        "sha256": "02dff025e11bb1ec5f6267b99d26793a650c5c308b8732003dc893dc9114967f"
+      },
+      "many/file-016.dat": {
+        "bytes": 2097152,
+        "sha256": "4f37f94e66cab8e8a2aa921dfec8d3c5b2c0bd1b16656c369fa03bdf6ceb7cde"
+      },
+      "many/file-017.dat": {
+        "bytes": 2097152,
+        "sha256": "02dff025e11bb1ec5f6267b99d26793a650c5c308b8732003dc893dc9114967f"
+      },
+      "many/file-018.dat": {
+        "bytes": 2097152,
+        "sha256": "4f37f94e66cab8e8a2aa921dfec8d3c5b2c0bd1b16656c369fa03bdf6ceb7cde"
+      },
+      "many/file-019.dat": {
+        "bytes": 2097152,
+        "sha256": "02dff025e11bb1ec5f6267b99d26793a650c5c308b8732003dc893dc9114967f"
+      },
+      "many/file-020.dat": {
+        "bytes": 2097152,
+        "sha256": "4f37f94e66cab8e8a2aa921dfec8d3c5b2c0bd1b16656c369fa03bdf6ceb7cde"
+      },
+      "many/file-021.dat": {
+        "bytes": 2097152,
+        "sha256": "02dff025e11bb1ec5f6267b99d26793a650c5c308b8732003dc893dc9114967f"
+      },
+      "many/file-022.dat": {
+        "bytes": 2097152,
+        "sha256": "4f37f94e66cab8e8a2aa921dfec8d3c5b2c0bd1b16656c369fa03bdf6ceb7cde"
+      },
+      "many/file-023.dat": {
+        "bytes": 2097152,
+        "sha256": "02dff025e11bb1ec5f6267b99d26793a650c5c308b8732003dc893dc9114967f"
+      },
+      "many/file-024.dat": {
+        "bytes": 2097152,
+        "sha256": "4f37f94e66cab8e8a2aa921dfec8d3c5b2c0bd1b16656c369fa03bdf6ceb7cde"
+      },
+      "many/file-025.dat": {
+        "bytes": 2097152,
+        "sha256": "02dff025e11bb1ec5f6267b99d26793a650c5c308b8732003dc893dc9114967f"
+      },
+      "many/file-026.dat": {
+        "bytes": 2097152,
+        "sha256": "4f37f94e66cab8e8a2aa921dfec8d3c5b2c0bd1b16656c369fa03bdf6ceb7cde"
+      },
+      "many/file-027.dat": {
+        "bytes": 2097152,
+        "sha256": "02dff025e11bb1ec5f6267b99d26793a650c5c308b8732003dc893dc9114967f"
+      },
+      "many/file-028.dat": {
+        "bytes": 2097152,
+        "sha256": "4f37f94e66cab8e8a2aa921dfec8d3c5b2c0bd1b16656c369fa03bdf6ceb7cde"
+      },
+      "many/file-029.dat": {
+        "bytes": 2097152,
+        "sha256": "02dff025e11bb1ec5f6267b99d26793a650c5c308b8732003dc893dc9114967f"
+      },
+      "many/file-030.dat": {
+        "bytes": 2097152,
+        "sha256": "4f37f94e66cab8e8a2aa921dfec8d3c5b2c0bd1b16656c369fa03bdf6ceb7cde"
+      },
+      "many/file-031.dat": {
+        "bytes": 2097152,
+        "sha256": "02dff025e11bb1ec5f6267b99d26793a650c5c308b8732003dc893dc9114967f"
+      },
+      "many/file-032.dat": {
+        "bytes": 2097152,
+        "sha256": "4f37f94e66cab8e8a2aa921dfec8d3c5b2c0bd1b16656c369fa03bdf6ceb7cde"
+      },
+      "many/file-033.dat": {
+        "bytes": 2097152,
+        "sha256": "02dff025e11bb1ec5f6267b99d26793a650c5c308b8732003dc893dc9114967f"
+      },
+      "many/file-034.dat": {
+        "bytes": 2097152,
+        "sha256": "4f37f94e66cab8e8a2aa921dfec8d3c5b2c0bd1b16656c369fa03bdf6ceb7cde"
+      },
+      "many/file-035.dat": {
+        "bytes": 2097152,
+        "sha256": "02dff025e11bb1ec5f6267b99d26793a650c5c308b8732003dc893dc9114967f"
+      },
+      "many/file-036.dat": {
+        "bytes": 2097152,
+        "sha256": "4f37f94e66cab8e8a2aa921dfec8d3c5b2c0bd1b16656c369fa03bdf6ceb7cde"
+      },
+      "many/file-037.dat": {
+        "bytes": 2097152,
+        "sha256": "02dff025e11bb1ec5f6267b99d26793a650c5c308b8732003dc893dc9114967f"
+      },
+      "many/file-038.dat": {
+        "bytes": 2097152,
+        "sha256": "4f37f94e66cab8e8a2aa921dfec8d3c5b2c0bd1b16656c369fa03bdf6ceb7cde"
+      },
+      "many/file-039.dat": {
+        "bytes": 2097152,
+        "sha256": "02dff025e11bb1ec5f6267b99d26793a650c5c308b8732003dc893dc9114967f"
+      },
+      "many/file-040.dat": {
+        "bytes": 2097152,
+        "sha256": "4f37f94e66cab8e8a2aa921dfec8d3c5b2c0bd1b16656c369fa03bdf6ceb7cde"
+      },
+      "many/file-041.dat": {
+        "bytes": 2097152,
+        "sha256": "02dff025e11bb1ec5f6267b99d26793a650c5c308b8732003dc893dc9114967f"
+      },
+      "many/file-042.dat": {
+        "bytes": 2097152,
+        "sha256": "4f37f94e66cab8e8a2aa921dfec8d3c5b2c0bd1b16656c369fa03bdf6ceb7cde"
+      },
+      "many/file-043.dat": {
+        "bytes": 2097152,
+        "sha256": "02dff025e11bb1ec5f6267b99d26793a650c5c308b8732003dc893dc9114967f"
+      },
+      "many/file-044.dat": {
+        "bytes": 2097152,
+        "sha256": "4f37f94e66cab8e8a2aa921dfec8d3c5b2c0bd1b16656c369fa03bdf6ceb7cde"
+      },
+      "many/file-045.dat": {
+        "bytes": 2097152,
+        "sha256": "02dff025e11bb1ec5f6267b99d26793a650c5c308b8732003dc893dc9114967f"
+      },
+      "many/file-046.dat": {
+        "bytes": 2097152,
+        "sha256": "4f37f94e66cab8e8a2aa921dfec8d3c5b2c0bd1b16656c369fa03bdf6ceb7cde"
+      },
+      "many/file-047.dat": {
+        "bytes": 2097152,
+        "sha256": "02dff025e11bb1ec5f6267b99d26793a650c5c308b8732003dc893dc9114967f"
+      },
+      "many/file-048.dat": {
+        "bytes": 2097152,
+        "sha256": "4f37f94e66cab8e8a2aa921dfec8d3c5b2c0bd1b16656c369fa03bdf6ceb7cde"
+      },
+      "many/file-049.dat": {
+        "bytes": 2097152,
+        "sha256": "02dff025e11bb1ec5f6267b99d26793a650c5c308b8732003dc893dc9114967f"
+      },
+      "many/file-050.dat": {
+        "bytes": 2097152,
+        "sha256": "4f37f94e66cab8e8a2aa921dfec8d3c5b2c0bd1b16656c369fa03bdf6ceb7cde"
+      },
+      "many/file-051.dat": {
+        "bytes": 2097152,
+        "sha256": "02dff025e11bb1ec5f6267b99d26793a650c5c308b8732003dc893dc9114967f"
+      },
+      "many/file-052.dat": {
+        "bytes": 2097152,
+        "sha256": "4f37f94e66cab8e8a2aa921dfec8d3c5b2c0bd1b16656c369fa03bdf6ceb7cde"
+      },
+      "many/file-053.dat": {
+        "bytes": 2097152,
+        "sha256": "02dff025e11bb1ec5f6267b99d26793a650c5c308b8732003dc893dc9114967f"
+      },
+      "many/file-054.dat": {
+        "bytes": 2097152,
+        "sha256": "4f37f94e66cab8e8a2aa921dfec8d3c5b2c0bd1b16656c369fa03bdf6ceb7cde"
+      },
+      "many/file-055.dat": {
+        "bytes": 2097152,
+        "sha256": "02dff025e11bb1ec5f6267b99d26793a650c5c308b8732003dc893dc9114967f"
+      },
+      "many/file-056.dat": {
+        "bytes": 2097152,
+        "sha256": "4f37f94e66cab8e8a2aa921dfec8d3c5b2c0bd1b16656c369fa03bdf6ceb7cde"
+      },
+      "many/file-057.dat": {
+        "bytes": 2097152,
+        "sha256": "02dff025e11bb1ec5f6267b99d26793a650c5c308b8732003dc893dc9114967f"
+      },
+      "many/file-058.dat": {
+        "bytes": 2097152,
+        "sha256": "4f37f94e66cab8e8a2aa921dfec8d3c5b2c0bd1b16656c369fa03bdf6ceb7cde"
+      },
+      "many/file-059.dat": {
+        "bytes": 2097152,
+        "sha256": "02dff025e11bb1ec5f6267b99d26793a650c5c308b8732003dc893dc9114967f"
+      },
+      "many/file-060.dat": {
+        "bytes": 2097152,
+        "sha256": "4f37f94e66cab8e8a2aa921dfec8d3c5b2c0bd1b16656c369fa03bdf6ceb7cde"
+      },
+      "many/file-061.dat": {
+        "bytes": 2097152,
+        "sha256": "02dff025e11bb1ec5f6267b99d26793a650c5c308b8732003dc893dc9114967f"
+      },
+      "many/file-062.dat": {
+        "bytes": 2097152,
+        "sha256": "4f37f94e66cab8e8a2aa921dfec8d3c5b2c0bd1b16656c369fa03bdf6ceb7cde"
+      },
+      "many/file-063.dat": {
+        "bytes": 2097152,
+        "sha256": "02dff025e11bb1ec5f6267b99d26793a650c5c308b8732003dc893dc9114967f"
+      },
+      "small.txt": {
+        "bytes": 4096,
+        "sha256": "baacb58281782cdaf0ce63f8de9fc7f4d4f4ca9d88a1b33d591dfd0b70387658"
+      },
+      "text.dat": {
+        "bytes": 134217728,
+        "sha256": "1444eeead12dd1bbabfe1974750aeef112fca29ee0f54e18f33b76bb18d4db7c"
+      }
+    }
+  }
+}

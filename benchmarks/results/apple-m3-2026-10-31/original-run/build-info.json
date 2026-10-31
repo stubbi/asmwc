@@ -1,0 +1,61 @@
+{
+  "upstream": {
+    "url": "https://github.com/LuminousToaster/ripwc",
+    "commit": "de1a12e8e2d7c031404370773e5099b23ef01e95",
+    "source_sha256": "e2be7b071e28056f9a388c6717cde7592108672c56c568c092d8c68eab17af8b",
+    "cargo_lock_sha256": "ffdd4e4645e5f7c39fef34dc09009533c12207aae5f474bab36d0b8d75fa2a7f"
+  },
+  "machine": {
+    "uname": "Darwin benchmark-host 24.6.0 Darwin Kernel Version 24.6.0: Mon Jul 14 11:29:54 PDT 2025; root:xnu-11417.140.69~1/RELEASE_ARM64_T8122 arm64",
+    "macos": "ProductName:\t\tmacOS\nProductVersion:\t\t15.6.1\nBuildVersion:\t\t24G90",
+    "cpu": "Apple M3",
+    "physical_cores": "8",
+    "logical_cores": "8",
+    "memory_bytes": "17179869184"
+  },
+  "compiler": {
+    "rustc": "rustc 1.97.1 (8bab26f4f 2026-07-14)\nbinary: rustc\ncommit-hash: 8bab26f4f68e0e26f0bb7960be334d5b520ea452\ncommit-date: 2026-07-14\nhost: aarch64-apple-darwin\nrelease: 1.97.1\nLLVM version: 22.1.6",
+    "cargo": "cargo 1.97.1 (c980f4866 2026-06-30)",
+    "clang": "Apple clang version 17.0.0 (clang-1700.0.13.5)\nTarget: arm64-apple-darwin24.6.0\nThread model: posix\nInstalledDir: /Library/Developer/CommandLineTools/usr/bin"
+  },
+  "rust_build": {
+    "flags": "-C target-cpu=native",
+    "profile": {
+      "opt-level": 3,
+      "lto": "fat",
+      "codegen-units": 1,
+      "panic": "abort"
+    },
+    "incremental": false,
+    "upstream_source_modified": false,
+    "dependencies": "pinned by included Cargo.lock (upstream did not include one)"
+  },
+  "assembly_build": [
+    "clang",
+    "-arch",
+    "arm64",
+    "-mcpu=apple-m3",
+    "-O3",
+    "-g",
+    "src/main.S",
+    "src/cli.S",
+    "src/count.S",
+    "-o",
+    "bin/ripwc"
+  ],
+  "os_services": "libSystem libc + libdispatch; all application logic and scanning written in ARM64 assembly",
+  "binaries": {
+    "ripwc": {
+      "bytes": 53144,
+      "sha256": "83895d39fffdc6f0f1ac260a351eebb9db11644f39bd5856ca1fa247a4b342cb",
+      "file": "outputs/ripwc-asm/bin/ripwc: Mach-O 64-bit executable arm64",
+      "libraries": "outputs/ripwc-asm/bin/ripwc:\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1351.0.0)"
+    },
+    "ripwc-rust": {
+      "bytes": 721376,
+      "sha256": "a037debe5b358e3cdf38fc4122b4ca91b3e6b8438373e22cbb9ccdf8143d45e7",
+      "file": "outputs/ripwc-asm/bin/ripwc-rust: Mach-O 64-bit executable arm64",
+      "libraries": "outputs/ripwc-asm/bin/ripwc-rust:\n\t/usr/lib/libiconv.2.dylib (compatibility version 7.0.0, current version 7.0.0)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1351.0.0)"
+    }
+  }
+}

@@ -1,0 +1,35 @@
+name: Bug report
+description: Report a build, counting, CLI, or compatibility problem.
+title: "bug: "
+body:
+  - type: markdown
+    attributes:
+      value: "For suspected memory corruption or other security findings, use the private security reporting link instead."
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Source commit, macOS version, chip, and compiler versions.
+      placeholder: "git rev-parse HEAD; sw_vers; uname -m; clang --version; rustc --version"
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproducer
+      description: Exact build/run commands and a minimal input. Avoid private files or sensitive data.
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected and observed behavior
+      description: Include stdout, stderr, exit status, and the pinned Rust reference result when relevant.
+    validations:
+      required: true
+  - type: textarea
+    id: validation
+    attributes:
+      label: Checks already run
+      description: Include relevant make check or make test output, or explain why they could not run.

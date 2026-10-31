@@ -1,0 +1,30 @@
+name: Performance investigation
+description: Share a reproducible slowdown or an optimization proposal.
+title: "perf: "
+body:
+  - type: textarea
+    id: environment
+    attributes:
+      label: Hardware and builds
+      description: Chip, core availability, macOS, compiler versions, source revisions and exact build flags.
+    validations:
+      required: true
+  - type: textarea
+    id: workload
+    attributes:
+      label: Workload and commands
+      description: Input size/type, corpus generation, cache state, repetitions, execution order and exact commands.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Parity and measurements
+      description: Verify identical outputs first. Attach raw samples and describe the observed spread, not just the fastest result.
+    validations:
+      required: true
+  - type: textarea
+    id: hypothesis
+    attributes:
+      label: Hypothesis
+      description: What bottleneck or implementation change could explain the result?

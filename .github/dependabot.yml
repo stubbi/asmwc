@@ -1,0 +1,16 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      github-actions:
+        patterns: ['*']
+  - package-ecosystem: cargo
+    directory: /upstream
+    schedule:
+      interval: weekly
+    groups:
+      rust-baseline-dependencies:
+        patterns: ['*']

@@ -1,0 +1,15 @@
+# Local executables, compiler output, and generated benchmark corpora.
+/bin/
+/.build/
+/upstream/target/
+
+# Regenerated reports; reviewed evidence is kept separately in benchmarks/.
+/results/
+
+# Local interpreter and editor state.
+__pycache__/
+*.py[cod]
+*.dSYM/
+.DS_Store
+.idea/
+.vscode/

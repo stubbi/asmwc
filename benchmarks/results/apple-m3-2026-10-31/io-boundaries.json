@@ -1,0 +1,436 @@
+{
+  "status": "passed",
+  "cases": 86,
+  "results": [
+    {
+      "case": "boundary-16384--1/-lwmcL",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-16384--1/-wL",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-16384--1/-l",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-16384--1/-m",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-16384--1/-c",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-16384-0/-lwmcL",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-16384-0/-wL",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-16384-0/-l",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-16384-0/-m",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-16384-0/-c",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-16384-1/-lwmcL",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-16384-1/-wL",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-16384-1/-l",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-16384-1/-m",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-16384-1/-c",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-65536--1/-lwmcL",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-65536--1/-wL",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-65536--1/-l",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-65536--1/-m",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-65536--1/-c",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-65536-0/-lwmcL",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-65536-0/-wL",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-65536-0/-l",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-65536-0/-m",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-65536-0/-c",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-65536-1/-lwmcL",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-65536-1/-wL",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-65536-1/-l",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-65536-1/-m",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-65536-1/-c",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-131072--1/-lwmcL",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-131072--1/-wL",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-131072--1/-l",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-131072--1/-m",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-131072--1/-c",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-131072-0/-lwmcL",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-131072-0/-wL",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-131072-0/-l",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-131072-0/-m",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-131072-0/-c",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-131072-1/-lwmcL",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-131072-1/-wL",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-131072-1/-l",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-131072-1/-m",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-131072-1/-c",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-262144--1/-lwmcL",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-262144--1/-wL",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-262144--1/-l",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-262144--1/-m",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-262144--1/-c",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-262144-0/-lwmcL",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-262144-0/-wL",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-262144-0/-l",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-262144-0/-m",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-262144-0/-c",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-262144-1/-lwmcL",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-262144-1/-wL",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-262144-1/-l",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-262144-1/-m",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-262144-1/-c",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-1048576--1/-lwmcL",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-1048576--1/-wL",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-1048576--1/-l",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-1048576--1/-m",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-1048576--1/-c",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-1048576-0/-lwmcL",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-1048576-0/-wL",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-1048576-0/-l",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-1048576-0/-m",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-1048576-0/-c",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-1048576-1/-lwmcL",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-1048576-1/-wL",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-1048576-1/-l",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-1048576-1/-m",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "boundary-1048576-1/-c",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "empty/-lwmcL",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "empty/-c",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "empty/-L",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "special/null/-lwmcL",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "special/null/-c",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "special/ripwc-io-boundaries-bzxoq1ee/-lwmcL",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "special/ripwc-io-boundaries-bzxoq1ee/-c",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "fifo/-lwmcL",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "fifo/-wL",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "fifo/-l",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    },
+    {
+      "case": "fifo/-m",
+      "binary": "$REPO/bin/ripwc",
+      "passed": true
+    }
+  ]
+}
