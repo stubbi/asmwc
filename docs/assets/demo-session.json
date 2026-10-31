@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "description": "Actual CLI output captured in an isolated temporary directory.",
+  "input": {
+    "path": "example.txt",
+    "content": "hello assembly\n",
+    "byte_length": 15
+  },
+  "session": [
+    {
+      "command": "printf 'hello assembly\\n' > example.txt",
+      "stdout": "",
+      "stderr": "",
+      "exit_code": 0
+    },
+    {
+      "command": "./bin/ripwc example.txt",
+      "stdout": "lines: 1 words: 2 bytes: 15 example.txt\n",
+      "stderr": "",
+      "exit_code": 0
+    },
+    {
+      "command": "./bin/ripwc -lwmcL example.txt",
+      "stdout": "lines: 1 words: 2 chars: 15 bytes: 15 max line length: 14 example.txt\n",
+      "stderr": "",
+      "exit_code": 0
+    }
+  ]
+}

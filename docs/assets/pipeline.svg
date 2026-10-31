@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="344" viewBox="0 0 1200 344" role="img" aria-labelledby="title desc">
+  <title id="title">The eligible single-file read and scan pipeline</title>
+  <desc id="desc">This path is selected for exactly one collected task, with word counting enabled and saved size at least 8 MiB. The reader issues sequential reads into four reusable 1 MiB buffers. One serial NEON scanning worker processes the buffers in order, preserving word and line state across chunks. Reads overlap queued scans. All scans in the batch finish before buffers are reused. Counts are finalized once at EOF.</desc>
+  <rect width="1200" height="344" rx="20" fill="#0b1220"/>
+  <text x="30" y="43" font-family="-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, sans-serif" font-size="27" font-weight="600" fill="#f8fafc" text-anchor="start" xml:space="preserve">One file, overlapped reading and counting</text>
+  <text x="30" y="75" font-family="-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, sans-serif" font-size="18" font-weight="400" fill="#94a3b8" text-anchor="start" xml:space="preserve">Eligible path: exactly one task · word counting enabled · saved size ≥ 8 MiB</text>
+  <rect x="30" y="103" width="209" height="114" rx="12" fill="#111c2f" stroke="#26364c"/>
+  <text x="134" y="138" font-family="-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, sans-serif" font-size="22" font-weight="600" fill="#f8fafc" text-anchor="middle" xml:space="preserve">Sequential reader</text>
+  <text x="134" y="169" font-family="-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, sans-serif" font-size="16" font-weight="400" fill="#cbd5e1" text-anchor="middle" xml:space="preserve">owns the file descriptor</text>
+  <text x="134" y="195" font-family="-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, sans-serif" font-size="16" font-weight="400" fill="#94a3b8" text-anchor="middle" xml:space="preserve">read, then enqueue</text>
+  <rect x="283" y="103" width="290" height="114" rx="12" fill="#111c2f" stroke="#26364c"/>
+  <text x="428" y="132" font-family="-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, sans-serif" font-size="22" font-weight="600" fill="#f8fafc" text-anchor="middle" xml:space="preserve">4 reusable buffers</text>
+  <rect x="298" y="147" width="59" height="55" rx="7" fill="#0b1220" stroke="#26364c"/>
+  <text x="327" y="169" font-family="ui-monospace, &#x27;SFMono-Regular&#x27;, Menlo, Consolas, monospace" font-size="17" font-weight="600" fill="#4adbc8" text-anchor="middle" xml:space="preserve">B0</text>
+  <text x="327" y="190" font-family="-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, sans-serif" font-size="14" font-weight="400" fill="#cbd5e1" text-anchor="middle" xml:space="preserve">1 MiB</text>
+  <rect x="365" y="147" width="59" height="55" rx="7" fill="#0b1220" stroke="#26364c"/>
+  <text x="394" y="169" font-family="ui-monospace, &#x27;SFMono-Regular&#x27;, Menlo, Consolas, monospace" font-size="17" font-weight="600" fill="#4adbc8" text-anchor="middle" xml:space="preserve">B1</text>
+  <text x="394" y="190" font-family="-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, sans-serif" font-size="14" font-weight="400" fill="#cbd5e1" text-anchor="middle" xml:space="preserve">1 MiB</text>
+  <rect x="432" y="147" width="59" height="55" rx="7" fill="#0b1220" stroke="#26364c"/>
+  <text x="461" y="169" font-family="ui-monospace, &#x27;SFMono-Regular&#x27;, Menlo, Consolas, monospace" font-size="17" font-weight="600" fill="#4adbc8" text-anchor="middle" xml:space="preserve">B2</text>
+  <text x="461" y="190" font-family="-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, sans-serif" font-size="14" font-weight="400" fill="#cbd5e1" text-anchor="middle" xml:space="preserve">1 MiB</text>
+  <rect x="499" y="147" width="59" height="55" rx="7" fill="#0b1220" stroke="#26364c"/>
+  <text x="528" y="169" font-family="ui-monospace, &#x27;SFMono-Regular&#x27;, Menlo, Consolas, monospace" font-size="17" font-weight="600" fill="#4adbc8" text-anchor="middle" xml:space="preserve">B3</text>
+  <text x="528" y="190" font-family="-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, sans-serif" font-size="14" font-weight="400" fill="#cbd5e1" text-anchor="middle" xml:space="preserve">1 MiB</text>
+  <rect x="617" y="103" width="290" height="114" rx="12" fill="#111c2f" stroke="#26364c"/>
+  <text x="762" y="138" font-family="-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, sans-serif" font-size="22" font-weight="600" fill="#f8fafc" text-anchor="middle" xml:space="preserve">Serial NEON scanner</text>
+  <text x="762" y="169" font-family="-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, sans-serif" font-size="17" font-weight="400" fill="#cbd5e1" text-anchor="middle" xml:space="preserve">one ordered worker</text>
+  <text x="762" y="195" font-family="-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, sans-serif" font-size="17" font-weight="400" fill="#4adbc8" text-anchor="middle" xml:space="preserve">word + line state carry</text>
+  <rect x="951" y="103" width="219" height="114" rx="12" fill="#111c2f" stroke="#26364c"/>
+  <text x="1060" y="138" font-family="-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, sans-serif" font-size="22" font-weight="600" fill="#f8fafc" text-anchor="middle" xml:space="preserve">Final counts</text>
+  <text x="1060" y="175" font-family="-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, sans-serif" font-size="16" font-weight="400" fill="#cbd5e1" text-anchor="middle" xml:space="preserve">finalize once at EOF</text>
+  <path d="M247 160H268" fill="none" stroke="#4adbc8" stroke-width="2"/>
+  <path d="M267 155L275 160L267 165" fill="none" stroke="#4adbc8" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M581 160H602" fill="none" stroke="#4adbc8" stroke-width="2"/>
+  <path d="M601 155L609 160L601 165" fill="none" stroke="#4adbc8" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M915 160H936" fill="none" stroke="#4adbc8" stroke-width="2"/>
+  <path d="M935 155L943 160L935 165" fill="none" stroke="#4adbc8" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="30" y="239" width="877" height="38" rx="8" fill="#0b1220" stroke="#26364c"/>
+  <text x="468" y="264" font-family="-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, sans-serif" font-size="18" font-weight="400" fill="#cbd5e1" text-anchor="middle" xml:space="preserve">The reader fills the next buffer while queued buffers scan.</text>
+  <path d="M762 283V301H428V283" fill="none" stroke="#4adbc8" stroke-width="2"/>
+  <path d="M423 290L428 282L433 290" fill="none" stroke="#4adbc8" stroke-width="2" stroke-linejoin="round"/>
+  <text x="595" y="329" font-family="-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, sans-serif" font-size="17" font-weight="400" fill="#94a3b8" text-anchor="middle" xml:space="preserve">Wait for the whole batch before reusing buffers.</text>
+</svg>

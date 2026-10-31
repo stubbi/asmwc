@@ -6,6 +6,8 @@ An experimental Apple Silicon implementation of [ripwc](https://github.com/Lumin
 
 Parsing, traversal policy, counting, aggregation, and formatting are assembly. macOS libc provides operating-system services; libdispatch schedules work. The executable links to libSystem and has no C or Rust application wrapper. C is used only in test harnesses.
 
+![Actual terminal demonstration: a 15-byte example file produces one line, two words, 15 characters and bytes, and a maximum line length of 14.](docs/assets/terminal-demo.svg)
+
 ## Build and run
 
 Building the assembly executable requires **Apple Silicon macOS** and **Xcode Command Line Tools**. The default build is tuned for Apple M3; the recorded validation platform is M3 on macOS 15.6.1. For an earlier Apple Silicon chip, select its compiler target, for example `make CPU=apple-m1`. Linux and Intel Macs are outside the current scope.
@@ -36,6 +38,8 @@ Paths are required; `-` means a literal filename. There is no standard-input mod
 
 On one **8-core Apple M3, 16 GiB, macOS 15.6.1**, the optimized assembly was **4.49–4.65× faster** than the pinned, natively optimized Rust implementation for default counting, and **9.14–9.22× faster** for all five fields. Each large input was 128 MiB; these are warm-cache, whole-program medians from 24 samples per implementation, recorded on 31 October 2026.
 
+![Zero-based benchmark chart comparing native Rust, the first assembly implementation, and optimized assembly on four 128 MiB workloads. The exact median times are also listed below.](docs/assets/benchmark.svg)
+
 | Workload | Native Rust | Assembly | Rust / assembly |
 |---|---:|---:|---:|
 | Text, default | 68.468 ms | 15.234 ms | 4.49× |
@@ -62,6 +66,12 @@ The recorded validation passed **445 end-to-end cases**, **576 CLI differential 
 
 Generated executables, local reports, and benchmark corpora are excluded from version control. The committed benchmark snapshot is separate from newly generated `results/` files. Rebuilt executable hashes can differ from the recorded ones; the benchmark report explains the snapshot's provenance.
 
+## How it works
+
+![For one eligible word-counting task of at least 8 MiB, sequential reads feed four reusable 1 MiB buffers. One serial NEON scanner preserves word and line carry; the batch finishes before buffers are reused, and counts are finalized at EOF.](docs/assets/pipeline.svg)
+
+The reader and scanner overlap work while retaining sequential reads to EOF and ordered count state. Smaller and multiple-file jobs use their own paths, described in the [architecture guide](docs/ARCHITECTURE.md).
+
 ## Project guide
 
 - [Architecture](docs/ARCHITECTURE.md): source map, scanner state, scheduling, and I/O design.
@@ -69,6 +79,7 @@ Generated executables, local reports, and benchmark corpora are excluded from ve
 - [Benchmarks](docs/BENCHMARKS.md): methodology, full results, and reproduction.
 - [Contributing](CONTRIBUTING.md): correctness and measurement expectations.
 - [Changelog](CHANGELOG.md): changes in this repository.
+- [README graphics](docs/assets/README.md): captured output, chart data, and regeneration.
 
 ## Attribution and license
 
