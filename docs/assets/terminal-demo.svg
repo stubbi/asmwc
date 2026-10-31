@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="420" viewBox="0 0 1200 420" role="img" aria-labelledby="title desc">
+  <title id="title">ripwc-asm: a captured command-line demonstration</title>
+  <desc id="desc">A real invocation on example.txt containing hello assembly followed by LF, 15 bytes in total. The default output reports one line, two words and 15 bytes. Selecting -lwmcL also reports 15 nonzero bytes as chars and maximum line length 14. The adjacent demo-session.json preserves every command, stdout, stderr and exit code.</desc>
+  <rect width="1200" height="420" rx="20" fill="#0b1220"/>
+  <text x="32" y="46" font-family="-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, sans-serif" font-size="28" font-weight="600" fill="#f8fafc" text-anchor="start" xml:space="preserve">A tiny file. Every count.</text>
+  <rect x="944" y="21" width="224" height="34" rx="17" fill="#0b1220" stroke="#26364c"/>
+  <text x="1056" y="43" font-family="-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, sans-serif" font-size="14" font-weight="600" fill="#4adbc8" text-anchor="middle" xml:space="preserve">ACTUAL CLI OUTPUT</text>
+  <path d="M32 73H1168" fill="none" stroke="#26364c"/>
+  <text x="32" y="114" font-family="ui-monospace, &#x27;SFMono-Regular&#x27;, Menlo, Consolas, monospace" font-size="22" font-weight="400" fill="#4adbc8" text-anchor="start" xml:space="preserve">$</text>
+  <text x="59" y="114" font-family="ui-monospace, &#x27;SFMono-Regular&#x27;, Menlo, Consolas, monospace" font-size="22" font-weight="400" fill="#f8fafc" text-anchor="start" xml:space="preserve">printf &#x27;hello assembly\n&#x27; &gt; example.txt</text>
+  <rect x="895" y="91" width="273" height="34" rx="8" fill="#111c2f" stroke="#26364c"/>
+  <text x="1031" y="114" font-family="-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, sans-serif" font-size="16" font-weight="400" fill="#cbd5e1" text-anchor="middle" xml:space="preserve">example.txt · 15 bytes · LF</text>
+  <text x="32" y="158" font-family="-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, sans-serif" font-size="13" font-weight="600" fill="#94a3b8" text-anchor="start" xml:space="preserve">DEFAULT COUNTS</text>
+  <text x="32" y="188" font-family="ui-monospace, &#x27;SFMono-Regular&#x27;, Menlo, Consolas, monospace" font-size="22" font-weight="400" fill="#4adbc8" text-anchor="start" xml:space="preserve">$</text>
+  <text x="59" y="188" font-family="ui-monospace, &#x27;SFMono-Regular&#x27;, Menlo, Consolas, monospace" font-size="22" font-weight="400" fill="#f8fafc" text-anchor="start" xml:space="preserve">./bin/ripwc example.txt</text>
+  <text x="59" y="222" font-family="ui-monospace, &#x27;SFMono-Regular&#x27;, Menlo, Consolas, monospace" font-size="22" font-weight="400" fill="#cbd5e1" text-anchor="start" xml:space="preserve">lines: 1 words: 2 bytes: 15 example.txt</text>
+  <text x="32" y="267" font-family="-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, sans-serif" font-size="13" font-weight="600" fill="#94a3b8" text-anchor="start" xml:space="preserve">ALL FIVE COUNTS</text>
+  <text x="32" y="297" font-family="ui-monospace, &#x27;SFMono-Regular&#x27;, Menlo, Consolas, monospace" font-size="22" font-weight="400" fill="#4adbc8" text-anchor="start" xml:space="preserve">$</text>
+  <text x="59" y="297" font-family="ui-monospace, &#x27;SFMono-Regular&#x27;, Menlo, Consolas, monospace" font-size="22" font-weight="400" fill="#f8fafc" text-anchor="start" xml:space="preserve">./bin/ripwc -lwmcL example.txt</text>
+  <text x="59" y="331" font-family="ui-monospace, &#x27;SFMono-Regular&#x27;, Menlo, Consolas, monospace" font-size="22" font-weight="400" fill="#cbd5e1" text-anchor="start" xml:space="preserve">lines: 1 words: 2 chars: 15 bytes: 15 max line length: 14 example.txt</text>
+  <path d="M32 364H1168" fill="none" stroke="#26364c"/>
+  <text x="32" y="397" font-family="-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, sans-serif" font-size="18" font-weight="400" fill="#94a3b8" text-anchor="start" xml:space="preserve">“chars” counts nonzero bytes. Maximum line length excludes LF.</text>
+</svg>
