@@ -10,8 +10,9 @@ import random
 import subprocess
 import tempfile
 
-ROOT = Path(__file__).resolve().parents[1]
-RUST = ROOT / "bin/ripwc-rust"
+from support import BIN_DIR, compiler, native_source
+
+RUST = BIN_DIR / "ripwc-rust"
 HARNESS = r"""
 #include <stdint.h>
 #include <stdio.h>
@@ -22,8 +23,9 @@ extern char **ripwc_paths;
 int main(int argc, char **argv) {
     ripwc_parse(argc, argv);
     if (getenv("RIPWC_CLI_DUMP")) {
-        printf("%llu %llu %llu %llu\n", ripwc_flags, ripwc_recursive,
-               ripwc_verbose, ripwc_nargs);
+        printf("%llu %llu %llu %llu\n", (unsigned long long)ripwc_flags,
+               (unsigned long long)ripwc_recursive,
+               (unsigned long long)ripwc_verbose, (unsigned long long)ripwc_nargs);
         for (uint64_t i = 0; i < ripwc_nargs; ++i) puts(ripwc_paths[i]);
     }
     return 0;
@@ -45,7 +47,7 @@ with tempfile.TemporaryDirectory(prefix="ripwc-cli-") as temp:
     temp = Path(temp)
     source, harness = temp / "harness.c", temp / "harness"
     source.write_text(HARNESS)
-    subprocess.run(["clang", str(source), str(ROOT / "src/cli.S"), "-o",
+    subprocess.run([*compiler(), "-Wall", "-Wextra", "-Werror", str(source), str(native_source("cli.S")), "-o",
                     str(harness)], check=True)
     cases = [[], [b"--help"], [b"-h"], [b"--version"], [b"-V"],
              [b"--wat"], [b"-z"], [b"-cc", b"missing"],

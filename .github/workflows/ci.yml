@@ -75,3 +75,70 @@ jobs:
           path: results/
           if-no-files-found: warn
           retention-days: 14
+
+  linux:
+    name: Linux ${{ matrix.arch }} correctness
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x86_64
+            runner: ubuntu-24.04
+            runner_arch: X64
+            cpu: x86-64
+          - arch: aarch64
+            runner: ubuntu-24.04-arm
+            runner_arch: ARM64
+            cpu: generic
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 30
+    env:
+      PYTHONHASHSEED: '0'
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.13'
+      - name: Verify native platform and install pinned Rust
+        run: |
+          ./scripts/check-platform.sh
+          test "${RUNNER_ARCH}" = '${{ matrix.runner_arch }}'
+          test "$(uname -m)" = '${{ matrix.arch }}'
+          getconf GNU_LIBC_VERSION
+          rustup toolchain install 1.97.1 --profile minimal --no-self-update
+          cc --version
+          rustc --version
+          python3 --version
+      - name: Build from source and run the complete correctness suite
+        # Hosted runner timing is deliberately not a performance gate.
+        run: |
+          make clean
+          mkdir -p results
+          make test CPU='${{ matrix.cpu }}' 2>&1 | tee results/tests.log
+      - name: Verify staged installation and package native executable
+        run: |
+          make install CPU='${{ matrix.cpu }}' DESTDIR="$RUNNER_TEMP/ripwc-install" PREFIX=/usr/local
+          "$RUNNER_TEMP/ripwc-install/usr/local/bin/ripwc" --help
+          readelf --file-header bin/ripwc
+          readelf --program-headers --wide bin/ripwc
+          tar -czf "$RUNNER_TEMP/ripwc-linux-${{ matrix.arch }}.tar.gz" \
+            -C bin ripwc -C "$GITHUB_WORKSPACE" README.md LICENSE NOTICE.md
+      - name: Preserve reports and test log
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: linux-${{ matrix.arch }}-correctness
+          path: results/
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Preserve native executable package
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: ripwc-linux-${{ matrix.arch }}
+          path: ${{ runner.temp }}/ripwc-linux-${{ matrix.arch }}.tar.gz
+          if-no-files-found: error
+          retention-days: 14
