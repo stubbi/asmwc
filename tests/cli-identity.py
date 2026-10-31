@@ -8,7 +8,9 @@ from support import BIN_DIR
 
 
 def run(binary, args, name=b"asmwc"):
+    # Python's posix_spawn rejects empty argv[0]; use fork/exec for that fixture.
     result = subprocess.run([name, *args], executable=binary,
+                            start_new_session=(name == b""),
                             stdin=subprocess.DEVNULL, capture_output=True,
                             timeout=10)
     return result.returncode, result.stdout, result.stderr

@@ -40,7 +40,9 @@ def run(binary, args, name=b"asmwc", dump=False):
     env.pop("ASMWC_CLI_DUMP", None)
     if dump:
         env["ASMWC_CLI_DUMP"] = "1"
+    # Python's posix_spawn rejects empty argv[0]; use fork/exec for that fixture.
     result = subprocess.run([name, *args], executable=binary, env=env,
+                            start_new_session=(name == b""),
                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     return result.returncode, result.stdout, result.stderr
 
