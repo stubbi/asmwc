@@ -16,19 +16,19 @@ from support import BIN_DIR, RESULTS_DIR
 
 
 def run(binary, args, folder):
-    result = subprocess.run(['ripwc', *args], executable=str(binary), cwd=folder,
+    result = subprocess.run(['asmwc', *args], executable=str(binary), cwd=folder,
                             capture_output=True, timeout=30)
     return result.returncode, result.stdout, result.stderr
 
 
 def main():
-    binaries = [BIN_DIR/'ripwc']
-    if platform.system() == 'Darwin' and (BIN_DIR/'ripwc-before').exists():
-        binaries.append(BIN_DIR/'ripwc-before')
-    oracle = BIN_DIR/'ripwc-rust'
+    binaries = [BIN_DIR/'asmwc']
+    if platform.system() == 'Darwin' and (BIN_DIR/'asmwc-before').exists():
+        binaries.append(BIN_DIR/'asmwc-before')
+    oracle = BIN_DIR/'asmwc-rust'
     records = []
     mib = 1024 * 1024
-    with tempfile.TemporaryDirectory(prefix='ripwc-pipeline-') as temporary:
+    with tempfile.TemporaryDirectory(prefix='asmwc-pipeline-') as temporary:
         folder = Path(temporary)
         block = (b'a \n\x00b\t\r\xff\v\f' * 104858)[:mib]
         for length in (8*mib-1, 8*mib, 8*mib+1, 13*mib+17):

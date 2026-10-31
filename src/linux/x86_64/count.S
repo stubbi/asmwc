@@ -28,9 +28,9 @@
 .endm
 
 .p2align 4
-.globl ripwc_count_buffer
-.type ripwc_count_buffer,@function
-ripwc_count_buffer:
+.globl asmwc_count_buffer
+.type asmwc_count_buffer,@function
+asmwc_count_buffer:
     push rbp
     push rbx
     push r12
@@ -192,7 +192,7 @@ ripwc_count_buffer:
     pop rbx
     pop rbp
     ret
-.size ripwc_count_buffer,.-ripwc_count_buffer
+.size asmwc_count_buffer,.-asmwc_count_buffer
 .section .rodata
 .p2align 4
 .Llf: .fill 16,1,10

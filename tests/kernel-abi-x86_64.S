@@ -28,7 +28,7 @@ kernel_abi_probe:
     movabsq $0x495867768594a3b1, %r13
     movabsq $0x5968778695a4b3c1, %r14
     movabsq $0x69788796a5b4c3d1, %r15
-    call ripwc_count_buffer
+    call asmwc_count_buffer
     cmpq %rsp, 8(%rsp)
     jne .Labi_failed
     cmpq $0x12345678, 16(%rsp)

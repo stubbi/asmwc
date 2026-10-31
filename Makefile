@@ -15,8 +15,8 @@ ifeq ($(SYSTEM),Darwin)
 CPU ?= apple-m3
 ASFLAGS ?= -arch arm64 -mcpu=$(CPU) -O3 -g
 SOURCES = src/main.S src/cli.S src/count.S src/pipeline.S
-BASELINES = bin/ripwc-rust bin/ripwc-before
-BENCH_BASELINE_ARGS = --before bin/ripwc-before
+BASELINES = bin/asmwc-rust bin/asmwc-before
+BENCH_BASELINE_ARGS = --before bin/asmwc-before
 else ifeq ($(SYSTEM),Linux)
 ifneq ($(filter $(ARCH),aarch64 x86_64),)
 ifeq ($(ARCH),aarch64)
@@ -31,7 +31,7 @@ TARGET_CPPFLAGS = -I.build/linux
 TARGET_ASFLAGS = -fPIE -pthread
 TARGET_LDFLAGS = -pie -pthread -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs
 ABI_HEADER = .build/linux/abi.h
-BASELINES = bin/ripwc-rust
+BASELINES = bin/asmwc-rust
 endif
 endif
 
@@ -44,7 +44,7 @@ ORIGINAL_SOURCES = history/original-src/main.S history/original-src/cli.S histor
 RUST_SOURCES = upstream/Cargo.toml upstream/Cargo.lock $(wildcard upstream/src/*.rs)
 
 .PHONY: all baselines rust test check check-platform bench install clean FORCE
-all: bin/ripwc
+all: bin/asmwc
 
 check-platform:
 	@./scripts/check-platform.sh
@@ -69,33 +69,33 @@ FORCE:
 		cp .build/assembly-config .build/linux/abi-config; \
 	fi
 
-bin/ripwc: $(SOURCES) $(ABI_HEADER) Makefile .build/assembly-config FORCE | check-platform
+bin/asmwc: $(SOURCES) $(ABI_HEADER) Makefile .build/assembly-config FORCE | check-platform
 	@mkdir -p bin
-	@if [ ! -f "$@" ] || [ -n "$(filter-out FORCE .build/assembly-config,$?)" ] || ! cmp -s .build/assembly-config .build/ripwc-config; then \
+	@if [ ! -f "$@" ] || [ -n "$(filter-out FORCE .build/assembly-config,$?)" ] || ! cmp -s .build/assembly-config .build/asmwc-config; then \
 		echo "Building $@ with $(CC) ($(CPU))"; \
 		$(CC) $(TARGET_CPPFLAGS) $(CPPFLAGS) $(TARGET_ASFLAGS) $(ASFLAGS) $(SOURCES) $(LDFLAGS) $(TARGET_LDFLAGS) -o "$@" && \
-		cp .build/assembly-config .build/ripwc-config; \
+		cp .build/assembly-config .build/asmwc-config; \
 	fi
 
 ifeq ($(SYSTEM),Darwin)
-bin/ripwc-before: $(ORIGINAL_SOURCES) Makefile .build/assembly-config FORCE | check-platform
+bin/asmwc-before: $(ORIGINAL_SOURCES) Makefile .build/assembly-config FORCE | check-platform
 	@mkdir -p bin
-	@if [ ! -f "$@" ] || [ -n "$(filter-out FORCE .build/assembly-config,$?)" ] || ! cmp -s .build/assembly-config .build/ripwc-before-config; then \
+	@if [ ! -f "$@" ] || [ -n "$(filter-out FORCE .build/assembly-config,$?)" ] || ! cmp -s .build/assembly-config .build/asmwc-before-config; then \
 		echo "Building $@ with $(CC) ($(CPU))"; \
 		$(CC) $(CPPFLAGS) $(ASFLAGS) $(LDFLAGS) $(ORIGINAL_SOURCES) -o "$@" && \
-		cp .build/assembly-config .build/ripwc-before-config; \
+		cp .build/assembly-config .build/asmwc-before-config; \
 	fi
 else
-.PHONY: bin/ripwc-before
-bin/ripwc-before: | check-platform
+.PHONY: bin/asmwc-before
+bin/asmwc-before: | check-platform
 	@echo 'error: the preserved assembly baseline is available only on macOS arm64; use make baselines for the native Rust comparison.' >&2
 	@exit 1
 endif
 
-bin/ripwc-rust: $(RUST_SOURCES) build-rust.sh rust-toolchain.toml | check-platform
+bin/asmwc-rust: $(RUST_SOURCES) build-rust.sh rust-toolchain.toml | check-platform
 	./build-rust.sh
 
-rust: bin/ripwc-rust
+rust: bin/asmwc-rust
 
 baselines: $(BASELINES) | check-platform
 
@@ -109,6 +109,7 @@ test: all baselines check
 	./tests/kernel.sh
 	$(PYTHON) tests/parity.py
 	$(PYTHON) tests/cli-parity.py
+	$(PYTHON) tests/cli-identity.py
 	$(PYTHON) tests/io-boundaries.py
 	$(PYTHON) tests/pipeline-parity.py
 	./tests/pipeline_resources.sh
@@ -118,8 +119,8 @@ bench: all baselines
 
 install: all
 	$(INSTALL) -d "$(DESTDIR)$(PREFIX)/bin"
-	$(INSTALL) -m 755 bin/ripwc "$(DESTDIR)$(PREFIX)/bin/ripwc"
+	$(INSTALL) -m 755 bin/asmwc "$(DESTDIR)$(PREFIX)/bin/asmwc"
 
 clean:
-	rm -f bin/ripwc bin/ripwc-before bin/ripwc-rust bin/ripwc-rust.tmp
+	rm -f bin/asmwc bin/asmwc-before bin/asmwc-rust bin/asmwc-rust.tmp
 	rm -rf .build

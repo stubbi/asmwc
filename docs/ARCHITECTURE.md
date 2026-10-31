@@ -1,6 +1,6 @@
 # Architecture
 
-`ripwc-asm` has three native implementations: Mach-O arm64 on macOS, and ELF AArch64/x86-64 on Linux glibc. Parsing, traversal policy, counting, aggregation, and formatting are handwritten assembly. System libraries provide allocation and I/O; scheduling uses libdispatch on macOS and pthreads on Linux. No C or Rust application wrapper is linked.
+`asmwc` has three native implementations: Mach-O arm64 on macOS, and ELF AArch64/x86-64 on Linux glibc. Parsing, traversal policy, counting, aggregation, and formatting are handwritten assembly. System libraries provide allocation and I/O; scheduling uses libdispatch on macOS and pthreads on Linux. No C or Rust application wrapper is linked.
 
 All targets implement upstream ripwc commit `de1a12e8e2d7c031404370773e5099b23ef01e95`. See the [compatibility contract](COMPATIBILITY.md), [portability matrix](PORTABILITY.md), and [macOS benchmark evidence](BENCHMARKS.md).
 
@@ -32,7 +32,7 @@ Both platforms use `fts` with physical traversal, no directory changes, and comm
 
 ## Incremental counting contract
 
-`ripwc_count_buffer` takes an input address, byte length, count flags, and a pointer to zero-initialized 64-byte state. AArch64 passes these in `x0`–`x3`; System V AMD64 uses `rdi`, `rsi`, `rdx`, and `rcx`. The kernel reads only the supplied range, preserves the target ABI's callee-saved registers, and carries unfinished words and lines across calls.
+`asmwc_count_buffer` takes an input address, byte length, count flags, and a pointer to zero-initialized 64-byte state. AArch64 passes these in `x0`–`x3`; System V AMD64 uses `rdi`, `rsi`, `rdx`, and `rcx`. The kernel reads only the supplied range, preserves the target ABI's callee-saved registers, and carries unfinished words and lines across calls.
 
 | Flag bit | Value | Field |
 |---|---:|---|

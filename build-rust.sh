@@ -22,5 +22,5 @@ export CARGO_INCREMENTAL=0
 export CARGO_TARGET_DIR="$PWD/.build/rust-target"
 rustup run --install "$rust_toolchain" cargo build --release --locked --manifest-path upstream/Cargo.toml
 mkdir -p bin
-cp "$CARGO_TARGET_DIR/release/ripwc" bin/ripwc-rust.tmp
-mv -f bin/ripwc-rust.tmp bin/ripwc-rust
+cp "$CARGO_TARGET_DIR/release/ripwc" bin/asmwc-rust.tmp
+mv -f bin/asmwc-rust.tmp bin/asmwc-rust

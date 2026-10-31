@@ -2,7 +2,7 @@
 """Render the README benchmark chart from committed measurement evidence.
 
 Optional authoring dependency: requirements-graphics.txt. No dependency is
-added to building, testing or running ripwc itself.
+added to building, testing or running asmwc itself.
 """
 from __future__ import annotations
 
@@ -47,7 +47,7 @@ def render() -> bytes:
     )
     with plt.rc_context({
         "font.family": "DejaVu Sans", "font.size": 13,
-        "svg.fonttype": "path", "svg.hashsalt": "ripwc-asm-readme-v1",
+        "svg.fonttype": "path", "svg.hashsalt": "asmwc-readme-v1",
         "figure.facecolor": background, "axes.facecolor": background,
         "text.color": foreground, "axes.labelcolor": muted,
         "xtick.color": muted, "ytick.color": foreground,
@@ -77,7 +77,7 @@ def render() -> bytes:
         for spine in axes.spines.values():
             spine.set_visible(False)
 
-        figure.text(0.065, 0.955, "RECORDED MEASUREMENTS", color="#4adbc8", fontsize=10,
+        figure.text(0.065, 0.955, "ASMWC · RECORDED MEASUREMENTS", color="#4adbc8", fontsize=10,
                     fontweight="bold", va="top")
         figure.text(0.065, 0.902, "Whole-program execution time", fontsize=25,
                     fontweight="bold", va="top")
@@ -95,10 +95,10 @@ def render() -> bytes:
                       fontsize=21, fontweight="bold", va="center", ha="center")
         figure.text(0.065, 0.070, "Apple M3 · macOS 15.6.1 · 128 MiB · warm filesystem cache · 24 runs per executable",
                     color=muted, fontsize=10.7)
-        figure.text(0.065, 0.036, "31 Oct 2026 · This machine and corpus only. Full samples, build settings and limitations are linked in the README.",
+        figure.text(0.065, 0.036, "31 Oct 2026 · Pre-rename snapshot. This machine and corpus only; samples, build settings and limitations are linked in the README.",
                     color="#778ba8", fontsize=9.7)
         buffer = BytesIO()
-        figure.savefig(buffer, format="svg", metadata={"Date": None, "Creator": "ripwc-asm / Matplotlib"})
+        figure.savefig(buffer, format="svg", metadata={"Date": None, "Creator": "asmwc / Matplotlib"})
         plt.close(figure)
 
     ET.register_namespace("", "http://www.w3.org/2000/svg")
@@ -108,7 +108,7 @@ def render() -> bytes:
     tree.set("role", "img")
     tree.set("aria-labelledby", "benchmark-title benchmark-description")
     title = ET.Element(namespace + "title", {"id": "benchmark-title"})
-    title.text = "Recorded ripwc whole-program runtimes on Apple M3"
+    title.text = "asmwc: recorded whole-program runtimes on Apple M3"
     description = ET.Element(namespace + "desc", {"id": "benchmark-description"})
     details = [
         label + ": " + ", ".join(
@@ -118,7 +118,7 @@ def render() -> bytes:
         for case, label in selected
     ]
     description.text = (
-        "Zero-based horizontal bars compare native Rust, first assembly and optimized assembly. "
+        "Recorded before the asmwc rename. Zero-based horizontal bars compare native Rust, first assembly and optimized assembly. "
         + " ".join(details)
         + " Medians of 24 warm-cache runs on one Apple M3 with 128 MiB inputs."
     )

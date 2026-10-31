@@ -17,7 +17,7 @@ _main:
     bl _signal
     mov x0, x19
     mov x1, x20
-    bl _ripwc_parse
+    bl _asmwc_parse
     adrp x9, ___stdoutp@GOTPAGE
     ldr x9, [x9, ___stdoutp@GOTPAGEOFF]
     ldr x0, [x9]
@@ -25,10 +25,10 @@ _main:
     mov w2, #1 // _IOLBF: one flush per newline, like Rust's stdout LineWriter
     mov x3, #0
     bl _setvbuf
-    adrp x19, _ripwc_paths@PAGE
-    ldr x19, [x19, _ripwc_paths@PAGEOFF]
-    adrp x20, _ripwc_nargs@PAGE
-    ldr x20, [x20, _ripwc_nargs@PAGEOFF]
+    adrp x19, _asmwc_paths@PAGE
+    ldr x19, [x19, _asmwc_paths@PAGEOFF]
+    adrp x20, _asmwc_nargs@PAGE
+    ldr x20, [x20, _asmwc_nargs@PAGEOFF]
     mov x21, #0
 L_collect_args:
     cmp x21, x20
@@ -142,8 +142,8 @@ _collect_path:
     bl _fts_open
     cbz x0, L_collect_done
     mov x19, x0
-    adrp x21, _ripwc_recursive@PAGE
-    ldr x21, [x21, _ripwc_recursive@PAGEOFF]
+    adrp x21, _asmwc_recursive@PAGE
+    ldr x21, [x21, _asmwc_recursive@PAGEOFF]
 L_fts_next:
     mov x0, x19
     bl _fts_read
@@ -249,8 +249,8 @@ _process_task:
     stp x25, x26, [sp, #80]
     mov x9, #96
     madd x19, x1, x9, x0
-    adrp x20, _ripwc_flags@PAGE
-    ldr x20, [x20, _ripwc_flags@PAGEOFF]
+    adrp x20, _asmwc_flags@PAGE
+    ldr x20, [x20, _asmwc_flags@PAGEOFF]
     ldr x21, [x19, #8]
     // Upstream only logs >=512 KiB entries, and logs before trying open.
     ldr x9, [x19, #88]
@@ -258,8 +258,8 @@ _process_task:
     cmp x21, #128, lsl #12
     b.lo L_open_file
 L_maybe_verbose:
-    adrp x9, _ripwc_verbose@PAGE
-    ldr x9, [x9, _ripwc_verbose@PAGEOFF]
+    adrp x9, _asmwc_verbose@PAGE
+    ldr x9, [x9, _asmwc_verbose@PAGEOFF]
     cbz x9, L_open_file
     adrp x9, ___stderrp@GOTPAGE
     ldr x9, [x9, ___stderrp@GOTPAGEOFF]
@@ -293,14 +293,14 @@ L_scan_file:
     mov w0, w22
     mov x1, x20
     add x2, x19, #16
-    bl _ripwc_pipeline_scan
+    bl _asmwc_pipeline_scan
     cmp w0, #1
     b.eq L_scan_buffered
     cbnz w0, L_close_failed
     b L_finalize_fields
 L_scan_buffered:
     // Buffered reads preserve EOF and partial-read behavior for every file type.
-    // Smaller files use a smaller working set; large single-mode reads retain1MiB.
+    // Files below 8 MiB use 256 KiB buffers; larger files use 1 MiB.
     mov x24, #0x40000
     mov x9, #0x100000
     cmp x21, #2048, lsl #12
@@ -320,7 +320,7 @@ L_read_next:
     mov x0, x23
     mov x2, x20
     add x3, x19, #16
-    bl _ripwc_count_buffer
+    bl _asmwc_count_buffer
     b L_read_next
 L_eof:
     mov x0, x23
@@ -392,8 +392,8 @@ _emit_counts:
     mov x19, x0
     mov x20, x1
     mov x21, #1
-    adrp x22, _ripwc_flags@PAGE
-    ldr x22, [x22, _ripwc_flags@PAGEOFF]
+    adrp x22, _asmwc_flags@PAGE
+    ldr x22, [x22, _asmwc_flags@PAGEOFF]
     EMIT_FIELD 2, 24, L_lines
     EMIT_FIELD 3, 16, L_words
     EMIT_FIELD 1, 8, L_chars

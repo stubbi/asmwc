@@ -9,7 +9,7 @@ if [ "$(uname -s)" != Darwin ]; then
   echo 'SKIP native resource tests: unsupported operating system'
   exit 0
 fi
-build_dir="$(mktemp -d "${TMPDIR:-/tmp}/ripwc-pipeline.XXXXXX")"
+build_dir="$(mktemp -d "${TMPDIR:-/tmp}/asmwc-pipeline.XXXXXX")"
 trap 'rm -rf "$build_dir"' EXIT HUP INT TERM
 ${CC:-cc} -O2 "$project_dir/tests/pipeline_resources.c" "$project_dir/src/pipeline.S" \
   "$project_dir/src/count.S" -o "$build_dir/resource-test"
@@ -24,15 +24,15 @@ ${CC:-cc} -dynamiclib "$build_dir/group-null.c" -o "$build_dir/group-null.dylib"
 python3 - "$project_dir" "$build_dir" <<'PY'
 import os, pathlib, subprocess, sys
 project, temporary = map(pathlib.Path, sys.argv[1:])
-bin_dir=pathlib.Path(os.environ.get('RIPWC_BIN_DIR', project/'bin')).expanduser().resolve()
+bin_dir=pathlib.Path(os.environ.get('ASMWC_BIN_DIR', project/'bin')).expanduser().resolve()
 path=temporary/'eight-mib'
 with path.open('wb') as stream: stream.truncate(8*1024*1024)
 env=os.environ.copy(); env['DYLD_INSERT_LIBRARIES']=str(temporary/'group-null.dylib')
 def run(binary, environment):
-    result=subprocess.run(['ripwc','-w',str(path)], executable=str(binary), env=environment,
+    result=subprocess.run(['asmwc','-w',str(path)], executable=str(binary), env=environment,
                           capture_output=True, timeout=30)
     return result.returncode,result.stdout,result.stderr
-expected=run(bin_dir/'ripwc-rust',os.environ.copy())
-assert run(bin_dir/'ripwc',env)==expected, 'pipeline setup failure did not fall back correctly'
+expected=run(bin_dir/'asmwc-rust',os.environ.copy())
+assert run(bin_dir/'asmwc',env)==expected, 'pipeline setup failure did not fall back correctly'
 print('PASS real executable falls back to buffered reads after injected group allocation failure')
 PY

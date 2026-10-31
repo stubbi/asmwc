@@ -8,7 +8,7 @@
 #include <unistd.h>
 
 typedef struct { uint64_t bytes, chars, words, lines, max, in_word, current, reserved; } State;
-extern void ripwc_count_buffer(const unsigned char *, size_t, unsigned, State *);
+extern void asmwc_count_buffer(const unsigned char *, size_t, unsigned, State *);
 extern int kernel_abi_probe(const unsigned char *, size_t, unsigned, State *);
 static uint64_t seed = 0xb4ff21371c883d21ULL;
 static uint64_t rng(void) { seed ^= seed << 13; seed ^= seed >> 7; return seed ^= seed << 17; }
@@ -33,8 +33,8 @@ static void equal(State got, State want, const char *name, size_t n, unsigned f,
 static void check(const unsigned char *p,size_t n,unsigned f,size_t chunk,State start) {
     State want=start,got=start;
     reference(p,n,f,&want);
-    if(!chunk) ripwc_count_buffer(p,n,f,&got);
-    else for(size_t at=0;at<n;) { size_t m=n-at; if(m>chunk)m=chunk; ripwc_count_buffer(p+at,m,f,&got); at+=m; }
+    if(!chunk) asmwc_count_buffer(p,n,f,&got);
+    else for(size_t at=0;at<n;) { size_t m=n-at; if(m>chunk)m=chunk; asmwc_count_buffer(p+at,m,f,&got); at+=m; }
     equal(got,want,"differential",n,f,chunk);
 }
 static double now(void) { struct timespec t; clock_gettime(CLOCK_MONOTONIC_RAW,&t); return t.tv_sec+t.tv_nsec*1e-9; }
@@ -42,7 +42,7 @@ int main(int argc,char **argv) {
     const unsigned char fixture[]={'a','b',' ','\0','\n','\t','c','d','\r','e'};
     State literal={10,9,3,1,4,1,5,0xdeadbeef};
     State actual={.reserved=0xdeadbeef};
-    ripwc_count_buffer(fixture,sizeof fixture,31,&actual);
+    asmwc_count_buffer(fixture,sizeof fixture,31,&actual);
     equal(actual,literal,"literal NUL and pending word",10,31,0);
     State initial={71,83,97,101,23,1,37,0xa55aa55a};
     unsigned char data[8192+64];
@@ -81,7 +81,7 @@ int main(int argc,char **argv) {
         const size_t n=64*1024*1024; unsigned char *p=malloc(n); if(!p)return 2;
         for(size_t i=0;i<n;++i) p[i]=(i%79==78?'\n':(i%7==6?' ':'a'));
         const unsigned flags[]={13,4,8,2,31,16};
-        for(size_t j=0;j<sizeof flags/sizeof *flags;++j) { State s={0}; double t=now(); for(unsigned k=0;k<32;++k)ripwc_count_buffer(p,n,flags[j],&s); t=now()-t; printf("flags=%u %.2f GB/s (%.3f s) checksum=%llu\n",flags[j],n*32.0/t/1e9,t,(unsigned long long)(s.bytes+s.chars+s.words+s.lines+s.max+s.current+s.in_word)); }
+        for(size_t j=0;j<sizeof flags/sizeof *flags;++j) { State s={0}; double t=now(); for(unsigned k=0;k<32;++k)asmwc_count_buffer(p,n,flags[j],&s); t=now()-t; printf("flags=%u %.2f GB/s (%.3f s) checksum=%llu\n",flags[j],n*32.0/t/1e9,t,(unsigned long long)(s.bytes+s.chars+s.words+s.lines+s.max+s.current+s.in_word)); }
         free(p);
     }
     return 0;

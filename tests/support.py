@@ -5,8 +5,8 @@ import platform
 import shlex
 
 ROOT = Path(__file__).resolve().parents[1]
-BIN_DIR = Path(os.environ.get("RIPWC_BIN_DIR", ROOT / "bin")).expanduser().resolve()
-RESULTS_DIR = Path(os.environ.get("RIPWC_RESULTS_DIR", ROOT / "results")).expanduser().resolve()
+BIN_DIR = Path(os.environ.get("ASMWC_BIN_DIR", ROOT / "bin")).expanduser().resolve()
+RESULTS_DIR = Path(os.environ.get("ASMWC_RESULTS_DIR", ROOT / "results")).expanduser().resolve()
 
 
 def native_source(name):

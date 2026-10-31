@@ -29,20 +29,20 @@ SANS = "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
 MONO = "ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace"
 COMMANDS = (
     "printf 'hello assembly\\n' > example.txt",
-    "./bin/ripwc example.txt",
-    "./bin/ripwc -lwmcL example.txt",
+    "./bin/asmwc example.txt",
+    "./bin/asmwc -lwmcL example.txt",
 )
 
 
 def capture_session() -> dict:
-    binary = ROOT / "bin" / "ripwc"
+    binary = ROOT / "bin" / "asmwc"
     if not binary.is_file():
-        raise FileNotFoundError("bin/ripwc is missing; run make before capturing the demo")
+        raise FileNotFoundError("bin/asmwc is missing; run make before capturing the demo")
     session = []
-    with TemporaryDirectory(prefix="ripwc-readme-") as directory:
+    with TemporaryDirectory(prefix="asmwc-readme-") as directory:
         temporary = Path(directory)
         (temporary / "bin").mkdir()
-        (temporary / "bin" / "ripwc").symlink_to(binary)
+        (temporary / "bin" / "asmwc").symlink_to(binary)
         for command in COMMANDS:
             result = subprocess.run(
                 ["/bin/sh", "-c", command], cwd=temporary,
@@ -120,14 +120,14 @@ def finish_svg(parts: list[str]) -> str:
 def terminal_svg(captured: dict) -> str:
     session = captured["session"]
     parts = start_svg(
-        420, "ripwc-asm: a captured command-line demonstration",
+        420, "asmwc: a captured command-line demonstration",
         "A real invocation on example.txt containing hello assembly followed by LF, "
         "15 bytes in total. The default output reports one line, two words and 15 bytes. "
         "Selecting -lwmcL also reports 15 nonzero bytes as chars and maximum line length 14. "
         "The adjacent demo-session.json preserves every command, stdout, stderr and exit code.",
     )
     parts += [
-        text(32, 46, "A tiny file. Every count.", 28, WHITE, weight=600),
+        text(32, 46, "asmwc on a 15-byte file", 28, WHITE, weight=600),
         rect(944, 21, 224, 34, fill=BACKGROUND, radius=17),
         text(1056, 43, "ACTUAL CLI OUTPUT", 14, TEAL, weight=600, anchor="middle"),
         line(32, 73, 1168, 73),
@@ -151,7 +151,7 @@ def terminal_svg(captured: dict) -> str:
 
 def pipeline_svg() -> str:
     parts = start_svg(
-        344, "The macOS single-file read and scan pipeline",
+        344, "asmwc: the macOS single-file read and scan pipeline",
         "On macOS only, this path is selected for exactly one collected task, with word counting enabled "
         "and saved size at least 8 MiB. The reader issues sequential reads into four reusable "
         "1 MiB buffers. One serial NEON scanning worker processes the buffers in order, "
@@ -159,7 +159,7 @@ def pipeline_svg() -> str:
         "scans in the batch finish before buffers are reused. Counts are finalized once at EOF.",
     )
     parts += [
-        text(30, 43, "macOS: overlapped reading and counting", 27, WHITE, weight=600),
+        text(30, 43, "asmwc on macOS: overlapped reading and counting", 27, WHITE, weight=600),
         text(30, 75, "Eligible path: exactly one task · word counting enabled · saved size ≥ 8 MiB", 18, MUTED),
         rect(30, 103, 209, 114),
         text(134, 138, "Sequential reader", 22, WHITE, weight=600, anchor="middle"),

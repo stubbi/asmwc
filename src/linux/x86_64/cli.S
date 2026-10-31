@@ -14,9 +14,9 @@
 .equ P_BASE, -128
 .equ P_END, -136
 .p2align 4
-.globl ripwc_parse
-.type ripwc_parse,@function
-ripwc_parse:
+.globl asmwc_parse
+.type asmwc_parse,@function
+asmwc_parse:
     push rbp
     mov rbp, rsp
     push rbx
@@ -141,7 +141,7 @@ ripwc_parse:
     call .L_first_scalar_utf8
     mov [rbp+P_TMP], rax
     mov rdi, [rbp+P_CUR]
-    call ripwc_lossy
+    call asmwc_lossy
     cmp qword ptr [rbp+P_TMP], 0
     je .L_short_invalid_tail
     lea rdx, [rip+.L_short_bad]
@@ -214,7 +214,7 @@ ripwc_parse:
     jmp .L_after_separator
 .L_long_option:
     mov rdi, [rbp+P_CUR]
-    call ripwc_lossy
+    call asmwc_lossy
     mov [rbp+P_CUR], rax
     mov qword ptr [rbp+P_TMP], 0
 .L_equal_scan:
@@ -272,17 +272,17 @@ ripwc_parse:
     mov esi, 13
     test rax, rax
     cmovz rax, rsi
-    mov [rip+ripwc_flags], rax
+    mov [rip+asmwc_flags], rax
     mov rax, [rbp+P_FLAGS]
     shr rax, 5
     and eax, 1
-    mov [rip+ripwc_recursive], rax
+    mov [rip+asmwc_recursive], rax
     mov rax, [rbp+P_FLAGS]
     shr rax, 6
     and eax, 1
-    mov [rip+ripwc_verbose], rax
-    mov [rip+ripwc_nargs], rcx
-    mov [rip+ripwc_paths], rdx
+    mov [rip+asmwc_verbose], rax
+    mov [rip+asmwc_nargs], rcx
+    mov [rip+asmwc_paths], rdx
     add rsp, 136
     pop r15
     pop r14
@@ -291,7 +291,7 @@ ripwc_parse:
     pop rbx
     pop rbp
     ret
-.size ripwc_parse,.-ripwc_parse
+.size asmwc_parse,.-asmwc_parse
 
 // Private parser helpers use rbp's parser frame and ordinary SysV arguments.
 .L_record:
@@ -332,7 +332,7 @@ ripwc_parse:
     ret
 
 // Clap writes one StyledStr through anstream's StripBytes adapter. Persist
-// both the ANSI state and the printable-run state across our output fragments.
+// both the ANSI state and the printable-run state across output fragments.
 // This filtering applies to CLI text only, never counted filesystem paths.
 .L_emit:
     push rbx
@@ -881,9 +881,9 @@ ripwc_parse:
 
 // Rust to_string_lossy: replace each maximal malformed prefix with U+FFFD.
 .p2align 4
-.globl ripwc_lossy
-.type ripwc_lossy,@function
-ripwc_lossy:
+.globl asmwc_lossy
+.type asmwc_lossy,@function
+asmwc_lossy:
     push rbx
     push r12
     push r13
@@ -978,7 +978,7 @@ ripwc_lossy:
 .L_lossy_oom:
     mov edi, 1
     call exit@PLT
-.size ripwc_lossy,.-ripwc_lossy
+.size asmwc_lossy,.-asmwc_lossy
 
 // Jaro similarity and >0.7 threshold used by clap's long-option suggestions.
 // Candidate strings are ASCII; input positions count Unicode scalar values.
@@ -1131,7 +1131,7 @@ ripwc_lossy:
     ret
 
 .section .rodata
-.L_default_name: .asciz "ripwc"
+.L_default_name: .asciz "asmwc"
 .L_short_chars: .asciz "cmlwLrvhV"
 .L_bytes: .asciz "--bytes"
 .L_chars: .asciz "--chars"
@@ -1144,7 +1144,7 @@ ripwc_lossy:
 .L_version_option: .asciz "--version"
 .L_help_intro: .asciz "A rewrite of the GNU coreutils 'wc' tool.\n\nUsage: "
 .L_help_rest: .asciz " [OPTIONS] <FILE>...\n\nArguments:\n  <FILE>...  The file or folder to read\n\nOptions:\n  -c, --bytes            Print the byte counts\n  -m, --chars            Print the character counts\n  -l, --lines            Print newline counts\n  -w, --words            Print word counts\n  -L, --max-line-length  Print maximum display width\n  -r, --recursive        Recursively search through folders and files\n  -v                     Print verbose output\n  -h, --help             Print help\n  -V, --version          Print version\n"
-.L_version_text: .asciz "ripwc 1.0.0\n"
+.L_version_text: .asciz "asmwc 1.0.0\n"
 .L_missing_text: .asciz "error: the following required arguments were not provided:\n  <FILE>...\n"
 .L_duplicate_intro: .asciz "error: the argument '"
 .L_duplicate_rest: .asciz "' cannot be used multiple times\n"
@@ -1183,14 +1183,14 @@ ripwc_lossy:
 .L_name: .quad 0
 .L_order_count: .quad 0
 .L_order: .space 72
-.globl ripwc_flags
-.globl ripwc_recursive
-.globl ripwc_verbose
-.globl ripwc_nargs
-.globl ripwc_paths
-ripwc_flags: .quad 13
-ripwc_recursive: .quad 0
-ripwc_verbose: .quad 0
-ripwc_nargs: .quad 0
-ripwc_paths: .quad 0
+.globl asmwc_flags
+.globl asmwc_recursive
+.globl asmwc_verbose
+.globl asmwc_nargs
+.globl asmwc_paths
+asmwc_flags: .quad 13
+asmwc_recursive: .quad 0
+asmwc_verbose: .quad 0
+asmwc_nargs: .quad 0
+asmwc_paths: .quad 0
 .section .note.GNU-stack,"",@progbits

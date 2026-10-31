@@ -1,10 +1,10 @@
 /* Dynamic check for the AAPCS64 callee-saved GPR and SIMD subset. */
 #if defined(__APPLE__)
 #define ABI_PROBE _kernel_abi_probe
-#define COUNT_BUFFER _ripwc_count_buffer
+#define COUNT_BUFFER _asmwc_count_buffer
 #else
 #define ABI_PROBE kernel_abi_probe
-#define COUNT_BUFFER ripwc_count_buffer
+#define COUNT_BUFFER asmwc_count_buffer
 #endif
 .text
 .p2align 4

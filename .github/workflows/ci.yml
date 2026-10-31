@@ -65,8 +65,9 @@ jobs:
           make test CPU=apple-m1 2>&1 | tee results/tests.log
       - name: Verify staged installation
         run: |
-          make install CPU=apple-m1 DESTDIR="$RUNNER_TEMP/ripwc-install" PREFIX=/usr/local
-          "$RUNNER_TEMP/ripwc-install/usr/local/bin/ripwc" --help
+          make install CPU=apple-m1 DESTDIR="$RUNNER_TEMP/asmwc-install" PREFIX=/usr/local
+          "$RUNNER_TEMP/asmwc-install/usr/local/bin/asmwc" --help
+          test "$("$RUNNER_TEMP/asmwc-install/usr/local/bin/asmwc" --version)" = 'asmwc 1.0.0'
       - name: Preserve reports and test log
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -121,12 +122,13 @@ jobs:
           make test CPU='${{ matrix.cpu }}' 2>&1 | tee results/tests.log
       - name: Verify staged installation and package native executable
         run: |
-          make install CPU='${{ matrix.cpu }}' DESTDIR="$RUNNER_TEMP/ripwc-install" PREFIX=/usr/local
-          "$RUNNER_TEMP/ripwc-install/usr/local/bin/ripwc" --help
-          readelf --file-header bin/ripwc
-          readelf --program-headers --wide bin/ripwc
-          tar -czf "$RUNNER_TEMP/ripwc-linux-${{ matrix.arch }}.tar.gz" \
-            -C bin ripwc -C "$GITHUB_WORKSPACE" README.md LICENSE NOTICE.md
+          make install CPU='${{ matrix.cpu }}' DESTDIR="$RUNNER_TEMP/asmwc-install" PREFIX=/usr/local
+          "$RUNNER_TEMP/asmwc-install/usr/local/bin/asmwc" --help
+          test "$("$RUNNER_TEMP/asmwc-install/usr/local/bin/asmwc" --version)" = 'asmwc 1.0.0'
+          readelf --file-header bin/asmwc
+          readelf --program-headers --wide bin/asmwc
+          tar -czf "$RUNNER_TEMP/asmwc-linux-${{ matrix.arch }}.tar.gz" \
+            -C bin asmwc -C "$GITHUB_WORKSPACE" README.md LICENSE NOTICE.md
       - name: Preserve reports and test log
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -138,7 +140,7 @@ jobs:
       - name: Preserve native executable package
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: ripwc-linux-${{ matrix.arch }}
-          path: ${{ runner.temp }}/ripwc-linux-${{ matrix.arch }}.tar.gz
+          name: asmwc-linux-${{ matrix.arch }}
+          path: ${{ runner.temp }}/asmwc-linux-${{ matrix.arch }}.tar.gz
           if-no-files-found: error
           retention-days: 14

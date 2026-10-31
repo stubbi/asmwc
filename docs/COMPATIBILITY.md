@@ -1,6 +1,6 @@
 # Compatibility contract
 
-The reference is [LuminousToaster/ripwc](https://github.com/LuminousToaster/ripwc) at commit [`de1a12e8e2d7c031404370773e5099b23ef01e95`](https://github.com/LuminousToaster/ripwc/tree/de1a12e8e2d7c031404370773e5099b23ef01e95) (19 May 2025). The unchanged Rust source is retained in [`upstream/`](../upstream/). The goal is observable agreement with that revision on the target platform.
+The reference is [LuminousToaster/ripwc](https://github.com/LuminousToaster/ripwc) at commit [`de1a12e8e2d7c031404370773e5099b23ef01e95`](https://github.com/LuminousToaster/ripwc/tree/de1a12e8e2d7c031404370773e5099b23ef01e95) (19 May 2025). The unchanged Rust source is retained in [`upstream/`](../upstream/). asmwc follows that revision's observable behavior on the target platform, except for its own version and fallback program name.
 
 The implemented native targets are Apple Silicon macOS and Linux glibc AArch64/x86-64. Each target is compared with pinned Rust built on the same operating system. The [portability matrix](PORTABILITY.md) describes build requirements and native CI. There is no claim of GNU/POSIX `wc` compatibility or Unicode-aware counting. musl/Alpine, Intel macOS, Windows, and BSD are outside the supported matrix.
 
@@ -25,10 +25,12 @@ For byte counting, upstream falls back to saved metadata if a successful scan co
 - One or more paths are required. No arguments produce the upstream usage error.
 - A path named `-` is a literal filename, not standard input. Use `--` to end option parsing for other dash-prefixed paths.
 - `-r` / `--recursive` enables traversal. `-v` enables verbose messages; upstream defines no `--verbose` option.
-- `-h` / `--help` and `-V` / `--version` reproduce the pinned CLI. The reported version is `ripwc 1.0.0`.
+- `-h` / `--help` follows the pinned CLI. `-V` / `--version` reports `asmwc 1.0.0`; upstream reports `ripwc 1.0.0`.
 - Duplicate options, unexpected values, unknown options, UTF-8 argument validation, and typo hints follow the pinned clap behavior covered by the differential suite.
 
-The two executables are tested with identical `argv[0]`, environment, working directory, and input streams. This matters because usage text derives its program name from `argv[0]`.
+Usage text derives its program name from `argv[0]`. When it has no usable basename, such as an empty string, `.`, `..`, or `/`, asmwc uses `asmwc` where upstream uses `ripwc`.
+
+The two executables are tested with identical `argv[0]`, environment, working directory, and input streams. The version exception applies only when upstream exits successfully with exactly `ripwc 1.0.0` followed by a newline and no stderr; asmwc must return the corresponding `asmwc 1.0.0` banner. Fallback-name differential cases permit only that name in the complete usage line; all other diagnostic bytes must match. Separate identity tests check asmwc's version and fallback help/error names.
 
 ## Paths and traversal
 
@@ -56,7 +58,7 @@ Count-output write failures produce a nonzero exit status and upstream-style I/O
 
 The immutable **M3/macOS benchmark snapshot** passed 235 general, 86 I/O, and 124 large-file/pipeline end-to-end cases: **445 total**. It also passed **576 CLI differential cases**, **128 parser-state combinations**, independent kernel/guard-page/register tests, pipeline setup-failure checks, and benchmark-contract tests. See the [recorded evidence](../benchmarks/results/apple-m3-2026-10-31/) and [benchmark report](BENCHMARKS.md).
 
-Differential comparisons require exact stdout bytes, stderr bytes, and exit status. Only verbose stderr ordering in explicitly marked parallel cases is normalized, preserving each line and its multiplicity.
+Differential comparisons require exact stdout bytes, stderr bytes, and exit status, with the program-name exceptions described above. Only verbose stderr ordering in explicitly marked parallel cases is normalized, preserving each line and its multiplicity. The historical M3 snapshot predates the rename and used the upstream version banner for all executables.
 
 Native CI runs the common counting, CLI, I/O, large-file, guard-page, and ABI tests on all three targets. Linux additionally exercises invalid UTF-8 filenames where the filesystem permits them, `/dev/full` when available, permission errors when running as an unprivileged user, and injected pthread creation failures. Case counts depend on host capabilities; inspect the job reports for explicit unavailable fixtures. Darwin dispatch setup-failure tests apply only to the macOS pipeline.
 

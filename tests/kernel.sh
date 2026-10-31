@@ -3,7 +3,7 @@
 # in-memory throughput measurement; it is not an end-to-end IO benchmark.
 set -eu
 project_dir="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
-build_dir="$(mktemp -d "${TMPDIR:-/tmp}/ripwc-kernel.XXXXXX")"
+build_dir="$(mktemp -d "${TMPDIR:-/tmp}/asmwc-kernel.XXXXXX")"
 trap 'rm -rf "$build_dir"' EXIT HUP INT TERM
 case "$(uname -s)/$(uname -m)" in
   Darwin/arm64|Darwin/aarch64)

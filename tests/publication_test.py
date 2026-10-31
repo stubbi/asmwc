@@ -11,13 +11,13 @@ from tools.export_evidence import export, number_tree, redact
 
 class PublicationTests(unittest.TestCase):
     def test_redaction_removes_identifying_paths_without_changing_measurements(self):
-        original = {"binary": "/Users/example/project/bin/ripwc", "other": "/Users/example/work/input.dat",
+        original = {"binary": "/Users/example/project/bin/asmwc", "other": "/Users/example/work/input.dat",
                     "host": "Darwin example-machine.local 24.6.0 Darwin Kernel Version",
-                    "temporary": "/var/folders/aa/bb/T/ripwc-test/data",
+                    "temporary": "/var/folders/aa/bb/T/asmwc-test/data",
                     "samples": [0.012, 0.019, 0.008], "runs": 24, "passed": True,
                     "sha256": "a" * 64}
         published = redact(original, Path("/Users/example/project"))
-        self.assertEqual(published["binary"], "$REPO/bin/ripwc")
+        self.assertEqual(published["binary"], "$REPO/bin/asmwc")
         self.assertEqual(published["other"], "$LOCAL_PATH")
         self.assertEqual(published["temporary"], "$TMP/data")
         self.assertEqual(published["host"], "Darwin benchmark-host 24.6.0 Darwin Kernel Version")

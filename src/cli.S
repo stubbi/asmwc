@@ -2,8 +2,8 @@
 // pinned clap derive declaration, including duplicate errors and typo hints.
 .section __TEXT,__text,regular,pure_instructions
 .p2align 2
-.globl _ripwc_parse
-_ripwc_parse:
+.globl _asmwc_parse
+_asmwc_parse:
     stp x29, x30, [sp, #-96]!
     mov x29, sp
     stp x19, x20, [sp, #16]
@@ -239,18 +239,18 @@ L_done:
     mov x10, #13
     cmp x9, #0
     csel x9, x10, x9, eq
-    adrp x10, _ripwc_flags@PAGE
-    str x9, [x10, _ripwc_flags@PAGEOFF]
+    adrp x10, _asmwc_flags@PAGE
+    str x9, [x10, _asmwc_flags@PAGEOFF]
     ubfx x9, x23, #5, #1
-    adrp x10, _ripwc_recursive@PAGE
-    str x9, [x10, _ripwc_recursive@PAGEOFF]
+    adrp x10, _asmwc_recursive@PAGE
+    str x9, [x10, _asmwc_recursive@PAGEOFF]
     ubfx x9, x23, #6, #1
-    adrp x10, _ripwc_verbose@PAGE
-    str x9, [x10, _ripwc_verbose@PAGEOFF]
-    adrp x10, _ripwc_nargs@PAGE
-    str x25, [x10, _ripwc_nargs@PAGEOFF]
-    adrp x10, _ripwc_paths@PAGE
-    str x24, [x10, _ripwc_paths@PAGEOFF]
+    adrp x10, _asmwc_verbose@PAGE
+    str x9, [x10, _asmwc_verbose@PAGEOFF]
+    adrp x10, _asmwc_nargs@PAGE
+    str x25, [x10, _asmwc_nargs@PAGEOFF]
+    adrp x10, _asmwc_paths@PAGE
+    str x24, [x10, _asmwc_paths@PAGEOFF]
     ldp x27, x28, [sp, #80]
     ldp x25, x26, [sp, #64]
     ldp x23, x24, [sp, #48]
@@ -1041,7 +1041,7 @@ L_suggest_skip:
     ret
 
 .section __TEXT,__cstring,cstring_literals
-L_default_name: .asciz "ripwc"
+L_default_name: .asciz "asmwc"
 L_short_chars: .asciz "cmlwLrvhV"
 L_bytes: .asciz "--bytes"
 L_chars: .asciz "--chars"
@@ -1054,7 +1054,7 @@ L_help_option: .asciz "--help"
 L_version_option: .asciz "--version"
 L_help_intro: .asciz "A rewrite of the GNU coreutils 'wc' tool.\n\nUsage: "
 L_help_rest: .asciz " [OPTIONS] <FILE>...\n\nArguments:\n  <FILE>...  The file or folder to read\n\nOptions:\n  -c, --bytes            Print the byte counts\n  -m, --chars            Print the character counts\n  -l, --lines            Print newline counts\n  -w, --words            Print word counts\n  -L, --max-line-length  Print maximum display width\n  -r, --recursive        Recursively search through folders and files\n  -v                     Print verbose output\n  -h, --help             Print help\n  -V, --version          Print version\n"
-L_version_text: .asciz "ripwc 1.0.0\n"
+L_version_text: .asciz "asmwc 1.0.0\n"
 L_missing_text: .asciz "error: the following required arguments were not provided:\n  <FILE>...\n"
 L_duplicate_intro: .asciz "error: the argument '"
 L_duplicate_rest: .asciz "' cannot be used multiple times\n"
@@ -1087,13 +1087,13 @@ L_name: .quad 0
 L_strip_state: .quad 0, 0, 0
 L_order_count: .quad 0
 L_order: .space 72
-.globl _ripwc_flags
-.globl _ripwc_recursive
-.globl _ripwc_verbose
-.globl _ripwc_nargs
-.globl _ripwc_paths
-_ripwc_flags: .quad 13
-_ripwc_recursive: .quad 0
-_ripwc_verbose: .quad 0
-_ripwc_nargs: .quad 0
-_ripwc_paths: .quad 0
+.globl _asmwc_flags
+.globl _asmwc_recursive
+.globl _asmwc_verbose
+.globl _asmwc_nargs
+.globl _asmwc_paths
+_asmwc_flags: .quad 13
+_asmwc_recursive: .quad 0
+_asmwc_verbose: .quad 0
+_asmwc_nargs: .quad 0
+_asmwc_paths: .quad 0
